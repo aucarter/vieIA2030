@@ -7,12 +7,20 @@
 #'   "tfr", "popM", "popF", "mxF", "mxM", "migration", "sexRatio", "percentASFR"
 #' )
 #' dt <- prep_wpp_data(datasets)
-prep_wpp_data <- function(datasets = "mx") {
+prep_wpp_data <- function(
+    datasets = c(
+        "tfr", "popM", "popF", "mxF", "mxM", "migration", "sexRatio",
+        "percentASFR"
+    )
+) {
     data(list = datasets)
     data_list <- lapply(datasets, function(d) {
         df <- get(d)
         df$measure <- d
-        # Grab the first age if age group used
+        # Set up age_start and age_end variables
+        # Note:
+        #   - age_end is inclusive (age_end == 4 means 4 is included)
+        #   - NA for terminal age_end
         if ("age" %in% names(df)) {
             if (any(grepl("-", df$age))) {
                 df$age[df$age == "100+"] <- "100"
