@@ -1,4 +1,4 @@
-# vie_ia2030
+# vieIA2030
 
 Vaccine Impact Estimates for IA2030
 
