@@ -1,6 +1,13 @@
-# Pull in relevant estimates from WPP 2019 and interpolate
-
-prepWPPdata <- function(datasets = "mx") {
+#' Pull in relevant datasets from WPP 2019
+#' @param datasets A character vector with names of valid datasets in the 
+#'                 `wpp2019` package
+#' @return A dataframe with each of the requested datasets bound together
+#' @example
+#' datasets <- c(
+#'   "tfr", "popM", "popF", "mxF", "mxM", "migration", "sexRatio", "percentASFR"
+#' )
+#' dt <- prep_wpp_data(datasets)
+prep_wpp_data <- function(datasets = "mx") {
     data(list = datasets)
     data_list <- lapply(datasets, function(d) {
         df <- get(d)
@@ -55,8 +62,3 @@ prepWPPdata <- function(datasets = "mx") {
 
     return(dt)
 }
-
-datasets <- c(
-    "tfr", "popM", "popF", "mxF", "mxM", "migration", "sexRatio", "percentASFR"
-)
-dt <- prepWPPdata(datasets)
