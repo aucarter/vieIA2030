@@ -20,9 +20,9 @@ prep_wpp_data <- function(datasets = "mx") {
                 df$age_end <- as.integer(tstrsplit(df$age, "-")[[2]])
             } else {
                 df$age_start <- df$age
-                df$age_end <- df$age + 5
-                df$age_end[df$age == 0] <- 1
-                df$age_end[df$age == 1] <- 5
+                df$age_end <- df$age + 4
+                df$age_end[df$age == 0] <- 0
+                df$age_end[df$age == 1] <- 4
                 df$age_end[df$age == 100] <- NA
             }
             df$age <- NULL
