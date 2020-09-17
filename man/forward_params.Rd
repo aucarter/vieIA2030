@@ -13,8 +13,8 @@ forward_params(params, year)
 }
 \value{
 A list with two elements:
-L - A matrix for survival and progression
-g - A vector with migration values
+(1) L - A matrix for survival and progression
+(2) g - A vector with migration values
 }
 \description{
 Generate the parameters for a forward step
