@@ -25,6 +25,7 @@ forward_params <- function(params, year) {
     # Pull in year-specific parameters
     year_dt <- params[["wpp_dt"]][year >= year_start & year < year_end]
     mx <- year_dt[measure %in% c("mxM", "mxF")]$value
+    # TODO: This is one value! How to split by age and sex?
     g <- year_dt[measure == "migration"]$value
     tfr <- year_dt[measure == "tfr"]$value
     asfr <- year_dt[measure == "percentASFR"]$value / 100
