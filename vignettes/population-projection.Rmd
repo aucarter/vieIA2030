@@ -1,0 +1,26 @@
+---
+title: "population-projection"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{population-projection}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(vieIA2030)
+```
+
+```{r}
+loc <- 840
+wpp_dt <- prep_wpp_data()[country_code == loc]
+params <- make_params(wpp_dt)
+pop_proj <- project_pop(params)
+```

@@ -1,6 +1,6 @@
-# vie_ia2030
+# Vaccine Impact Estimates for IA2030
 
-Vaccine Impact Estimates for IA2030
+This package includes the tools used to generate vaccine impact estimates for IA2030
 
 ## Methods
 

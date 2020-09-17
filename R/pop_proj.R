@@ -1,7 +1,26 @@
-loc <- 840
+#' Generate population projection parameters from WPP data
+#' @param wpp_dt A data.table with WPP data
+#' @return A list of parameters
+#' @import data.table
+#' @export
+make_params <- function(wpp_dt) {
+    n0 <- wpp_dt[measure %in% c("popM", "popF") &
+            year_start == min(year_start)]$value
+    ages <- unique(wpp_dt[measure %in% c("popM", "popF") &
+            year_start == min(year_start)]$age_start)
+    f_idx <- which(ages %in% unique(wpp_dt[measure == "percentASFR"]$age_start))
+    return(
+        list(wpp_dt = wpp_dt, n0 = n0, ages = ages, f_idx = f_idx)
+    )
+}
 
 
-# Set up transition matrix
+#' Generate the parameters for a forward step
+#' @param params A list holding all population projection parameters
+#' @param year Integer time period
+#' @return A list with two elements:
+#'      (1) L - A matrix for survival and progression
+#'      (2) g - A vector with migration values
 forward_params <- function(params, year) {
     # Pull in year-specific parameters
     year_dt <- params[["wpp_dt"]][year >= year_start & year < year_end]
@@ -55,6 +74,11 @@ forward_params <- function(params, year) {
     return(list(L = L, g = g))
 }
 
+#' Step the population forward one time period
+#' @param n A vector with the current population
+#' @param params A list holding all population projection parameters
+#' @param year Integer time period
+#' @return A vector with the population one time period forward
 step_forward <- function(n, params, year) {
     p <- forward_params(params, year)
     n_g <- n * p[["g"]] / 2
@@ -62,6 +86,11 @@ step_forward <- function(n, params, year) {
     return(n)
 }
 
+#' Project the population
+#' @param params A list holding all population projection parameters
+#' @return A matrix with the population in all time periods
+#' @export
+# TODO: Output mortality too!
 project_pop <- function(params) {
     years <- params[["wpp_dt"]][measure == "tfr"]$year_start
     n <- params[["n0"]]
@@ -72,15 +101,3 @@ project_pop <- function(params) {
     }
     return(n_mat)
 }
-
-wpp_dt <- data.table(prep_wpp_data())[country_code == loc]
-params <- list(
-    wpp_dt = wpp_dt,
-    n0 = wpp_dt[measure %in% c("popM", "popF") &
-            year_start == min(year_start)]$value,
-    ages = unique(wpp_dt[measure %in% c("popM", "popF") &
-            year_start == min(year_start)]$age_start),
-    f_idx = which(ages %in% unique(wpp_dt[measure == "percentASFR"]$age_start))
-)
-
-pop_proj <- project_pop(params)
