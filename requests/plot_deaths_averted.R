@@ -1,11 +1,11 @@
-## Healthy life-year gains rough figure
+## Deaths averted rough figure with placeholder data
 library(data.table)
 library(ggplot2)
 set.seed(2)
 
 out_path <- "/Users/aucarter/OneDrive - UW/Documents/who/requests/vie_deaths_averted.pdf"
 
-gen_fake_data <- function(indicator_list) {
+gen_placeholder_data <- function(indicator_list) {
     dt <- data.table(
         indicator = factor(
             seq(indicator_list),
@@ -51,7 +51,7 @@ indicator_list <- c(
     "Pneumococcal diseases", "Hib", "Pertussis", "Rotavirus", 
     "Meningococcal meningitis", "Other VPD"
 )
-dt <- gen_fake_data(indicator_list)
+dt <- gen_placeholder_data(indicator_list)
 pdf(out_path, width = 8, height = 5)
 print(plot_healthy_ly(dt))
 dev.off()
