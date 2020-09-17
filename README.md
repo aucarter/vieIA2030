@@ -1,3 +1,7 @@
+<!-- badges: start -->
+[![Travis build status](https://travis-ci.com/aucarter/vieIA2030.svg?branch=master)](https://travis-ci.com/aucarter/vieIA2030)
+<!-- badges: end -->
+
 # Vaccine Impact Estimates for IA2030
 
 This package includes the tools used to generate vaccine impact estimates for IA2030
