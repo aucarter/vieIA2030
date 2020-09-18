@@ -25,13 +25,20 @@ forward_params <- function(params, year) {
     # Pull in year-specific parameters
     year_dt <- params[["wpp_dt"]][year >= year_start & year < year_end]
     mx <- year_dt[measure %in% c("mxM", "mxF")]$value
-    # TODO: This is one value! How to split by age and sex?
-    g <- year_dt[measure == "migration"]$value
     tfr <- year_dt[measure == "tfr"]$value
     asfr <- year_dt[measure == "percentASFR"]$value / 100
     srb <- year_dt[measure == "sexRatio"]$value
-    age_n <- length(params[["ages"]])
-    # Transform parameters
+    L <- make_leslie(mx, tfr, asfr, srb)
+
+    # TODO: This is one value! How to split by age and sex?
+    g <- year_dt[measure == "migration"]$value
+    return(list(L = L, g = g))
+}
+
+make_leslie <- function(mx, tfr, asfr, srb) {
+    age_n <- length(asfr)
+    
+    # Survival
     # TODO: I think we actually need q_x here?
     s <- 1 - mx
     s_m <- s[seq(length(s) / 2)]
@@ -41,15 +48,16 @@ forward_params <- function(params, year) {
     s_f <- c((s_f[1] + 4 * s_f[2]) / 5, s_f[3:length(s_f)])
     s_term_m <- tail(s_m, 1)
     s_term_f <- tail(s_f, 1)
+    
+    # Fertility
     f <- tfr * asfr
-    # TODO: Is it right to bind on a zero here?
-    # TODO: What is the right way to SRB (M / F) here?
     f_bar_m <- rep(0, age_n)
     f_bar_f <- f_bar_m
-    f_bar_m[params[["f_idx"]]] <- s[1] * (1 + srb)^(-1) *
+    f_bar_m[params[["f_idx"]]] <- s[1] * (1 - (1 + srb)^(-1)) *
                                   (f + c(tail(f, -1), 0)) * 0.5
-    f_bar_f[params[["f_idx"]]] <- s[1] * (1 + (1 - srb))^(-1) *
+    f_bar_f[params[["f_idx"]]] <- s[1] * (1 + srb)^(-1) *
                                   (f + c(tail(f, -1), 0)) * 0.5
+    
     # Construct blocks of the Leslie matrix
     A <- rbind(
         f_bar_m,
@@ -72,7 +80,8 @@ forward_params <- function(params, year) {
         cbind(A, B),
         cbind(C, D)
     )
-    return(list(L = L, g = g))
+
+    return(L)
 }
 
 #' Step the population forward one time period
