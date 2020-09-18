@@ -36,7 +36,7 @@ forward_params <- function(params, year) {
 }
 
 make_leslie <- function(mx, tfr, asfr, srb) {
-    age_n <- length(asfr)
+    age_n <- length(mx) / 2 - 1
     
     # Survival
     # TODO: I think we actually need q_x here?
@@ -91,7 +91,8 @@ make_leslie <- function(mx, tfr, asfr, srb) {
 #' @return A vector with the population one time period forward
 step_forward <- function(n, params, year) {
     p <- forward_params(params, year)
-    n_g <- n * p[["g"]] / 2
+    # NOTE: Assumes migration is equally distributed across age/sex
+    n_g <- n / sum(n) * p[["g"]] / 2
     n <- p[["L"]] %*% (n + n_g) + n_g
     return(n)
 }
