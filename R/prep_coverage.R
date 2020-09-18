@@ -1,5 +1,5 @@
 #' Pull in WUENIC data and bind it together
-#' @return data.table with all WUENIC data
+#' @return A data.table with all WUENIC data
 prep_wuenic_data <- function() {
     url <- "www.who.int/entity/immunization/monitoring_surveillance/data/coverage_estimates_series.xls"
     xls <- tempfile()
