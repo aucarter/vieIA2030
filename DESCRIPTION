@@ -16,7 +16,8 @@ RoxygenNote: 7.1.1
 Imports:
     tidyr,
     data.table,
-    wpp2019
+    wpp2019,
+    readxl
 Suggests: 
     knitr,
     rmarkdown,
