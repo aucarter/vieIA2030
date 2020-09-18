@@ -28,15 +28,15 @@ forward_params <- function(params, year) {
     tfr <- year_dt[measure == "tfr"]$value
     asfr <- year_dt[measure == "percentASFR"]$value / 100
     srb <- year_dt[measure == "sexRatio"]$value
-    L <- make_leslie(mx, tfr, asfr, srb)
+    L <- make_leslie(mx, tfr, asfr, srb, params)
 
     # TODO: This is one value! How to split by age and sex?
     g <- year_dt[measure == "migration"]$value
     return(list(L = L, g = g))
 }
 
-make_leslie <- function(mx, tfr, asfr, srb) {
-    age_n <- length(mx) / 2 - 1
+make_leslie <- function(mx, tfr, asfr, srb, params) {
+    age_n <- length(params[["ages"]])
     
     # Survival
     # TODO: I think we actually need q_x here?
