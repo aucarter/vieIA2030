@@ -1,3 +1,6 @@
+## TODO: Switch source to this: https://population.un.org/wpp/Download/Standard/CSV/
+
+
 #' Pull in relevant datasets from WPP 2019
 #' @param datasets A character vector with names of valid datasets in the
 #'                 `wpp2019` package
