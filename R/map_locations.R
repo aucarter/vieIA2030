@@ -21,9 +21,9 @@ map_locations <- function(locations, title) {
         returnclass = "sf"
     )
 
-    world$vimc <- ifelse(world$iso_a3 %in% locations, 1, NA)
+    world$present <- ifelse(world$iso_a3 %in% locations, 1, NA)
     gg <- ggplot(data = world) +
-        geom_sf(aes(fill = as.factor(vimc))) +
+        geom_sf(aes(fill = as.factor(present))) +
         ggtitle(
             title,
             subtitle = paste0("(", length(locations), " countries)")
