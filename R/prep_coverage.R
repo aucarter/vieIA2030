@@ -16,7 +16,7 @@ prep_wuenic_data <- function() {
     })
     file.remove(xls)
 
-    dt <- data.table::rbindlist(dt_list, fill = T)
+    dt <- data.table::rbindlist(data_list, fill = T)
 
     return(dt)
 }
