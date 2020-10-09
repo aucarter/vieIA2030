@@ -3,7 +3,7 @@
 prep_wuenic_data <- function() {
     url <- "www.who.int/entity/immunization/monitoring_surveillance/data/coverage_estimates_series.xls"
     xls <- tempfile()
-    download.file(url, xls)
+    download.file(url, xls, quiet = T)
     sheets <- readxl::excel_sheets(xls)
     data_list <- lapply(sheets[2:15], function(s) {
         df <- readxl::read_excel(path = xls, sheet = s)
