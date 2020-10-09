@@ -17,7 +17,11 @@ Imports:
     tidyr,
     data.table,
     wpp2019,
-    readxl
+    readxl,
+    ggplot2,
+    sf,
+    rnaturalearth,
+    rnaturalearthdata
 Suggests: 
     knitr,
     rmarkdown,
