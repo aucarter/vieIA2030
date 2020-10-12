@@ -1,4 +1,6 @@
-
+<!-- badges: start -->
+[![R build status](https://github.com/aucarter/vieIA2030/workflows/R-CMD-check/badge.svg)](https://github.com/aucarter/vieIA2030/actions)
+<!-- badges: end -->
 
 # Vaccine Impact Estimates for IA2030
 
