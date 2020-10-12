@@ -21,7 +21,8 @@ Imports:
     readxl,
     ggplot2,
     sf,
-    rnaturalearth
+    rnaturalearth,
+    rnaturalearthdata
 Suggests: 
     knitr,
     rmarkdown,
