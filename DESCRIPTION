@@ -22,7 +22,8 @@ Imports:
     ggplot2,
     sf,
     rnaturalearth,
-    rnaturalearthdata
+    rnaturalearthdata,
+    rgeos
 Suggests: 
     knitr,
     rmarkdown,
