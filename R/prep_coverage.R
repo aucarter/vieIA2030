@@ -21,3 +21,17 @@ prep_wuenic_data <- function() {
 
     return(dt)
 }
+
+#' Pull in HPV coverage data
+#' @return A data.table with all HPV data
+#' @export
+prep_hpv_coverage_data <- function() {
+    url <- "http://www.who.int/immunization/monitoring_surveillance/data/HPV_estimates.xlsx"
+    xls <- tempfile()
+    download.file(url, xls, quiet = T)
+    sheets <- readxl::excel_sheets(xls)
+    dt <- data.table(readxl::read_excel(path = xls, sheet = sheets[2]))
+    file.remove(xls)
+
+    return(dt)
+}
