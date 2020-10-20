@@ -4,7 +4,7 @@
 #' @export
 prep_vimc <- function() {
     dt <- data.table::fread(
-        "data/global-impact-2020-201910gavi_20200731-163545-a2bf8c3f_Summary_201910gavi_calendar_estimates.csv"
+        "data-raw/vimc_estimates.csv"
     )
     dt[, c("gavi73", "who_region") := NULL]
     data.table::setnames(dt, "country", "country_iso3")
