@@ -7,6 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "aucarter@uw.edu")
 Description: What the package does (one paragraph).
+Depends: R (>= 3.6.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -15,7 +16,13 @@ RoxygenNote: 7.1.1
 Imports:
     tidyr,
     data.table,
-    wpp2019
+    wpp2019,
+    readxl,
+    ggplot2,
+    sf,
+    rnaturalearth,
+    rnaturalearthdata,
+    rgeos
 Suggests: 
     knitr,
     rmarkdown,
