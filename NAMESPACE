@@ -3,6 +3,7 @@
 export(make_params)
 export(map_locations)
 export(prep_hpv_coverage_data)
+export(prep_vimc)
 export(prep_wpp_data)
 export(prep_wuenic_data)
 export(project_pop)
