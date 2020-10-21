@@ -8,7 +8,10 @@ plot.coverage <- function(x, ...) {
     gg <- ggplot2::ggplot(
             x,
             ggplot2::aes(
-                x = year, y = value, color = vaccine_short, linetype = sex_id
+                x = year,
+                y = value,
+                color = vaccine_short,
+                linetype = as.factor(sex_id)
             )
         ) +
         ggplot2::geom_line()
