@@ -20,7 +20,7 @@ library(vieIA2030)
 
 ```{r}
 loc <- 840
-wpp_dt <- prep_wpp_data()[country_code == loc]
-params <- make_params(wpp_dt)
-pop_proj <- project_pop(params)
+# wpp_dt <- prep_wpp_data()[country_code == loc]
+# params <- make_params(wpp_dt)
+# pop_proj <- project_pop(params)
 ```

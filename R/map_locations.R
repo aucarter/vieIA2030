@@ -6,7 +6,7 @@
 #' @examples 
 #' dt <- prep_wuenic_data()
 #' map_locations(
-#'      unique(dt$ISO_code),
+#'      unique(dt$country_iso3),
 #'      "Availability of WUENIC Coverage Estimates"
 #' )
 #' @export

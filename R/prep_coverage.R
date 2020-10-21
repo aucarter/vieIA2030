@@ -8,9 +8,13 @@
 prep_coverage <- function(iso3 = NULL) {
     wuenic_dt <- prep_wuenic_data()
     hpv_dt <- prep_hpv_coverage_data()
-    dt <- rbind(wuenic_dt, hpv_dt)[country_iso3 %in% iso3]
+    reported_dt <- prep_reported_coverage_data()
+    dt <- data.table::rbindlist(
+        list(wuenic_dt, hpv_dt, reported_dt),
+        use.names = T
+    )
+    dt <- dt[country_iso3 %in% iso3]
     dt[is.na(value), value := 0]
-
     class(dt) <- c("coverage", class(dt))
 
     return(dt)
@@ -39,9 +43,44 @@ prep_wuenic_data <- function() {
     dt <- data.table::rbindlist(data_list, fill = T)
     data.table::setnames(
         dt,
-        c("ISO_code", "Cname", "Vaccine"),
-        c("country_iso3", "country_name", "vaccine_short")
+        c("ISO_code", "Cname"),
+        c("country_iso3", "country_name")
     )
+    dt[, sex_id := 3]
+    # NOTE: We are subsetting to specific dose numbers here
+    vaccine_short_map <- data.table(
+        Vaccine = c("Hib3", "RCV1", "RotaC", "YFV", "Pol3", "HepB3", "MCV1",
+            "PCV3", "DTP3", "BCG"),
+        vaccine_short = c("Hib", "Rubella", "Rota", "YF", "Polio", "HepB",
+            "Measles", "PCV", "DTP", "BCG")
+    )
+    dt <- merge(dt, vaccine_short_map, by = "Vaccine")
+    dt[, Vaccine := NULL]
+
+    return(dt)
+}
+
+#' Pull in reported coverage data and bind it together
+#' @return A data.table with reported coverage data for Japanese encephalitis
+#'         and Meningitis A
+#' @export
+prep_reported_coverage_data <- function() {
+    url <- "http://www.who.int/entity/immunization/monitoring_surveillance/data/coverage_series.xls"
+    xls <- tempfile()
+    download.file(url, xls, quiet = T)
+    sheets <- readxl::excel_sheets(xls)
+    dt <- suppressWarnings(
+        data.table(readxl::read_excel(path = xls, sheet = sheets[2]))
+    )
+    file.remove(xls)
+    dt[, c("WHO_REGION", "Continent", "Asterisc") := NULL]
+    data.table::setnames(
+        dt,
+        c("ISO_code", "Cname", "Vaccine", "Year", "Percent_covrage"),
+        c("country_iso3", "country_name", "vaccine_short", "year", "value")
+    )
+    dt <- dt[vaccine_short %in% c("JapEnc", "MenA")]
+    dt[vaccine_short == "JapEnc", vaccine_short := "JE"]
     dt[, sex_id := 3]
 
     return(dt)
