@@ -11,6 +11,8 @@ prep_coverage <- function(iso3 = NULL) {
     dt <- rbind(wuenic_dt, hpv_dt)[country_iso3 %in% iso3]
     dt[is.na(value), value := 0]
 
+    class(dt) <- c("coverage", class(dt))
+
     return(dt)
 }
 
