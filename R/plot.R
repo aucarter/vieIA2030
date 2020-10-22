@@ -1,5 +1,4 @@
 #' Plot coverage for a specific location
-#' 
 #' @param dt A data.table with coverage data
 #' @return A plot of the coverage data
 #' @method plot coverage
