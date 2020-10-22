@@ -1,28 +1,5 @@
+## Pull in various vaccine coverage data from the WHO website
 
-#' Pull all vaccine coverage data for user supplied list of locations
-#' 
-#' @param iso3 Vector of iso3 codes
-#' @return A data.table with historical coverage for all vaccines for each
-#'         supplied location
-#' @export
-prep_coverage <- function(iso3 = NULL) {
-    wuenic_dt <- prep_wuenic_data()
-    hpv_dt <- prep_hpv_coverage_data()
-    reported_dt <- prep_reported_coverage_data()
-    dt <- data.table::rbindlist(
-        list(wuenic_dt, hpv_dt, reported_dt),
-        use.names = T
-    )
-    dt <- dt[country_iso3 %in% iso3]
-    dt[is.na(value), value := 0]
-    class(dt) <- c("coverage", class(dt))
-
-    return(dt)
-}
-
-#' Pull in WUENIC data and bind it together
-#' @return A data.table with all WUENIC data
-#' @export
 prep_wuenic_data <- function() {
     url <- "www.who.int/entity/immunization/monitoring_surveillance/data/coverage_estimates_series.xls"
     xls <- tempfile()
@@ -60,10 +37,6 @@ prep_wuenic_data <- function() {
     return(dt)
 }
 
-#' Pull in reported coverage data and bind it together
-#' @return A data.table with reported coverage data for Japanese encephalitis
-#'         and Meningitis A
-#' @export
 prep_reported_coverage_data <- function() {
     url <- "http://www.who.int/entity/immunization/monitoring_surveillance/data/coverage_series.xls"
     xls <- tempfile()
@@ -86,9 +59,6 @@ prep_reported_coverage_data <- function() {
     return(dt)
 }
 
-#' Pull in HPV coverage data
-#' @return A data.table with all HPV data
-#' @export
 prep_hpv_coverage_data <- function() {
     url <- "http://www.who.int/immunization/monitoring_surveillance/data/HPV_estimates.xlsx"
     xls <- tempfile()
@@ -113,3 +83,20 @@ prep_hpv_coverage_data <- function() {
 
     return(dt)
 }
+
+wuenic_dt <- prep_wuenic_data()
+write.csv(wuenic_dt, "data-raw/wuenic.csv", row.names = F)
+
+hpv_dt <- prep_hpv_coverage_data()
+write.csv(hpv_dt, "data-raw/hpv.csv", row.names = F)
+
+reported_dt <- prep_reported_coverage_data()
+write.csv(reported_dt, "data-raw/reported.csv", row.names = F)
+
+coverage <- data.table::rbindlist(
+    list(wuenic_dt, hpv_dt, reported_dt),
+    use.names = T
+)
+coverage[is.na(value), value := 0]
+class(coverage) <- c("coverage", class(coverage))
+usethis::use_data(coverage, overwrite = TRUE)
