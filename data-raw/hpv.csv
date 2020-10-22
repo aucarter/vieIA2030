@@ -1,0 +1,2121 @@
+"country_iso3","country_name","sex_id","year","vaccine_short","value"
+"AND","Andorra",2,2010,"HPV",0
+"AND","Andorra",2,2011,"HPV",0
+"AND","Andorra",2,2012,"HPV",0
+"AND","Andorra",2,2013,"HPV",0
+"AND","Andorra",2,2014,"HPV",0
+"AND","Andorra",2,2015,"HPV",0
+"AND","Andorra",2,2016,"HPV",0
+"AND","Andorra",2,2017,"HPV",0
+"AND","Andorra",2,2018,"HPV",49
+"AND","Andorra",2,2019,"HPV",64
+"AND","Andorra",1,2010,"HPV",0
+"AND","Andorra",1,2011,"HPV",0
+"AND","Andorra",1,2012,"HPV",0
+"AND","Andorra",1,2013,"HPV",0
+"AND","Andorra",1,2014,"HPV",0
+"AND","Andorra",1,2015,"HPV",0
+"AND","Andorra",1,2016,"HPV",0
+"AND","Andorra",1,2017,"HPV",0
+"AND","Andorra",1,2018,"HPV",0
+"AND","Andorra",1,2019,"HPV",0
+"ARE","United Arab Emirates (the)",2,2010,"HPV",0
+"ARE","United Arab Emirates (the)",2,2011,"HPV",0
+"ARE","United Arab Emirates (the)",2,2012,"HPV",0
+"ARE","United Arab Emirates (the)",2,2013,"HPV",0
+"ARE","United Arab Emirates (the)",2,2014,"HPV",0
+"ARE","United Arab Emirates (the)",2,2015,"HPV",0
+"ARE","United Arab Emirates (the)",2,2016,"HPV",0
+"ARE","United Arab Emirates (the)",2,2017,"HPV",0
+"ARE","United Arab Emirates (the)",2,2018,"HPV",26
+"ARE","United Arab Emirates (the)",2,2019,"HPV",27
+"ARE","United Arab Emirates (the)",1,2010,"HPV",0
+"ARE","United Arab Emirates (the)",1,2011,"HPV",0
+"ARE","United Arab Emirates (the)",1,2012,"HPV",0
+"ARE","United Arab Emirates (the)",1,2013,"HPV",0
+"ARE","United Arab Emirates (the)",1,2014,"HPV",0
+"ARE","United Arab Emirates (the)",1,2015,"HPV",0
+"ARE","United Arab Emirates (the)",1,2016,"HPV",0
+"ARE","United Arab Emirates (the)",1,2017,"HPV",0
+"ARE","United Arab Emirates (the)",1,2018,"HPV",0
+"ARE","United Arab Emirates (the)",1,2019,"HPV",0
+"ARG","Argentina",2,2010,"HPV",0
+"ARG","Argentina",2,2011,"HPV",0
+"ARG","Argentina",2,2012,"HPV",37
+"ARG","Argentina",2,2013,"HPV",57
+"ARG","Argentina",2,2014,"HPV",54
+"ARG","Argentina",2,2015,"HPV",49
+"ARG","Argentina",2,2016,"HPV",56
+"ARG","Argentina",2,2017,"HPV",49
+"ARG","Argentina",2,2018,"HPV",58
+"ARG","Argentina",2,2019,"HPV",57
+"ARG","Argentina",1,2010,"HPV",0
+"ARG","Argentina",1,2011,"HPV",0
+"ARG","Argentina",1,2012,"HPV",0
+"ARG","Argentina",1,2013,"HPV",0
+"ARG","Argentina",1,2014,"HPV",0
+"ARG","Argentina",1,2015,"HPV",0
+"ARG","Argentina",1,2016,"HPV",0
+"ARG","Argentina",1,2017,"HPV",0
+"ARG","Argentina",1,2018,"HPV",43
+"ARG","Argentina",1,2019,"HPV",46
+"ARM","Armenia",2,2010,"HPV",0
+"ARM","Armenia",2,2011,"HPV",0
+"ARM","Armenia",2,2012,"HPV",0
+"ARM","Armenia",2,2013,"HPV",0
+"ARM","Armenia",2,2014,"HPV",0
+"ARM","Armenia",2,2015,"HPV",0
+"ARM","Armenia",2,2016,"HPV",0
+"ARM","Armenia",2,2017,"HPV",0
+"ARM","Armenia",2,2018,"HPV",2
+"ARM","Armenia",2,2019,"HPV",7
+"ARM","Armenia",1,2010,"HPV",0
+"ARM","Armenia",1,2011,"HPV",0
+"ARM","Armenia",1,2012,"HPV",0
+"ARM","Armenia",1,2013,"HPV",0
+"ARM","Armenia",1,2014,"HPV",0
+"ARM","Armenia",1,2015,"HPV",0
+"ARM","Armenia",1,2016,"HPV",0
+"ARM","Armenia",1,2017,"HPV",0
+"ARM","Armenia",1,2018,"HPV",0
+"ARM","Armenia",1,2019,"HPV",0
+"ATG","Antigua and Barbuda",2,2010,"HPV",0
+"ATG","Antigua and Barbuda",2,2011,"HPV",0
+"ATG","Antigua and Barbuda",2,2012,"HPV",0
+"ATG","Antigua and Barbuda",2,2013,"HPV",0
+"ATG","Antigua and Barbuda",2,2014,"HPV",0
+"ATG","Antigua and Barbuda",2,2015,"HPV",0
+"ATG","Antigua and Barbuda",2,2016,"HPV",0
+"ATG","Antigua and Barbuda",2,2017,"HPV",0
+"ATG","Antigua and Barbuda",2,2018,"HPV",0
+"ATG","Antigua and Barbuda",2,2019,"HPV",0
+"ATG","Antigua and Barbuda",1,2010,"HPV",0
+"ATG","Antigua and Barbuda",1,2011,"HPV",0
+"ATG","Antigua and Barbuda",1,2012,"HPV",0
+"ATG","Antigua and Barbuda",1,2013,"HPV",0
+"ATG","Antigua and Barbuda",1,2014,"HPV",0
+"ATG","Antigua and Barbuda",1,2015,"HPV",0
+"ATG","Antigua and Barbuda",1,2016,"HPV",0
+"ATG","Antigua and Barbuda",1,2017,"HPV",0
+"ATG","Antigua and Barbuda",1,2018,"HPV",0
+"ATG","Antigua and Barbuda",1,2019,"HPV",0
+"AUS","Australia",2,2010,"HPV",67
+"AUS","Australia",2,2011,"HPV",63
+"AUS","Australia",2,2012,"HPV",65
+"AUS","Australia",2,2013,"HPV",65
+"AUS","Australia",2,2014,"HPV",66
+"AUS","Australia",2,2015,"HPV",67
+"AUS","Australia",2,2016,"HPV",86
+"AUS","Australia",2,2017,"HPV",80
+"AUS","Australia",2,2018,"HPV",74
+"AUS","Australia",2,2019,"HPV",79
+"AUS","Australia",1,2010,"HPV",0
+"AUS","Australia",1,2011,"HPV",0
+"AUS","Australia",1,2012,"HPV",0
+"AUS","Australia",1,2013,"HPV",0
+"AUS","Australia",1,2014,"HPV",0
+"AUS","Australia",1,2015,"HPV",0
+"AUS","Australia",1,2016,"HPV",0
+"AUS","Australia",1,2017,"HPV",0
+"AUS","Australia",1,2018,"HPV",47
+"AUS","Australia",1,2019,"HPV",75
+"AUT","Austria",2,2010,"HPV",0
+"AUT","Austria",2,2011,"HPV",0
+"AUT","Austria",2,2012,"HPV",0
+"AUT","Austria",2,2013,"HPV",0
+"AUT","Austria",2,2014,"HPV",0
+"AUT","Austria",2,2015,"HPV",0
+"AUT","Austria",2,2016,"HPV",0
+"AUT","Austria",2,2017,"HPV",0
+"AUT","Austria",2,2018,"HPV",0
+"AUT","Austria",2,2019,"HPV",0
+"AUT","Austria",1,2010,"HPV",0
+"AUT","Austria",1,2011,"HPV",0
+"AUT","Austria",1,2012,"HPV",0
+"AUT","Austria",1,2013,"HPV",0
+"AUT","Austria",1,2014,"HPV",0
+"AUT","Austria",1,2015,"HPV",0
+"AUT","Austria",1,2016,"HPV",0
+"AUT","Austria",1,2017,"HPV",0
+"AUT","Austria",1,2018,"HPV",0
+"AUT","Austria",1,2019,"HPV",0
+"BEL","Belgium",2,2010,"HPV",0
+"BEL","Belgium",2,2011,"HPV",0
+"BEL","Belgium",2,2012,"HPV",61
+"BEL","Belgium",2,2013,"HPV",63
+"BEL","Belgium",2,2014,"HPV",64
+"BEL","Belgium",2,2015,"HPV",66
+"BEL","Belgium",2,2016,"HPV",67
+"BEL","Belgium",2,2017,"HPV",67
+"BEL","Belgium",2,2018,"HPV",67
+"BEL","Belgium",2,2019,"HPV",67
+"BEL","Belgium",1,2010,"HPV",0
+"BEL","Belgium",1,2011,"HPV",0
+"BEL","Belgium",1,2012,"HPV",0
+"BEL","Belgium",1,2013,"HPV",0
+"BEL","Belgium",1,2014,"HPV",0
+"BEL","Belgium",1,2015,"HPV",0
+"BEL","Belgium",1,2016,"HPV",0
+"BEL","Belgium",1,2017,"HPV",0
+"BEL","Belgium",1,2018,"HPV",0
+"BEL","Belgium",1,2019,"HPV",0
+"BGR","Bulgaria",2,2010,"HPV",0
+"BGR","Bulgaria",2,2011,"HPV",0
+"BGR","Bulgaria",2,2012,"HPV",0
+"BGR","Bulgaria",2,2013,"HPV",22
+"BGR","Bulgaria",2,2014,"HPV",14
+"BGR","Bulgaria",2,2015,"HPV",4
+"BGR","Bulgaria",2,2016,"HPV",3
+"BGR","Bulgaria",2,2017,"HPV",3
+"BGR","Bulgaria",2,2018,"HPV",5
+"BGR","Bulgaria",2,2019,"HPV",5
+"BGR","Bulgaria",1,2010,"HPV",0
+"BGR","Bulgaria",1,2011,"HPV",0
+"BGR","Bulgaria",1,2012,"HPV",0
+"BGR","Bulgaria",1,2013,"HPV",0
+"BGR","Bulgaria",1,2014,"HPV",0
+"BGR","Bulgaria",1,2015,"HPV",0
+"BGR","Bulgaria",1,2016,"HPV",0
+"BGR","Bulgaria",1,2017,"HPV",0
+"BGR","Bulgaria",1,2018,"HPV",0
+"BGR","Bulgaria",1,2019,"HPV",0
+"BHS","Bahamas (the)",2,2010,"HPV",0
+"BHS","Bahamas (the)",2,2011,"HPV",0
+"BHS","Bahamas (the)",2,2012,"HPV",0
+"BHS","Bahamas (the)",2,2013,"HPV",0
+"BHS","Bahamas (the)",2,2014,"HPV",0
+"BHS","Bahamas (the)",2,2015,"HPV",2
+"BHS","Bahamas (the)",2,2016,"HPV",19
+"BHS","Bahamas (the)",2,2017,"HPV",17
+"BHS","Bahamas (the)",2,2018,"HPV",10
+"BHS","Bahamas (the)",2,2019,"HPV",9
+"BHS","Bahamas (the)",1,2010,"HPV",0
+"BHS","Bahamas (the)",1,2011,"HPV",0
+"BHS","Bahamas (the)",1,2012,"HPV",0
+"BHS","Bahamas (the)",1,2013,"HPV",0
+"BHS","Bahamas (the)",1,2014,"HPV",0
+"BHS","Bahamas (the)",1,2015,"HPV",2
+"BHS","Bahamas (the)",1,2016,"HPV",19
+"BHS","Bahamas (the)",1,2017,"HPV",17
+"BHS","Bahamas (the)",1,2018,"HPV",10
+"BHS","Bahamas (the)",1,2019,"HPV",9
+"BLZ","Belize",2,2010,"HPV",0
+"BLZ","Belize",2,2011,"HPV",0
+"BLZ","Belize",2,2012,"HPV",0
+"BLZ","Belize",2,2013,"HPV",0
+"BLZ","Belize",2,2014,"HPV",0
+"BLZ","Belize",2,2015,"HPV",0
+"BLZ","Belize",2,2016,"HPV",0
+"BLZ","Belize",2,2017,"HPV",61
+"BLZ","Belize",2,2018,"HPV",63
+"BLZ","Belize",2,2019,"HPV",89
+"BLZ","Belize",1,2010,"HPV",0
+"BLZ","Belize",1,2011,"HPV",0
+"BLZ","Belize",1,2012,"HPV",0
+"BLZ","Belize",1,2013,"HPV",0
+"BLZ","Belize",1,2014,"HPV",0
+"BLZ","Belize",1,2015,"HPV",0
+"BLZ","Belize",1,2016,"HPV",0
+"BLZ","Belize",1,2017,"HPV",0
+"BLZ","Belize",1,2018,"HPV",0
+"BLZ","Belize",1,2019,"HPV",54
+"BOL","Bolivia (Plurinational State of)",2,2010,"HPV",0
+"BOL","Bolivia (Plurinational State of)",2,2011,"HPV",0
+"BOL","Bolivia (Plurinational State of)",2,2012,"HPV",0
+"BOL","Bolivia (Plurinational State of)",2,2013,"HPV",0
+"BOL","Bolivia (Plurinational State of)",2,2014,"HPV",0
+"BOL","Bolivia (Plurinational State of)",2,2015,"HPV",0
+"BOL","Bolivia (Plurinational State of)",2,2016,"HPV",0
+"BOL","Bolivia (Plurinational State of)",2,2017,"HPV",66
+"BOL","Bolivia (Plurinational State of)",2,2018,"HPV",64
+"BOL","Bolivia (Plurinational State of)",2,2019,"HPV",80
+"BOL","Bolivia (Plurinational State of)",1,2010,"HPV",0
+"BOL","Bolivia (Plurinational State of)",1,2011,"HPV",0
+"BOL","Bolivia (Plurinational State of)",1,2012,"HPV",0
+"BOL","Bolivia (Plurinational State of)",1,2013,"HPV",0
+"BOL","Bolivia (Plurinational State of)",1,2014,"HPV",0
+"BOL","Bolivia (Plurinational State of)",1,2015,"HPV",0
+"BOL","Bolivia (Plurinational State of)",1,2016,"HPV",0
+"BOL","Bolivia (Plurinational State of)",1,2017,"HPV",0
+"BOL","Bolivia (Plurinational State of)",1,2018,"HPV",0
+"BOL","Bolivia (Plurinational State of)",1,2019,"HPV",0
+"BRA","Brazil",2,2010,"HPV",0
+"BRA","Brazil",2,2011,"HPV",0
+"BRA","Brazil",2,2012,"HPV",0
+"BRA","Brazil",2,2013,"HPV",0
+"BRA","Brazil",2,2014,"HPV",59
+"BRA","Brazil",2,2015,"HPV",50
+"BRA","Brazil",2,2016,"HPV",72
+"BRA","Brazil",2,2017,"HPV",97
+"BRA","Brazil",2,2018,"HPV",79
+"BRA","Brazil",2,2019,"HPV",69
+"BRA","Brazil",1,2010,"HPV",0
+"BRA","Brazil",1,2011,"HPV",0
+"BRA","Brazil",1,2012,"HPV",0
+"BRA","Brazil",1,2013,"HPV",0
+"BRA","Brazil",1,2014,"HPV",0
+"BRA","Brazil",1,2015,"HPV",0
+"BRA","Brazil",1,2016,"HPV",0
+"BRA","Brazil",1,2017,"HPV",10
+"BRA","Brazil",1,2018,"HPV",86
+"BRA","Brazil",1,2019,"HPV",57
+"BRB","Barbados",2,2010,"HPV",0
+"BRB","Barbados",2,2011,"HPV",0
+"BRB","Barbados",2,2012,"HPV",0
+"BRB","Barbados",2,2013,"HPV",0
+"BRB","Barbados",2,2014,"HPV",8
+"BRB","Barbados",2,2015,"HPV",30
+"BRB","Barbados",2,2016,"HPV",15
+"BRB","Barbados",2,2017,"HPV",14
+"BRB","Barbados",2,2018,"HPV",26
+"BRB","Barbados",2,2019,"HPV",29
+"BRB","Barbados",1,2010,"HPV",0
+"BRB","Barbados",1,2011,"HPV",0
+"BRB","Barbados",1,2012,"HPV",0
+"BRB","Barbados",1,2013,"HPV",0
+"BRB","Barbados",1,2014,"HPV",0
+"BRB","Barbados",1,2015,"HPV",0
+"BRB","Barbados",1,2016,"HPV",0
+"BRB","Barbados",1,2017,"HPV",0
+"BRB","Barbados",1,2018,"HPV",18
+"BRB","Barbados",1,2019,"HPV",25
+"BRN","Brunei Darussalam",2,2010,"HPV",0
+"BRN","Brunei Darussalam",2,2011,"HPV",0
+"BRN","Brunei Darussalam",2,2012,"HPV",98
+"BRN","Brunei Darussalam",2,2013,"HPV",85
+"BRN","Brunei Darussalam",2,2014,"HPV",81
+"BRN","Brunei Darussalam",2,2015,"HPV",77
+"BRN","Brunei Darussalam",2,2016,"HPV",87
+"BRN","Brunei Darussalam",2,2017,"HPV",88
+"BRN","Brunei Darussalam",2,2018,"HPV",89
+"BRN","Brunei Darussalam",2,2019,"HPV",90
+"BRN","Brunei Darussalam",1,2010,"HPV",0
+"BRN","Brunei Darussalam",1,2011,"HPV",0
+"BRN","Brunei Darussalam",1,2012,"HPV",0
+"BRN","Brunei Darussalam",1,2013,"HPV",0
+"BRN","Brunei Darussalam",1,2014,"HPV",0
+"BRN","Brunei Darussalam",1,2015,"HPV",0
+"BRN","Brunei Darussalam",1,2016,"HPV",0
+"BRN","Brunei Darussalam",1,2017,"HPV",0
+"BRN","Brunei Darussalam",1,2018,"HPV",0
+"BRN","Brunei Darussalam",1,2019,"HPV",0
+"BTN","Bhutan",2,2010,"HPV",88
+"BTN","Bhutan",2,2011,"HPV",69
+"BTN","Bhutan",2,2012,"HPV",73
+"BTN","Bhutan",2,2013,"HPV",68
+"BTN","Bhutan",2,2014,"HPV",94
+"BTN","Bhutan",2,2015,"HPV",96
+"BTN","Bhutan",2,2016,"HPV",98
+"BTN","Bhutan",2,2017,"HPV",0
+"BTN","Bhutan",2,2018,"HPV",96
+"BTN","Bhutan",2,2019,"HPV",73
+"BTN","Bhutan",1,2010,"HPV",0
+"BTN","Bhutan",1,2011,"HPV",0
+"BTN","Bhutan",1,2012,"HPV",0
+"BTN","Bhutan",1,2013,"HPV",0
+"BTN","Bhutan",1,2014,"HPV",0
+"BTN","Bhutan",1,2015,"HPV",0
+"BTN","Bhutan",1,2016,"HPV",0
+"BTN","Bhutan",1,2017,"HPV",0
+"BTN","Bhutan",1,2018,"HPV",0
+"BTN","Bhutan",1,2019,"HPV",0
+"BWA","Botswana",2,2010,"HPV",0
+"BWA","Botswana",2,2011,"HPV",0
+"BWA","Botswana",2,2012,"HPV",0
+"BWA","Botswana",2,2013,"HPV",0
+"BWA","Botswana",2,2014,"HPV",0
+"BWA","Botswana",2,2015,"HPV",67
+"BWA","Botswana",2,2016,"HPV",78
+"BWA","Botswana",2,2017,"HPV",0
+"BWA","Botswana",2,2018,"HPV",0
+"BWA","Botswana",2,2019,"HPV",47
+"BWA","Botswana",1,2010,"HPV",0
+"BWA","Botswana",1,2011,"HPV",0
+"BWA","Botswana",1,2012,"HPV",0
+"BWA","Botswana",1,2013,"HPV",0
+"BWA","Botswana",1,2014,"HPV",0
+"BWA","Botswana",1,2015,"HPV",0
+"BWA","Botswana",1,2016,"HPV",0
+"BWA","Botswana",1,2017,"HPV",0
+"BWA","Botswana",1,2018,"HPV",0
+"BWA","Botswana",1,2019,"HPV",0
+"CAN","Canada",2,2010,"HPV",0
+"CAN","Canada",2,2011,"HPV",0
+"CAN","Canada",2,2012,"HPV",0
+"CAN","Canada",2,2013,"HPV",73
+"CAN","Canada",2,2014,"HPV",74
+"CAN","Canada",2,2015,"HPV",75
+"CAN","Canada",2,2016,"HPV",79
+"CAN","Canada",2,2017,"HPV",83
+"CAN","Canada",2,2018,"HPV",83
+"CAN","Canada",2,2019,"HPV",83
+"CAN","Canada",1,2010,"HPV",0
+"CAN","Canada",1,2011,"HPV",0
+"CAN","Canada",1,2012,"HPV",0
+"CAN","Canada",1,2013,"HPV",0
+"CAN","Canada",1,2014,"HPV",0
+"CAN","Canada",1,2015,"HPV",0
+"CAN","Canada",1,2016,"HPV",0
+"CAN","Canada",1,2017,"HPV",0
+"CAN","Canada",1,2018,"HPV",0
+"CAN","Canada",1,2019,"HPV",0
+"CHE","Switzerland",2,2010,"HPV",20
+"CHE","Switzerland",2,2011,"HPV",51
+"CHE","Switzerland",2,2012,"HPV",51
+"CHE","Switzerland",2,2013,"HPV",51
+"CHE","Switzerland",2,2014,"HPV",56
+"CHE","Switzerland",2,2015,"HPV",56
+"CHE","Switzerland",2,2016,"HPV",56
+"CHE","Switzerland",2,2017,"HPV",59
+"CHE","Switzerland",2,2018,"HPV",59
+"CHE","Switzerland",2,2019,"HPV",59
+"CHE","Switzerland",1,2010,"HPV",0
+"CHE","Switzerland",1,2011,"HPV",0
+"CHE","Switzerland",1,2012,"HPV",0
+"CHE","Switzerland",1,2013,"HPV",0
+"CHE","Switzerland",1,2014,"HPV",0
+"CHE","Switzerland",1,2015,"HPV",0
+"CHE","Switzerland",1,2016,"HPV",0
+"CHE","Switzerland",1,2017,"HPV",17
+"CHE","Switzerland",1,2018,"HPV",17
+"CHE","Switzerland",1,2019,"HPV",17
+"CHL","Chile",2,2010,"HPV",0
+"CHL","Chile",2,2011,"HPV",0
+"CHL","Chile",2,2012,"HPV",0
+"CHL","Chile",2,2013,"HPV",0
+"CHL","Chile",2,2014,"HPV",0
+"CHL","Chile",2,2015,"HPV",73
+"CHL","Chile",2,2016,"HPV",75
+"CHL","Chile",2,2017,"HPV",68
+"CHL","Chile",2,2018,"HPV",75
+"CHL","Chile",2,2019,"HPV",82
+"CHL","Chile",1,2010,"HPV",0
+"CHL","Chile",1,2011,"HPV",0
+"CHL","Chile",1,2012,"HPV",0
+"CHL","Chile",1,2013,"HPV",0
+"CHL","Chile",1,2014,"HPV",0
+"CHL","Chile",1,2015,"HPV",0
+"CHL","Chile",1,2016,"HPV",0
+"CHL","Chile",1,2017,"HPV",0
+"CHL","Chile",1,2018,"HPV",0
+"CHL","Chile",1,2019,"HPV",0
+"CIV","Côte d'Ivoire",2,2010,"HPV",0
+"CIV","Côte d'Ivoire",2,2011,"HPV",0
+"CIV","Côte d'Ivoire",2,2012,"HPV",0
+"CIV","Côte d'Ivoire",2,2013,"HPV",0
+"CIV","Côte d'Ivoire",2,2014,"HPV",0
+"CIV","Côte d'Ivoire",2,2015,"HPV",0
+"CIV","Côte d'Ivoire",2,2016,"HPV",0
+"CIV","Côte d'Ivoire",2,2017,"HPV",0
+"CIV","Côte d'Ivoire",2,2018,"HPV",0
+"CIV","Côte d'Ivoire",2,2019,"HPV",0
+"CIV","Côte d'Ivoire",1,2010,"HPV",0
+"CIV","Côte d'Ivoire",1,2011,"HPV",0
+"CIV","Côte d'Ivoire",1,2012,"HPV",0
+"CIV","Côte d'Ivoire",1,2013,"HPV",0
+"CIV","Côte d'Ivoire",1,2014,"HPV",0
+"CIV","Côte d'Ivoire",1,2015,"HPV",0
+"CIV","Côte d'Ivoire",1,2016,"HPV",0
+"CIV","Côte d'Ivoire",1,2017,"HPV",0
+"CIV","Côte d'Ivoire",1,2018,"HPV",0
+"CIV","Côte d'Ivoire",1,2019,"HPV",0
+"COK","Cook Islands",2,2010,"HPV",0
+"COK","Cook Islands",2,2011,"HPV",74
+"COK","Cook Islands",2,2012,"HPV",0
+"COK","Cook Islands",2,2013,"HPV",48
+"COK","Cook Islands",2,2014,"HPV",99
+"COK","Cook Islands",2,2015,"HPV",83
+"COK","Cook Islands",2,2016,"HPV",41
+"COK","Cook Islands",2,2017,"HPV",69
+"COK","Cook Islands",2,2018,"HPV",70
+"COK","Cook Islands",2,2019,"HPV",73
+"COK","Cook Islands",1,2010,"HPV",0
+"COK","Cook Islands",1,2011,"HPV",0
+"COK","Cook Islands",1,2012,"HPV",0
+"COK","Cook Islands",1,2013,"HPV",0
+"COK","Cook Islands",1,2014,"HPV",0
+"COK","Cook Islands",1,2015,"HPV",0
+"COK","Cook Islands",1,2016,"HPV",0
+"COK","Cook Islands",1,2017,"HPV",0
+"COK","Cook Islands",1,2018,"HPV",0
+"COK","Cook Islands",1,2019,"HPV",0
+"COL","Colombia",2,2010,"HPV",0
+"COL","Colombia",2,2011,"HPV",0
+"COL","Colombia",2,2012,"HPV",85
+"COL","Colombia",2,2013,"HPV",51
+"COL","Colombia",2,2014,"HPV",29
+"COL","Colombia",2,2015,"HPV",24
+"COL","Colombia",2,2016,"HPV",8
+"COL","Colombia",2,2017,"HPV",15
+"COL","Colombia",2,2018,"HPV",30
+"COL","Colombia",2,2019,"HPV",39
+"COL","Colombia",1,2010,"HPV",0
+"COL","Colombia",1,2011,"HPV",0
+"COL","Colombia",1,2012,"HPV",0
+"COL","Colombia",1,2013,"HPV",0
+"COL","Colombia",1,2014,"HPV",0
+"COL","Colombia",1,2015,"HPV",0
+"COL","Colombia",1,2016,"HPV",0
+"COL","Colombia",1,2017,"HPV",0
+"COL","Colombia",1,2018,"HPV",0
+"COL","Colombia",1,2019,"HPV",0
+"CRI","Costa Rica",2,2010,"HPV",0
+"CRI","Costa Rica",2,2011,"HPV",0
+"CRI","Costa Rica",2,2012,"HPV",0
+"CRI","Costa Rica",2,2013,"HPV",0
+"CRI","Costa Rica",2,2014,"HPV",0
+"CRI","Costa Rica",2,2015,"HPV",0
+"CRI","Costa Rica",2,2016,"HPV",0
+"CRI","Costa Rica",2,2017,"HPV",0
+"CRI","Costa Rica",2,2018,"HPV",0
+"CRI","Costa Rica",2,2019,"HPV",39
+"CRI","Costa Rica",1,2010,"HPV",0
+"CRI","Costa Rica",1,2011,"HPV",0
+"CRI","Costa Rica",1,2012,"HPV",0
+"CRI","Costa Rica",1,2013,"HPV",0
+"CRI","Costa Rica",1,2014,"HPV",0
+"CRI","Costa Rica",1,2015,"HPV",0
+"CRI","Costa Rica",1,2016,"HPV",0
+"CRI","Costa Rica",1,2017,"HPV",0
+"CRI","Costa Rica",1,2018,"HPV",0
+"CRI","Costa Rica",1,2019,"HPV",0
+"CYP","Cyprus",2,2010,"HPV",0
+"CYP","Cyprus",2,2011,"HPV",0
+"CYP","Cyprus",2,2012,"HPV",0
+"CYP","Cyprus",2,2013,"HPV",0
+"CYP","Cyprus",2,2014,"HPV",0
+"CYP","Cyprus",2,2015,"HPV",0
+"CYP","Cyprus",2,2016,"HPV",0
+"CYP","Cyprus",2,2017,"HPV",57
+"CYP","Cyprus",2,2018,"HPV",64
+"CYP","Cyprus",2,2019,"HPV",64
+"CYP","Cyprus",1,2010,"HPV",0
+"CYP","Cyprus",1,2011,"HPV",0
+"CYP","Cyprus",1,2012,"HPV",0
+"CYP","Cyprus",1,2013,"HPV",0
+"CYP","Cyprus",1,2014,"HPV",0
+"CYP","Cyprus",1,2015,"HPV",0
+"CYP","Cyprus",1,2016,"HPV",0
+"CYP","Cyprus",1,2017,"HPV",0
+"CYP","Cyprus",1,2018,"HPV",0
+"CYP","Cyprus",1,2019,"HPV",0
+"CZE","Czech Republic",2,2010,"HPV",0
+"CZE","Czech Republic",2,2011,"HPV",0
+"CZE","Czech Republic",2,2012,"HPV",0
+"CZE","Czech Republic",2,2013,"HPV",0
+"CZE","Czech Republic",2,2014,"HPV",0
+"CZE","Czech Republic",2,2015,"HPV",0
+"CZE","Czech Republic",2,2016,"HPV",0
+"CZE","Czech Republic",2,2017,"HPV",0
+"CZE","Czech Republic",2,2018,"HPV",0
+"CZE","Czech Republic",2,2019,"HPV",0
+"CZE","Czech Republic",1,2010,"HPV",0
+"CZE","Czech Republic",1,2011,"HPV",0
+"CZE","Czech Republic",1,2012,"HPV",0
+"CZE","Czech Republic",1,2013,"HPV",0
+"CZE","Czech Republic",1,2014,"HPV",0
+"CZE","Czech Republic",1,2015,"HPV",0
+"CZE","Czech Republic",1,2016,"HPV",0
+"CZE","Czech Republic",1,2017,"HPV",0
+"CZE","Czech Republic",1,2018,"HPV",0
+"CZE","Czech Republic",1,2019,"HPV",0
+"DEU","Germany",2,2010,"HPV",27
+"DEU","Germany",2,2011,"HPV",27
+"DEU","Germany",2,2012,"HPV",27
+"DEU","Germany",2,2013,"HPV",29
+"DEU","Germany",2,2014,"HPV",31
+"DEU","Germany",2,2015,"HPV",31
+"DEU","Germany",2,2016,"HPV",31
+"DEU","Germany",2,2017,"HPV",31
+"DEU","Germany",2,2018,"HPV",31
+"DEU","Germany",2,2019,"HPV",31
+"DEU","Germany",1,2010,"HPV",0
+"DEU","Germany",1,2011,"HPV",0
+"DEU","Germany",1,2012,"HPV",0
+"DEU","Germany",1,2013,"HPV",0
+"DEU","Germany",1,2014,"HPV",0
+"DEU","Germany",1,2015,"HPV",0
+"DEU","Germany",1,2016,"HPV",0
+"DEU","Germany",1,2017,"HPV",0
+"DEU","Germany",1,2018,"HPV",0
+"DEU","Germany",1,2019,"HPV",0
+"DMA","Dominica",2,2010,"HPV",0
+"DMA","Dominica",2,2011,"HPV",0
+"DMA","Dominica",2,2012,"HPV",0
+"DMA","Dominica",2,2013,"HPV",0
+"DMA","Dominica",2,2014,"HPV",0
+"DMA","Dominica",2,2015,"HPV",0
+"DMA","Dominica",2,2016,"HPV",0
+"DMA","Dominica",2,2017,"HPV",0
+"DMA","Dominica",2,2018,"HPV",0
+"DMA","Dominica",2,2019,"HPV",0
+"DMA","Dominica",1,2010,"HPV",0
+"DMA","Dominica",1,2011,"HPV",0
+"DMA","Dominica",1,2012,"HPV",0
+"DMA","Dominica",1,2013,"HPV",0
+"DMA","Dominica",1,2014,"HPV",0
+"DMA","Dominica",1,2015,"HPV",0
+"DMA","Dominica",1,2016,"HPV",0
+"DMA","Dominica",1,2017,"HPV",0
+"DMA","Dominica",1,2018,"HPV",0
+"DMA","Dominica",1,2019,"HPV",0
+"DNK","Denmark",2,2010,"HPV",0
+"DNK","Denmark",2,2011,"HPV",69
+"DNK","Denmark",2,2012,"HPV",74
+"DNK","Denmark",2,2013,"HPV",79
+"DNK","Denmark",2,2014,"HPV",68
+"DNK","Denmark",2,2015,"HPV",57
+"DNK","Denmark",2,2016,"HPV",16
+"DNK","Denmark",2,2017,"HPV",37
+"DNK","Denmark",2,2018,"HPV",54
+"DNK","Denmark",2,2019,"HPV",62
+"DNK","Denmark",1,2010,"HPV",0
+"DNK","Denmark",1,2011,"HPV",0
+"DNK","Denmark",1,2012,"HPV",0
+"DNK","Denmark",1,2013,"HPV",0
+"DNK","Denmark",1,2014,"HPV",0
+"DNK","Denmark",1,2015,"HPV",0
+"DNK","Denmark",1,2016,"HPV",0
+"DNK","Denmark",1,2017,"HPV",0
+"DNK","Denmark",1,2018,"HPV",0
+"DNK","Denmark",1,2019,"HPV",0
+"DOM","Dominican Republic (the)",2,2010,"HPV",0
+"DOM","Dominican Republic (the)",2,2011,"HPV",0
+"DOM","Dominican Republic (the)",2,2012,"HPV",0
+"DOM","Dominican Republic (the)",2,2013,"HPV",0
+"DOM","Dominican Republic (the)",2,2014,"HPV",0
+"DOM","Dominican Republic (the)",2,2015,"HPV",0
+"DOM","Dominican Republic (the)",2,2016,"HPV",0
+"DOM","Dominican Republic (the)",2,2017,"HPV",34
+"DOM","Dominican Republic (the)",2,2018,"HPV",31
+"DOM","Dominican Republic (the)",2,2019,"HPV",7
+"DOM","Dominican Republic (the)",1,2010,"HPV",0
+"DOM","Dominican Republic (the)",1,2011,"HPV",0
+"DOM","Dominican Republic (the)",1,2012,"HPV",0
+"DOM","Dominican Republic (the)",1,2013,"HPV",0
+"DOM","Dominican Republic (the)",1,2014,"HPV",0
+"DOM","Dominican Republic (the)",1,2015,"HPV",0
+"DOM","Dominican Republic (the)",1,2016,"HPV",0
+"DOM","Dominican Republic (the)",1,2017,"HPV",0
+"DOM","Dominican Republic (the)",1,2018,"HPV",0
+"DOM","Dominican Republic (the)",1,2019,"HPV",0
+"ECU","Ecuador",2,2010,"HPV",0
+"ECU","Ecuador",2,2011,"HPV",0
+"ECU","Ecuador",2,2012,"HPV",0
+"ECU","Ecuador",2,2013,"HPV",0
+"ECU","Ecuador",2,2014,"HPV",81
+"ECU","Ecuador",2,2015,"HPV",99
+"ECU","Ecuador",2,2016,"HPV",95
+"ECU","Ecuador",2,2017,"HPV",86
+"ECU","Ecuador",2,2018,"HPV",72
+"ECU","Ecuador",2,2019,"HPV",54
+"ECU","Ecuador",1,2010,"HPV",0
+"ECU","Ecuador",1,2011,"HPV",0
+"ECU","Ecuador",1,2012,"HPV",0
+"ECU","Ecuador",1,2013,"HPV",0
+"ECU","Ecuador",1,2014,"HPV",0
+"ECU","Ecuador",1,2015,"HPV",0
+"ECU","Ecuador",1,2016,"HPV",0
+"ECU","Ecuador",1,2017,"HPV",0
+"ECU","Ecuador",1,2018,"HPV",0
+"ECU","Ecuador",1,2019,"HPV",0
+"ESP","Spain",2,2010,"HPV",59
+"ESP","Spain",2,2011,"HPV",64
+"ESP","Spain",2,2012,"HPV",70
+"ESP","Spain",2,2013,"HPV",74
+"ESP","Spain",2,2014,"HPV",74
+"ESP","Spain",2,2015,"HPV",82
+"ESP","Spain",2,2016,"HPV",78
+"ESP","Spain",2,2017,"HPV",82
+"ESP","Spain",2,2018,"HPV",76
+"ESP","Spain",2,2019,"HPV",79
+"ESP","Spain",1,2010,"HPV",0
+"ESP","Spain",1,2011,"HPV",0
+"ESP","Spain",1,2012,"HPV",0
+"ESP","Spain",1,2013,"HPV",0
+"ESP","Spain",1,2014,"HPV",0
+"ESP","Spain",1,2015,"HPV",0
+"ESP","Spain",1,2016,"HPV",0
+"ESP","Spain",1,2017,"HPV",0
+"ESP","Spain",1,2018,"HPV",0
+"ESP","Spain",1,2019,"HPV",0
+"EST","Estonia",2,2010,"HPV",0
+"EST","Estonia",2,2011,"HPV",0
+"EST","Estonia",2,2012,"HPV",0
+"EST","Estonia",2,2013,"HPV",0
+"EST","Estonia",2,2014,"HPV",0
+"EST","Estonia",2,2015,"HPV",0
+"EST","Estonia",2,2016,"HPV",0
+"EST","Estonia",2,2017,"HPV",0
+"EST","Estonia",2,2018,"HPV",45
+"EST","Estonia",2,2019,"HPV",45
+"EST","Estonia",1,2010,"HPV",0
+"EST","Estonia",1,2011,"HPV",0
+"EST","Estonia",1,2012,"HPV",0
+"EST","Estonia",1,2013,"HPV",0
+"EST","Estonia",1,2014,"HPV",0
+"EST","Estonia",1,2015,"HPV",0
+"EST","Estonia",1,2016,"HPV",0
+"EST","Estonia",1,2017,"HPV",0
+"EST","Estonia",1,2018,"HPV",0
+"EST","Estonia",1,2019,"HPV",0
+"ETH","Ethiopia",2,2010,"HPV",0
+"ETH","Ethiopia",2,2011,"HPV",0
+"ETH","Ethiopia",2,2012,"HPV",0
+"ETH","Ethiopia",2,2013,"HPV",0
+"ETH","Ethiopia",2,2014,"HPV",0
+"ETH","Ethiopia",2,2015,"HPV",0
+"ETH","Ethiopia",2,2016,"HPV",0
+"ETH","Ethiopia",2,2017,"HPV",0
+"ETH","Ethiopia",2,2018,"HPV",0
+"ETH","Ethiopia",2,2019,"HPV",84
+"ETH","Ethiopia",1,2010,"HPV",0
+"ETH","Ethiopia",1,2011,"HPV",0
+"ETH","Ethiopia",1,2012,"HPV",0
+"ETH","Ethiopia",1,2013,"HPV",0
+"ETH","Ethiopia",1,2014,"HPV",0
+"ETH","Ethiopia",1,2015,"HPV",0
+"ETH","Ethiopia",1,2016,"HPV",0
+"ETH","Ethiopia",1,2017,"HPV",0
+"ETH","Ethiopia",1,2018,"HPV",0
+"ETH","Ethiopia",1,2019,"HPV",0
+"FIN","Finland",2,2010,"HPV",0
+"FIN","Finland",2,2011,"HPV",0
+"FIN","Finland",2,2012,"HPV",0
+"FIN","Finland",2,2013,"HPV",0
+"FIN","Finland",2,2014,"HPV",0
+"FIN","Finland",2,2015,"HPV",0
+"FIN","Finland",2,2016,"HPV",0
+"FIN","Finland",2,2017,"HPV",0
+"FIN","Finland",2,2018,"HPV",62
+"FIN","Finland",2,2019,"HPV",60
+"FIN","Finland",1,2010,"HPV",0
+"FIN","Finland",1,2011,"HPV",0
+"FIN","Finland",1,2012,"HPV",0
+"FIN","Finland",1,2013,"HPV",0
+"FIN","Finland",1,2014,"HPV",0
+"FIN","Finland",1,2015,"HPV",0
+"FIN","Finland",1,2016,"HPV",0
+"FIN","Finland",1,2017,"HPV",0
+"FIN","Finland",1,2018,"HPV",0
+"FIN","Finland",1,2019,"HPV",0
+"FJI","Fiji",2,2010,"HPV",0
+"FJI","Fiji",2,2011,"HPV",0
+"FJI","Fiji",2,2012,"HPV",0
+"FJI","Fiji",2,2013,"HPV",59
+"FJI","Fiji",2,2014,"HPV",89
+"FJI","Fiji",2,2015,"HPV",67
+"FJI","Fiji",2,2016,"HPV",53
+"FJI","Fiji",2,2017,"HPV",56
+"FJI","Fiji",2,2018,"HPV",48
+"FJI","Fiji",2,2019,"HPV",56
+"FJI","Fiji",1,2010,"HPV",0
+"FJI","Fiji",1,2011,"HPV",0
+"FJI","Fiji",1,2012,"HPV",0
+"FJI","Fiji",1,2013,"HPV",0
+"FJI","Fiji",1,2014,"HPV",0
+"FJI","Fiji",1,2015,"HPV",0
+"FJI","Fiji",1,2016,"HPV",0
+"FJI","Fiji",1,2017,"HPV",0
+"FJI","Fiji",1,2018,"HPV",0
+"FJI","Fiji",1,2019,"HPV",0
+"FRA","France",2,2010,"HPV",25
+"FRA","France",2,2011,"HPV",22
+"FRA","France",2,2012,"HPV",17
+"FRA","France",2,2013,"HPV",16
+"FRA","France",2,2014,"HPV",13
+"FRA","France",2,2015,"HPV",20
+"FRA","France",2,2016,"HPV",21
+"FRA","France",2,2017,"HPV",24
+"FRA","France",2,2018,"HPV",24
+"FRA","France",2,2019,"HPV",24
+"FRA","France",1,2010,"HPV",0
+"FRA","France",1,2011,"HPV",0
+"FRA","France",1,2012,"HPV",0
+"FRA","France",1,2013,"HPV",0
+"FRA","France",1,2014,"HPV",0
+"FRA","France",1,2015,"HPV",0
+"FRA","France",1,2016,"HPV",0
+"FRA","France",1,2017,"HPV",0
+"FRA","France",1,2018,"HPV",0
+"FRA","France",1,2019,"HPV",0
+"FSM","Micronesia (Federated States of)",2,2010,"HPV",0
+"FSM","Micronesia (Federated States of)",2,2011,"HPV",0
+"FSM","Micronesia (Federated States of)",2,2012,"HPV",0
+"FSM","Micronesia (Federated States of)",2,2013,"HPV",0
+"FSM","Micronesia (Federated States of)",2,2014,"HPV",0
+"FSM","Micronesia (Federated States of)",2,2015,"HPV",0
+"FSM","Micronesia (Federated States of)",2,2016,"HPV",0
+"FSM","Micronesia (Federated States of)",2,2017,"HPV",66
+"FSM","Micronesia (Federated States of)",2,2018,"HPV",57
+"FSM","Micronesia (Federated States of)",2,2019,"HPV",57
+"FSM","Micronesia (Federated States of)",1,2010,"HPV",0
+"FSM","Micronesia (Federated States of)",1,2011,"HPV",0
+"FSM","Micronesia (Federated States of)",1,2012,"HPV",0
+"FSM","Micronesia (Federated States of)",1,2013,"HPV",0
+"FSM","Micronesia (Federated States of)",1,2014,"HPV",0
+"FSM","Micronesia (Federated States of)",1,2015,"HPV",0
+"FSM","Micronesia (Federated States of)",1,2016,"HPV",0
+"FSM","Micronesia (Federated States of)",1,2017,"HPV",0
+"FSM","Micronesia (Federated States of)",1,2018,"HPV",0
+"FSM","Micronesia (Federated States of)",1,2019,"HPV",0
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",2,2010,"HPV",78
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",2,2011,"HPV",83
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",2,2012,"HPV",87
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",2,2013,"HPV",84
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",2,2014,"HPV",85
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",2,2015,"HPV",84
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",2,2016,"HPV",83
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",2,2017,"HPV",82
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",2,2018,"HPV",82
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",2,2019,"HPV",82
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",1,2010,"HPV",0
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",1,2011,"HPV",0
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",1,2012,"HPV",0
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",1,2013,"HPV",0
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",1,2014,"HPV",0
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",1,2015,"HPV",0
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",1,2016,"HPV",0
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",1,2017,"HPV",0
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",1,2018,"HPV",0
+"GBR","United Kingdom of Great Britain and Northern Ireland (the)",1,2019,"HPV",0
+"GEO","Georgia",2,2010,"HPV",0
+"GEO","Georgia",2,2011,"HPV",0
+"GEO","Georgia",2,2012,"HPV",0
+"GEO","Georgia",2,2013,"HPV",0
+"GEO","Georgia",2,2014,"HPV",0
+"GEO","Georgia",2,2015,"HPV",0
+"GEO","Georgia",2,2016,"HPV",0
+"GEO","Georgia",2,2017,"HPV",0
+"GEO","Georgia",2,2018,"HPV",0
+"GEO","Georgia",2,2019,"HPV",11
+"GEO","Georgia",1,2010,"HPV",0
+"GEO","Georgia",1,2011,"HPV",0
+"GEO","Georgia",1,2012,"HPV",0
+"GEO","Georgia",1,2013,"HPV",0
+"GEO","Georgia",1,2014,"HPV",0
+"GEO","Georgia",1,2015,"HPV",0
+"GEO","Georgia",1,2016,"HPV",0
+"GEO","Georgia",1,2017,"HPV",0
+"GEO","Georgia",1,2018,"HPV",0
+"GEO","Georgia",1,2019,"HPV",0
+"GMB","Gambia",2,2010,"HPV",0
+"GMB","Gambia",2,2011,"HPV",0
+"GMB","Gambia",2,2012,"HPV",0
+"GMB","Gambia",2,2013,"HPV",0
+"GMB","Gambia",2,2014,"HPV",0
+"GMB","Gambia",2,2015,"HPV",0
+"GMB","Gambia",2,2016,"HPV",0
+"GMB","Gambia",2,2017,"HPV",0
+"GMB","Gambia",2,2018,"HPV",0
+"GMB","Gambia",2,2019,"HPV",0
+"GMB","Gambia",1,2010,"HPV",0
+"GMB","Gambia",1,2011,"HPV",0
+"GMB","Gambia",1,2012,"HPV",0
+"GMB","Gambia",1,2013,"HPV",0
+"GMB","Gambia",1,2014,"HPV",0
+"GMB","Gambia",1,2015,"HPV",0
+"GMB","Gambia",1,2016,"HPV",0
+"GMB","Gambia",1,2017,"HPV",0
+"GMB","Gambia",1,2018,"HPV",0
+"GMB","Gambia",1,2019,"HPV",0
+"GRC","Greece",2,2010,"HPV",0
+"GRC","Greece",2,2011,"HPV",0
+"GRC","Greece",2,2012,"HPV",0
+"GRC","Greece",2,2013,"HPV",0
+"GRC","Greece",2,2014,"HPV",0
+"GRC","Greece",2,2015,"HPV",0
+"GRC","Greece",2,2016,"HPV",0
+"GRC","Greece",2,2017,"HPV",0
+"GRC","Greece",2,2018,"HPV",0
+"GRC","Greece",2,2019,"HPV",0
+"GRC","Greece",1,2010,"HPV",0
+"GRC","Greece",1,2011,"HPV",0
+"GRC","Greece",1,2012,"HPV",0
+"GRC","Greece",1,2013,"HPV",0
+"GRC","Greece",1,2014,"HPV",0
+"GRC","Greece",1,2015,"HPV",0
+"GRC","Greece",1,2016,"HPV",0
+"GRC","Greece",1,2017,"HPV",0
+"GRC","Greece",1,2018,"HPV",0
+"GRC","Greece",1,2019,"HPV",0
+"GRD","Grenada",2,2010,"HPV",0
+"GRD","Grenada",2,2011,"HPV",0
+"GRD","Grenada",2,2012,"HPV",0
+"GRD","Grenada",2,2013,"HPV",0
+"GRD","Grenada",2,2014,"HPV",0
+"GRD","Grenada",2,2015,"HPV",0
+"GRD","Grenada",2,2016,"HPV",0
+"GRD","Grenada",2,2017,"HPV",0
+"GRD","Grenada",2,2018,"HPV",0
+"GRD","Grenada",2,2019,"HPV",41
+"GRD","Grenada",1,2010,"HPV",0
+"GRD","Grenada",1,2011,"HPV",0
+"GRD","Grenada",1,2012,"HPV",0
+"GRD","Grenada",1,2013,"HPV",0
+"GRD","Grenada",1,2014,"HPV",0
+"GRD","Grenada",1,2015,"HPV",0
+"GRD","Grenada",1,2016,"HPV",0
+"GRD","Grenada",1,2017,"HPV",0
+"GRD","Grenada",1,2018,"HPV",0
+"GRD","Grenada",1,2019,"HPV",0
+"GTM","Guatemala",2,2010,"HPV",0
+"GTM","Guatemala",2,2011,"HPV",0
+"GTM","Guatemala",2,2012,"HPV",0
+"GTM","Guatemala",2,2013,"HPV",0
+"GTM","Guatemala",2,2014,"HPV",0
+"GTM","Guatemala",2,2015,"HPV",0
+"GTM","Guatemala",2,2016,"HPV",0
+"GTM","Guatemala",2,2017,"HPV",0
+"GTM","Guatemala",2,2018,"HPV",31
+"GTM","Guatemala",2,2019,"HPV",24
+"GTM","Guatemala",1,2010,"HPV",0
+"GTM","Guatemala",1,2011,"HPV",0
+"GTM","Guatemala",1,2012,"HPV",0
+"GTM","Guatemala",1,2013,"HPV",0
+"GTM","Guatemala",1,2014,"HPV",0
+"GTM","Guatemala",1,2015,"HPV",0
+"GTM","Guatemala",1,2016,"HPV",0
+"GTM","Guatemala",1,2017,"HPV",0
+"GTM","Guatemala",1,2018,"HPV",0
+"GTM","Guatemala",1,2019,"HPV",0
+"GUY","Guyana",2,2010,"HPV",0
+"GUY","Guyana",2,2011,"HPV",0
+"GUY","Guyana",2,2012,"HPV",2
+"GUY","Guyana",2,2013,"HPV",9
+"GUY","Guyana",2,2014,"HPV",4
+"GUY","Guyana",2,2015,"HPV",3
+"GUY","Guyana",2,2016,"HPV",8
+"GUY","Guyana",2,2017,"HPV",13
+"GUY","Guyana",2,2018,"HPV",9
+"GUY","Guyana",2,2019,"HPV",13
+"GUY","Guyana",1,2010,"HPV",0
+"GUY","Guyana",1,2011,"HPV",0
+"GUY","Guyana",1,2012,"HPV",0
+"GUY","Guyana",1,2013,"HPV",0
+"GUY","Guyana",1,2014,"HPV",0
+"GUY","Guyana",1,2015,"HPV",0
+"GUY","Guyana",1,2016,"HPV",0
+"GUY","Guyana",1,2017,"HPV",0
+"GUY","Guyana",1,2018,"HPV",0
+"GUY","Guyana",1,2019,"HPV",6
+"HND","Honduras",2,2010,"HPV",0
+"HND","Honduras",2,2011,"HPV",0
+"HND","Honduras",2,2012,"HPV",0
+"HND","Honduras",2,2013,"HPV",0
+"HND","Honduras",2,2014,"HPV",0
+"HND","Honduras",2,2015,"HPV",0
+"HND","Honduras",2,2016,"HPV",53
+"HND","Honduras",2,2017,"HPV",62
+"HND","Honduras",2,2018,"HPV",53
+"HND","Honduras",2,2019,"HPV",59
+"HND","Honduras",1,2010,"HPV",0
+"HND","Honduras",1,2011,"HPV",0
+"HND","Honduras",1,2012,"HPV",0
+"HND","Honduras",1,2013,"HPV",0
+"HND","Honduras",1,2014,"HPV",0
+"HND","Honduras",1,2015,"HPV",0
+"HND","Honduras",1,2016,"HPV",0
+"HND","Honduras",1,2017,"HPV",0
+"HND","Honduras",1,2018,"HPV",0
+"HND","Honduras",1,2019,"HPV",0
+"HRV","Croatia",2,2010,"HPV",0
+"HRV","Croatia",2,2011,"HPV",0
+"HRV","Croatia",2,2012,"HPV",0
+"HRV","Croatia",2,2013,"HPV",0
+"HRV","Croatia",2,2014,"HPV",0
+"HRV","Croatia",2,2015,"HPV",0
+"HRV","Croatia",2,2016,"HPV",0
+"HRV","Croatia",2,2017,"HPV",0
+"HRV","Croatia",2,2018,"HPV",0
+"HRV","Croatia",2,2019,"HPV",0
+"HRV","Croatia",1,2010,"HPV",0
+"HRV","Croatia",1,2011,"HPV",0
+"HRV","Croatia",1,2012,"HPV",0
+"HRV","Croatia",1,2013,"HPV",0
+"HRV","Croatia",1,2014,"HPV",0
+"HRV","Croatia",1,2015,"HPV",0
+"HRV","Croatia",1,2016,"HPV",0
+"HRV","Croatia",1,2017,"HPV",0
+"HRV","Croatia",1,2018,"HPV",0
+"HRV","Croatia",1,2019,"HPV",0
+"HUN","Hungary",2,2010,"HPV",0
+"HUN","Hungary",2,2011,"HPV",0
+"HUN","Hungary",2,2012,"HPV",0
+"HUN","Hungary",2,2013,"HPV",0
+"HUN","Hungary",2,2014,"HPV",0
+"HUN","Hungary",2,2015,"HPV",75
+"HUN","Hungary",2,2016,"HPV",72
+"HUN","Hungary",2,2017,"HPV",72
+"HUN","Hungary",2,2018,"HPV",71
+"HUN","Hungary",2,2019,"HPV",78
+"HUN","Hungary",1,2010,"HPV",0
+"HUN","Hungary",1,2011,"HPV",0
+"HUN","Hungary",1,2012,"HPV",0
+"HUN","Hungary",1,2013,"HPV",0
+"HUN","Hungary",1,2014,"HPV",0
+"HUN","Hungary",1,2015,"HPV",0
+"HUN","Hungary",1,2016,"HPV",0
+"HUN","Hungary",1,2017,"HPV",0
+"HUN","Hungary",1,2018,"HPV",0
+"HUN","Hungary",1,2019,"HPV",0
+"IDN","Indonesia",2,2010,"HPV",0
+"IDN","Indonesia",2,2011,"HPV",0
+"IDN","Indonesia",2,2012,"HPV",0
+"IDN","Indonesia",2,2013,"HPV",0
+"IDN","Indonesia",2,2014,"HPV",0
+"IDN","Indonesia",2,2015,"HPV",0
+"IDN","Indonesia",2,2016,"HPV",0
+"IDN","Indonesia",2,2017,"HPV",3
+"IDN","Indonesia",2,2018,"HPV",0.5
+"IDN","Indonesia",2,2019,"HPV",0.5
+"IDN","Indonesia",1,2010,"HPV",0
+"IDN","Indonesia",1,2011,"HPV",0
+"IDN","Indonesia",1,2012,"HPV",0
+"IDN","Indonesia",1,2013,"HPV",0
+"IDN","Indonesia",1,2014,"HPV",0
+"IDN","Indonesia",1,2015,"HPV",0
+"IDN","Indonesia",1,2016,"HPV",0
+"IDN","Indonesia",1,2017,"HPV",0
+"IDN","Indonesia",1,2018,"HPV",0
+"IDN","Indonesia",1,2019,"HPV",0
+"IRL","Ireland",2,2010,"HPV",82
+"IRL","Ireland",2,2011,"HPV",82
+"IRL","Ireland",2,2012,"HPV",89
+"IRL","Ireland",2,2013,"HPV",89
+"IRL","Ireland",2,2014,"HPV",89
+"IRL","Ireland",2,2015,"HPV",90
+"IRL","Ireland",2,2016,"HPV",75
+"IRL","Ireland",2,2017,"HPV",53
+"IRL","Ireland",2,2018,"HPV",62
+"IRL","Ireland",2,2019,"HPV",69
+"IRL","Ireland",1,2010,"HPV",0
+"IRL","Ireland",1,2011,"HPV",0
+"IRL","Ireland",1,2012,"HPV",0
+"IRL","Ireland",1,2013,"HPV",0
+"IRL","Ireland",1,2014,"HPV",0
+"IRL","Ireland",1,2015,"HPV",0
+"IRL","Ireland",1,2016,"HPV",0
+"IRL","Ireland",1,2017,"HPV",0
+"IRL","Ireland",1,2018,"HPV",0
+"IRL","Ireland",1,2019,"HPV",0
+"ISL","Iceland",2,2010,"HPV",0
+"ISL","Iceland",2,2011,"HPV",0
+"ISL","Iceland",2,2012,"HPV",92
+"ISL","Iceland",2,2013,"HPV",90
+"ISL","Iceland",2,2014,"HPV",89
+"ISL","Iceland",2,2015,"HPV",88
+"ISL","Iceland",2,2016,"HPV",91
+"ISL","Iceland",2,2017,"HPV",89
+"ISL","Iceland",2,2018,"HPV",85
+"ISL","Iceland",2,2019,"HPV",85
+"ISL","Iceland",1,2010,"HPV",0
+"ISL","Iceland",1,2011,"HPV",0
+"ISL","Iceland",1,2012,"HPV",0
+"ISL","Iceland",1,2013,"HPV",0
+"ISL","Iceland",1,2014,"HPV",0
+"ISL","Iceland",1,2015,"HPV",0
+"ISL","Iceland",1,2016,"HPV",0
+"ISL","Iceland",1,2017,"HPV",0
+"ISL","Iceland",1,2018,"HPV",0
+"ISL","Iceland",1,2019,"HPV",0
+"ISR","Israel",2,2010,"HPV",0
+"ISR","Israel",2,2011,"HPV",0
+"ISR","Israel",2,2012,"HPV",0
+"ISR","Israel",2,2013,"HPV",0
+"ISR","Israel",2,2014,"HPV",0
+"ISR","Israel",2,2015,"HPV",0
+"ISR","Israel",2,2016,"HPV",0
+"ISR","Israel",2,2017,"HPV",51
+"ISR","Israel",2,2018,"HPV",52
+"ISR","Israel",2,2019,"HPV",52
+"ISR","Israel",1,2010,"HPV",0
+"ISR","Israel",1,2011,"HPV",0
+"ISR","Israel",1,2012,"HPV",0
+"ISR","Israel",1,2013,"HPV",0
+"ISR","Israel",1,2014,"HPV",0
+"ISR","Israel",1,2015,"HPV",0
+"ISR","Israel",1,2016,"HPV",0
+"ISR","Israel",1,2017,"HPV",0
+"ISR","Israel",1,2018,"HPV",0
+"ISR","Israel",1,2019,"HPV",0
+"ITA","Italy",2,2010,"HPV",45
+"ITA","Italy",2,2011,"HPV",53
+"ITA","Italy",2,2012,"HPV",56
+"ITA","Italy",2,2013,"HPV",56
+"ITA","Italy",2,2014,"HPV",50
+"ITA","Italy",2,2015,"HPV",56
+"ITA","Italy",2,2016,"HPV",53
+"ITA","Italy",2,2017,"HPV",49
+"ITA","Italy",2,2018,"HPV",40
+"ITA","Italy",2,2019,"HPV",40
+"ITA","Italy",1,2010,"HPV",0
+"ITA","Italy",1,2011,"HPV",0
+"ITA","Italy",1,2012,"HPV",0
+"ITA","Italy",1,2013,"HPV",0
+"ITA","Italy",1,2014,"HPV",0
+"ITA","Italy",1,2015,"HPV",0
+"ITA","Italy",1,2016,"HPV",0
+"ITA","Italy",1,2017,"HPV",0
+"ITA","Italy",1,2018,"HPV",16
+"ITA","Italy",1,2019,"HPV",16
+"JAM","Jamaica",2,2010,"HPV",0
+"JAM","Jamaica",2,2011,"HPV",0
+"JAM","Jamaica",2,2012,"HPV",0
+"JAM","Jamaica",2,2013,"HPV",0
+"JAM","Jamaica",2,2014,"HPV",0
+"JAM","Jamaica",2,2015,"HPV",0
+"JAM","Jamaica",2,2016,"HPV",0
+"JAM","Jamaica",2,2017,"HPV",0
+"JAM","Jamaica",2,2018,"HPV",8
+"JAM","Jamaica",2,2019,"HPV",9
+"JAM","Jamaica",1,2010,"HPV",0
+"JAM","Jamaica",1,2011,"HPV",0
+"JAM","Jamaica",1,2012,"HPV",0
+"JAM","Jamaica",1,2013,"HPV",0
+"JAM","Jamaica",1,2014,"HPV",0
+"JAM","Jamaica",1,2015,"HPV",0
+"JAM","Jamaica",1,2016,"HPV",0
+"JAM","Jamaica",1,2017,"HPV",0
+"JAM","Jamaica",1,2018,"HPV",0
+"JAM","Jamaica",1,2019,"HPV",0
+"JPN","Japan",2,2010,"HPV",0
+"JPN","Japan",2,2011,"HPV",0
+"JPN","Japan",2,2012,"HPV",0
+"JPN","Japan",2,2013,"HPV",15
+"JPN","Japan",2,2014,"HPV",1
+"JPN","Japan",2,2015,"HPV",0.5
+"JPN","Japan",2,2016,"HPV",0.3
+"JPN","Japan",2,2017,"HPV",0.3
+"JPN","Japan",2,2018,"HPV",0.3
+"JPN","Japan",2,2019,"HPV",0.3
+"JPN","Japan",1,2010,"HPV",0
+"JPN","Japan",1,2011,"HPV",0
+"JPN","Japan",1,2012,"HPV",0
+"JPN","Japan",1,2013,"HPV",0
+"JPN","Japan",1,2014,"HPV",0
+"JPN","Japan",1,2015,"HPV",0
+"JPN","Japan",1,2016,"HPV",0
+"JPN","Japan",1,2017,"HPV",0
+"JPN","Japan",1,2018,"HPV",0
+"JPN","Japan",1,2019,"HPV",0
+"KEN","Kenya",2,2010,"HPV",0
+"KEN","Kenya",2,2011,"HPV",0
+"KEN","Kenya",2,2012,"HPV",0
+"KEN","Kenya",2,2013,"HPV",0
+"KEN","Kenya",2,2014,"HPV",0
+"KEN","Kenya",2,2015,"HPV",0
+"KEN","Kenya",2,2016,"HPV",0
+"KEN","Kenya",2,2017,"HPV",0
+"KEN","Kenya",2,2018,"HPV",0
+"KEN","Kenya",2,2019,"HPV",0
+"KEN","Kenya",1,2010,"HPV",0
+"KEN","Kenya",1,2011,"HPV",0
+"KEN","Kenya",1,2012,"HPV",0
+"KEN","Kenya",1,2013,"HPV",0
+"KEN","Kenya",1,2014,"HPV",0
+"KEN","Kenya",1,2015,"HPV",0
+"KEN","Kenya",1,2016,"HPV",0
+"KEN","Kenya",1,2017,"HPV",0
+"KEN","Kenya",1,2018,"HPV",0
+"KEN","Kenya",1,2019,"HPV",0
+"KNA","Saint Kitts and Nevis",2,2010,"HPV",0
+"KNA","Saint Kitts and Nevis",2,2011,"HPV",0
+"KNA","Saint Kitts and Nevis",2,2012,"HPV",0
+"KNA","Saint Kitts and Nevis",2,2013,"HPV",0
+"KNA","Saint Kitts and Nevis",2,2014,"HPV",0
+"KNA","Saint Kitts and Nevis",2,2015,"HPV",0
+"KNA","Saint Kitts and Nevis",2,2016,"HPV",0
+"KNA","Saint Kitts and Nevis",2,2017,"HPV",0
+"KNA","Saint Kitts and Nevis",2,2018,"HPV",0
+"KNA","Saint Kitts and Nevis",2,2019,"HPV",0
+"KNA","Saint Kitts and Nevis",1,2010,"HPV",0
+"KNA","Saint Kitts and Nevis",1,2011,"HPV",0
+"KNA","Saint Kitts and Nevis",1,2012,"HPV",0
+"KNA","Saint Kitts and Nevis",1,2013,"HPV",0
+"KNA","Saint Kitts and Nevis",1,2014,"HPV",0
+"KNA","Saint Kitts and Nevis",1,2015,"HPV",0
+"KNA","Saint Kitts and Nevis",1,2016,"HPV",0
+"KNA","Saint Kitts and Nevis",1,2017,"HPV",0
+"KNA","Saint Kitts and Nevis",1,2018,"HPV",0
+"KNA","Saint Kitts and Nevis",1,2019,"HPV",0
+"KOR","Republic of Korea (the)",2,2010,"HPV",0
+"KOR","Republic of Korea (the)",2,2011,"HPV",0
+"KOR","Republic of Korea (the)",2,2012,"HPV",0
+"KOR","Republic of Korea (the)",2,2013,"HPV",0
+"KOR","Republic of Korea (the)",2,2014,"HPV",0
+"KOR","Republic of Korea (the)",2,2015,"HPV",0
+"KOR","Republic of Korea (the)",2,2016,"HPV",0
+"KOR","Republic of Korea (the)",2,2017,"HPV",49
+"KOR","Republic of Korea (the)",2,2018,"HPV",64
+"KOR","Republic of Korea (the)",2,2019,"HPV",52
+"KOR","Republic of Korea (the)",1,2010,"HPV",0
+"KOR","Republic of Korea (the)",1,2011,"HPV",0
+"KOR","Republic of Korea (the)",1,2012,"HPV",0
+"KOR","Republic of Korea (the)",1,2013,"HPV",0
+"KOR","Republic of Korea (the)",1,2014,"HPV",0
+"KOR","Republic of Korea (the)",1,2015,"HPV",0
+"KOR","Republic of Korea (the)",1,2016,"HPV",0
+"KOR","Republic of Korea (the)",1,2017,"HPV",0
+"KOR","Republic of Korea (the)",1,2018,"HPV",0
+"KOR","Republic of Korea (the)",1,2019,"HPV",0
+"LBR","Liberia",2,2010,"HPV",0
+"LBR","Liberia",2,2011,"HPV",0
+"LBR","Liberia",2,2012,"HPV",0
+"LBR","Liberia",2,2013,"HPV",0
+"LBR","Liberia",2,2014,"HPV",0
+"LBR","Liberia",2,2015,"HPV",0
+"LBR","Liberia",2,2016,"HPV",0
+"LBR","Liberia",2,2017,"HPV",0
+"LBR","Liberia",2,2018,"HPV",0
+"LBR","Liberia",2,2019,"HPV",0
+"LBR","Liberia",1,2010,"HPV",0
+"LBR","Liberia",1,2011,"HPV",0
+"LBR","Liberia",1,2012,"HPV",0
+"LBR","Liberia",1,2013,"HPV",0
+"LBR","Liberia",1,2014,"HPV",0
+"LBR","Liberia",1,2015,"HPV",0
+"LBR","Liberia",1,2016,"HPV",0
+"LBR","Liberia",1,2017,"HPV",0
+"LBR","Liberia",1,2018,"HPV",0
+"LBR","Liberia",1,2019,"HPV",0
+"LBY","Libya",2,2010,"HPV",0
+"LBY","Libya",2,2011,"HPV",0
+"LBY","Libya",2,2012,"HPV",0
+"LBY","Libya",2,2013,"HPV",0
+"LBY","Libya",2,2014,"HPV",0
+"LBY","Libya",2,2015,"HPV",0
+"LBY","Libya",2,2016,"HPV",0
+"LBY","Libya",2,2017,"HPV",0
+"LBY","Libya",2,2018,"HPV",0
+"LBY","Libya",2,2019,"HPV",0
+"LBY","Libya",1,2010,"HPV",0
+"LBY","Libya",1,2011,"HPV",0
+"LBY","Libya",1,2012,"HPV",0
+"LBY","Libya",1,2013,"HPV",0
+"LBY","Libya",1,2014,"HPV",0
+"LBY","Libya",1,2015,"HPV",0
+"LBY","Libya",1,2016,"HPV",0
+"LBY","Libya",1,2017,"HPV",0
+"LBY","Libya",1,2018,"HPV",0
+"LBY","Libya",1,2019,"HPV",0
+"LCA","Saint Lucia",2,2010,"HPV",0
+"LCA","Saint Lucia",2,2011,"HPV",0
+"LCA","Saint Lucia",2,2012,"HPV",0
+"LCA","Saint Lucia",2,2013,"HPV",0
+"LCA","Saint Lucia",2,2014,"HPV",0
+"LCA","Saint Lucia",2,2015,"HPV",0
+"LCA","Saint Lucia",2,2016,"HPV",0
+"LCA","Saint Lucia",2,2017,"HPV",0
+"LCA","Saint Lucia",2,2018,"HPV",0
+"LCA","Saint Lucia",2,2019,"HPV",46
+"LCA","Saint Lucia",1,2010,"HPV",0
+"LCA","Saint Lucia",1,2011,"HPV",0
+"LCA","Saint Lucia",1,2012,"HPV",0
+"LCA","Saint Lucia",1,2013,"HPV",0
+"LCA","Saint Lucia",1,2014,"HPV",0
+"LCA","Saint Lucia",1,2015,"HPV",0
+"LCA","Saint Lucia",1,2016,"HPV",0
+"LCA","Saint Lucia",1,2017,"HPV",0
+"LCA","Saint Lucia",1,2018,"HPV",0
+"LCA","Saint Lucia",1,2019,"HPV",40
+"LKA","Sri Lanka",2,2010,"HPV",0
+"LKA","Sri Lanka",2,2011,"HPV",0
+"LKA","Sri Lanka",2,2012,"HPV",0
+"LKA","Sri Lanka",2,2013,"HPV",0
+"LKA","Sri Lanka",2,2014,"HPV",0
+"LKA","Sri Lanka",2,2015,"HPV",0
+"LKA","Sri Lanka",2,2016,"HPV",0
+"LKA","Sri Lanka",2,2017,"HPV",0
+"LKA","Sri Lanka",2,2018,"HPV",58
+"LKA","Sri Lanka",2,2019,"HPV",82
+"LKA","Sri Lanka",1,2010,"HPV",0
+"LKA","Sri Lanka",1,2011,"HPV",0
+"LKA","Sri Lanka",1,2012,"HPV",0
+"LKA","Sri Lanka",1,2013,"HPV",0
+"LKA","Sri Lanka",1,2014,"HPV",0
+"LKA","Sri Lanka",1,2015,"HPV",0
+"LKA","Sri Lanka",1,2016,"HPV",0
+"LKA","Sri Lanka",1,2017,"HPV",0
+"LKA","Sri Lanka",1,2018,"HPV",0
+"LKA","Sri Lanka",1,2019,"HPV",0
+"LTU","Lithuania",2,2010,"HPV",0
+"LTU","Lithuania",2,2011,"HPV",0
+"LTU","Lithuania",2,2012,"HPV",0
+"LTU","Lithuania",2,2013,"HPV",0
+"LTU","Lithuania",2,2014,"HPV",0
+"LTU","Lithuania",2,2015,"HPV",0
+"LTU","Lithuania",2,2016,"HPV",0
+"LTU","Lithuania",2,2017,"HPV",28
+"LTU","Lithuania",2,2018,"HPV",65
+"LTU","Lithuania",2,2019,"HPV",66
+"LTU","Lithuania",1,2010,"HPV",0
+"LTU","Lithuania",1,2011,"HPV",0
+"LTU","Lithuania",1,2012,"HPV",0
+"LTU","Lithuania",1,2013,"HPV",0
+"LTU","Lithuania",1,2014,"HPV",0
+"LTU","Lithuania",1,2015,"HPV",0
+"LTU","Lithuania",1,2016,"HPV",0
+"LTU","Lithuania",1,2017,"HPV",0
+"LTU","Lithuania",1,2018,"HPV",0
+"LTU","Lithuania",1,2019,"HPV",0
+"LUX","Luxembourg",2,2010,"HPV",16
+"LUX","Luxembourg",2,2011,"HPV",19
+"LUX","Luxembourg",2,2012,"HPV",20
+"LUX","Luxembourg",2,2013,"HPV",20
+"LUX","Luxembourg",2,2014,"HPV",10
+"LUX","Luxembourg",2,2015,"HPV",14
+"LUX","Luxembourg",2,2016,"HPV",14
+"LUX","Luxembourg",2,2017,"HPV",14
+"LUX","Luxembourg",2,2018,"HPV",14
+"LUX","Luxembourg",2,2019,"HPV",14
+"LUX","Luxembourg",1,2010,"HPV",0
+"LUX","Luxembourg",1,2011,"HPV",0
+"LUX","Luxembourg",1,2012,"HPV",0
+"LUX","Luxembourg",1,2013,"HPV",0
+"LUX","Luxembourg",1,2014,"HPV",0
+"LUX","Luxembourg",1,2015,"HPV",0
+"LUX","Luxembourg",1,2016,"HPV",0
+"LUX","Luxembourg",1,2017,"HPV",0
+"LUX","Luxembourg",1,2018,"HPV",0
+"LUX","Luxembourg",1,2019,"HPV",0
+"LVA","Latvia",2,2010,"HPV",0
+"LVA","Latvia",2,2011,"HPV",66
+"LVA","Latvia",2,2012,"HPV",56
+"LVA","Latvia",2,2013,"HPV",59
+"LVA","Latvia",2,2014,"HPV",54
+"LVA","Latvia",2,2015,"HPV",46
+"LVA","Latvia",2,2016,"HPV",38
+"LVA","Latvia",2,2017,"HPV",39
+"LVA","Latvia",2,2018,"HPV",45
+"LVA","Latvia",2,2019,"HPV",54
+"LVA","Latvia",1,2010,"HPV",0
+"LVA","Latvia",1,2011,"HPV",0
+"LVA","Latvia",1,2012,"HPV",0
+"LVA","Latvia",1,2013,"HPV",0
+"LVA","Latvia",1,2014,"HPV",0
+"LVA","Latvia",1,2015,"HPV",0
+"LVA","Latvia",1,2016,"HPV",0
+"LVA","Latvia",1,2017,"HPV",0
+"LVA","Latvia",1,2018,"HPV",0
+"LVA","Latvia",1,2019,"HPV",0
+"MCO","Monaco",2,2010,"HPV",0
+"MCO","Monaco",2,2011,"HPV",0
+"MCO","Monaco",2,2012,"HPV",0
+"MCO","Monaco",2,2013,"HPV",0
+"MCO","Monaco",2,2014,"HPV",0
+"MCO","Monaco",2,2015,"HPV",0
+"MCO","Monaco",2,2016,"HPV",0
+"MCO","Monaco",2,2017,"HPV",0
+"MCO","Monaco",2,2018,"HPV",0
+"MCO","Monaco",2,2019,"HPV",0
+"MCO","Monaco",1,2010,"HPV",0
+"MCO","Monaco",1,2011,"HPV",0
+"MCO","Monaco",1,2012,"HPV",0
+"MCO","Monaco",1,2013,"HPV",0
+"MCO","Monaco",1,2014,"HPV",0
+"MCO","Monaco",1,2015,"HPV",0
+"MCO","Monaco",1,2016,"HPV",0
+"MCO","Monaco",1,2017,"HPV",0
+"MCO","Monaco",1,2018,"HPV",0
+"MCO","Monaco",1,2019,"HPV",0
+"MDA","Republic of Moldova (the)",2,2010,"HPV",0
+"MDA","Republic of Moldova (the)",2,2011,"HPV",0
+"MDA","Republic of Moldova (the)",2,2012,"HPV",0
+"MDA","Republic of Moldova (the)",2,2013,"HPV",0
+"MDA","Republic of Moldova (the)",2,2014,"HPV",0
+"MDA","Republic of Moldova (the)",2,2015,"HPV",0
+"MDA","Republic of Moldova (the)",2,2016,"HPV",0
+"MDA","Republic of Moldova (the)",2,2017,"HPV",0
+"MDA","Republic of Moldova (the)",2,2018,"HPV",43
+"MDA","Republic of Moldova (the)",2,2019,"HPV",31
+"MDA","Republic of Moldova (the)",1,2010,"HPV",0
+"MDA","Republic of Moldova (the)",1,2011,"HPV",0
+"MDA","Republic of Moldova (the)",1,2012,"HPV",0
+"MDA","Republic of Moldova (the)",1,2013,"HPV",0
+"MDA","Republic of Moldova (the)",1,2014,"HPV",0
+"MDA","Republic of Moldova (the)",1,2015,"HPV",0
+"MDA","Republic of Moldova (the)",1,2016,"HPV",0
+"MDA","Republic of Moldova (the)",1,2017,"HPV",0
+"MDA","Republic of Moldova (the)",1,2018,"HPV",0
+"MDA","Republic of Moldova (the)",1,2019,"HPV",0
+"MDV","Maldives",2,2010,"HPV",0
+"MDV","Maldives",2,2011,"HPV",0
+"MDV","Maldives",2,2012,"HPV",0
+"MDV","Maldives",2,2013,"HPV",0
+"MDV","Maldives",2,2014,"HPV",0
+"MDV","Maldives",2,2015,"HPV",0
+"MDV","Maldives",2,2016,"HPV",0
+"MDV","Maldives",2,2017,"HPV",0
+"MDV","Maldives",2,2018,"HPV",0
+"MDV","Maldives",2,2019,"HPV",0
+"MDV","Maldives",1,2010,"HPV",0
+"MDV","Maldives",1,2011,"HPV",0
+"MDV","Maldives",1,2012,"HPV",0
+"MDV","Maldives",1,2013,"HPV",0
+"MDV","Maldives",1,2014,"HPV",0
+"MDV","Maldives",1,2015,"HPV",0
+"MDV","Maldives",1,2016,"HPV",0
+"MDV","Maldives",1,2017,"HPV",0
+"MDV","Maldives",1,2018,"HPV",0
+"MDV","Maldives",1,2019,"HPV",0
+"MEX","Mexico",2,2010,"HPV",0
+"MEX","Mexico",2,2011,"HPV",0
+"MEX","Mexico",2,2012,"HPV",83
+"MEX","Mexico",2,2013,"HPV",93
+"MEX","Mexico",2,2014,"HPV",98
+"MEX","Mexico",2,2015,"HPV",95
+"MEX","Mexico",2,2016,"HPV",99
+"MEX","Mexico",2,2017,"HPV",97
+"MEX","Mexico",2,2018,"HPV",96
+"MEX","Mexico",2,2019,"HPV",95
+"MEX","Mexico",1,2010,"HPV",0
+"MEX","Mexico",1,2011,"HPV",0
+"MEX","Mexico",1,2012,"HPV",0
+"MEX","Mexico",1,2013,"HPV",0
+"MEX","Mexico",1,2014,"HPV",0
+"MEX","Mexico",1,2015,"HPV",0
+"MEX","Mexico",1,2016,"HPV",0
+"MEX","Mexico",1,2017,"HPV",0
+"MEX","Mexico",1,2018,"HPV",0
+"MEX","Mexico",1,2019,"HPV",0
+"MHL","Marshall Islands (the)",2,2010,"HPV",46
+"MHL","Marshall Islands (the)",2,2011,"HPV",0
+"MHL","Marshall Islands (the)",2,2012,"HPV",3
+"MHL","Marshall Islands (the)",2,2013,"HPV",10
+"MHL","Marshall Islands (the)",2,2014,"HPV",14
+"MHL","Marshall Islands (the)",2,2015,"HPV",23
+"MHL","Marshall Islands (the)",2,2016,"HPV",31
+"MHL","Marshall Islands (the)",2,2017,"HPV",21
+"MHL","Marshall Islands (the)",2,2018,"HPV",28
+"MHL","Marshall Islands (the)",2,2019,"HPV",24
+"MHL","Marshall Islands (the)",1,2010,"HPV",0
+"MHL","Marshall Islands (the)",1,2011,"HPV",0
+"MHL","Marshall Islands (the)",1,2012,"HPV",0
+"MHL","Marshall Islands (the)",1,2013,"HPV",0
+"MHL","Marshall Islands (the)",1,2014,"HPV",0
+"MHL","Marshall Islands (the)",1,2015,"HPV",0
+"MHL","Marshall Islands (the)",1,2016,"HPV",0
+"MHL","Marshall Islands (the)",1,2017,"HPV",0
+"MHL","Marshall Islands (the)",1,2018,"HPV",0
+"MHL","Marshall Islands (the)",1,2019,"HPV",0
+"MKD","North Macedonia",2,2010,"HPV",33
+"MKD","North Macedonia",2,2011,"HPV",48
+"MKD","North Macedonia",2,2012,"HPV",31
+"MKD","North Macedonia",2,2013,"HPV",34
+"MKD","North Macedonia",2,2014,"HPV",47
+"MKD","North Macedonia",2,2015,"HPV",31
+"MKD","North Macedonia",2,2016,"HPV",44
+"MKD","North Macedonia",2,2017,"HPV",38
+"MKD","North Macedonia",2,2018,"HPV",40
+"MKD","North Macedonia",2,2019,"HPV",40
+"MKD","North Macedonia",1,2010,"HPV",0
+"MKD","North Macedonia",1,2011,"HPV",0
+"MKD","North Macedonia",1,2012,"HPV",0
+"MKD","North Macedonia",1,2013,"HPV",0
+"MKD","North Macedonia",1,2014,"HPV",0
+"MKD","North Macedonia",1,2015,"HPV",0
+"MKD","North Macedonia",1,2016,"HPV",0
+"MKD","North Macedonia",1,2017,"HPV",0
+"MKD","North Macedonia",1,2018,"HPV",0
+"MKD","North Macedonia",1,2019,"HPV",0
+"MLT","Malta",2,2010,"HPV",0
+"MLT","Malta",2,2011,"HPV",0
+"MLT","Malta",2,2012,"HPV",0
+"MLT","Malta",2,2013,"HPV",28
+"MLT","Malta",2,2014,"HPV",87
+"MLT","Malta",2,2015,"HPV",88
+"MLT","Malta",2,2016,"HPV",83
+"MLT","Malta",2,2017,"HPV",78
+"MLT","Malta",2,2018,"HPV",80
+"MLT","Malta",2,2019,"HPV",81
+"MLT","Malta",1,2010,"HPV",0
+"MLT","Malta",1,2011,"HPV",0
+"MLT","Malta",1,2012,"HPV",0
+"MLT","Malta",1,2013,"HPV",0
+"MLT","Malta",1,2014,"HPV",0
+"MLT","Malta",1,2015,"HPV",0
+"MLT","Malta",1,2016,"HPV",0
+"MLT","Malta",1,2017,"HPV",0
+"MLT","Malta",1,2018,"HPV",0
+"MLT","Malta",1,2019,"HPV",0
+"MUS","Mauritius",2,2010,"HPV",0
+"MUS","Mauritius",2,2011,"HPV",0
+"MUS","Mauritius",2,2012,"HPV",0
+"MUS","Mauritius",2,2013,"HPV",0
+"MUS","Mauritius",2,2014,"HPV",0
+"MUS","Mauritius",2,2015,"HPV",0
+"MUS","Mauritius",2,2016,"HPV",0
+"MUS","Mauritius",2,2017,"HPV",77
+"MUS","Mauritius",2,2018,"HPV",81
+"MUS","Mauritius",2,2019,"HPV",80
+"MUS","Mauritius",1,2010,"HPV",0
+"MUS","Mauritius",1,2011,"HPV",0
+"MUS","Mauritius",1,2012,"HPV",0
+"MUS","Mauritius",1,2013,"HPV",0
+"MUS","Mauritius",1,2014,"HPV",0
+"MUS","Mauritius",1,2015,"HPV",0
+"MUS","Mauritius",1,2016,"HPV",0
+"MUS","Mauritius",1,2017,"HPV",0
+"MUS","Mauritius",1,2018,"HPV",0
+"MUS","Mauritius",1,2019,"HPV",0
+"MWI","Malawi",2,2010,"HPV",0
+"MWI","Malawi",2,2011,"HPV",0
+"MWI","Malawi",2,2012,"HPV",0
+"MWI","Malawi",2,2013,"HPV",0
+"MWI","Malawi",2,2014,"HPV",0
+"MWI","Malawi",2,2015,"HPV",0
+"MWI","Malawi",2,2016,"HPV",0
+"MWI","Malawi",2,2017,"HPV",0
+"MWI","Malawi",2,2018,"HPV",0
+"MWI","Malawi",2,2019,"HPV",0
+"MWI","Malawi",1,2010,"HPV",0
+"MWI","Malawi",1,2011,"HPV",0
+"MWI","Malawi",1,2012,"HPV",0
+"MWI","Malawi",1,2013,"HPV",0
+"MWI","Malawi",1,2014,"HPV",0
+"MWI","Malawi",1,2015,"HPV",0
+"MWI","Malawi",1,2016,"HPV",0
+"MWI","Malawi",1,2017,"HPV",0
+"MWI","Malawi",1,2018,"HPV",0
+"MWI","Malawi",1,2019,"HPV",0
+"MYS","Malaysia",2,2010,"HPV",0
+"MYS","Malaysia",2,2011,"HPV",80
+"MYS","Malaysia",2,2012,"HPV",84
+"MYS","Malaysia",2,2013,"HPV",90
+"MYS","Malaysia",2,2014,"HPV",85
+"MYS","Malaysia",2,2015,"HPV",84
+"MYS","Malaysia",2,2016,"HPV",83
+"MYS","Malaysia",2,2017,"HPV",96
+"MYS","Malaysia",2,2018,"HPV",83
+"MYS","Malaysia",2,2019,"HPV",85
+"MYS","Malaysia",1,2010,"HPV",0
+"MYS","Malaysia",1,2011,"HPV",0
+"MYS","Malaysia",1,2012,"HPV",0
+"MYS","Malaysia",1,2013,"HPV",0
+"MYS","Malaysia",1,2014,"HPV",0
+"MYS","Malaysia",1,2015,"HPV",0
+"MYS","Malaysia",1,2016,"HPV",0
+"MYS","Malaysia",1,2017,"HPV",0
+"MYS","Malaysia",1,2018,"HPV",0
+"MYS","Malaysia",1,2019,"HPV",0
+"NIU","Niue",2,2010,"HPV",0
+"NIU","Niue",2,2011,"HPV",0
+"NIU","Niue",2,2012,"HPV",0
+"NIU","Niue",2,2013,"HPV",0
+"NIU","Niue",2,2014,"HPV",0
+"NIU","Niue",2,2015,"HPV",0
+"NIU","Niue",2,2016,"HPV",0
+"NIU","Niue",2,2017,"HPV",0
+"NIU","Niue",2,2018,"HPV",0
+"NIU","Niue",2,2019,"HPV",0
+"NIU","Niue",1,2010,"HPV",0
+"NIU","Niue",1,2011,"HPV",0
+"NIU","Niue",1,2012,"HPV",0
+"NIU","Niue",1,2013,"HPV",0
+"NIU","Niue",1,2014,"HPV",0
+"NIU","Niue",1,2015,"HPV",0
+"NIU","Niue",1,2016,"HPV",0
+"NIU","Niue",1,2017,"HPV",0
+"NIU","Niue",1,2018,"HPV",0
+"NIU","Niue",1,2019,"HPV",0
+"NLD","Netherlands (the)",2,2010,"HPV",52
+"NLD","Netherlands (the)",2,2011,"HPV",56
+"NLD","Netherlands (the)",2,2012,"HPV",58
+"NLD","Netherlands (the)",2,2013,"HPV",59
+"NLD","Netherlands (the)",2,2014,"HPV",61
+"NLD","Netherlands (the)",2,2015,"HPV",61
+"NLD","Netherlands (the)",2,2016,"HPV",53
+"NLD","Netherlands (the)",2,2017,"HPV",46
+"NLD","Netherlands (the)",2,2018,"HPV",45
+"NLD","Netherlands (the)",2,2019,"HPV",53
+"NLD","Netherlands (the)",1,2010,"HPV",0
+"NLD","Netherlands (the)",1,2011,"HPV",0
+"NLD","Netherlands (the)",1,2012,"HPV",0
+"NLD","Netherlands (the)",1,2013,"HPV",0
+"NLD","Netherlands (the)",1,2014,"HPV",0
+"NLD","Netherlands (the)",1,2015,"HPV",0
+"NLD","Netherlands (the)",1,2016,"HPV",0
+"NLD","Netherlands (the)",1,2017,"HPV",0
+"NLD","Netherlands (the)",1,2018,"HPV",0
+"NLD","Netherlands (the)",1,2019,"HPV",0
+"NOR","Norway",2,2010,"HPV",57
+"NOR","Norway",2,2011,"HPV",72
+"NOR","Norway",2,2012,"HPV",73
+"NOR","Norway",2,2013,"HPV",75
+"NOR","Norway",2,2014,"HPV",80
+"NOR","Norway",2,2015,"HPV",82
+"NOR","Norway",2,2016,"HPV",84
+"NOR","Norway",2,2017,"HPV",85
+"NOR","Norway",2,2018,"HPV",86
+"NOR","Norway",2,2019,"HPV",91
+"NOR","Norway",1,2010,"HPV",0
+"NOR","Norway",1,2011,"HPV",0
+"NOR","Norway",1,2012,"HPV",0
+"NOR","Norway",1,2013,"HPV",0
+"NOR","Norway",1,2014,"HPV",0
+"NOR","Norway",1,2015,"HPV",0
+"NOR","Norway",1,2016,"HPV",0
+"NOR","Norway",1,2017,"HPV",0
+"NOR","Norway",1,2018,"HPV",0
+"NOR","Norway",1,2019,"HPV",0
+"NZL","New Zealand",2,2010,"HPV",46
+"NZL","New Zealand",2,2011,"HPV",44
+"NZL","New Zealand",2,2012,"HPV",55
+"NZL","New Zealand",2,2013,"HPV",57
+"NZL","New Zealand",2,2014,"HPV",59
+"NZL","New Zealand",2,2015,"HPV",59
+"NZL","New Zealand",2,2016,"HPV",60
+"NZL","New Zealand",2,2017,"HPV",56
+"NZL","New Zealand",2,2018,"HPV",58
+"NZL","New Zealand",2,2019,"HPV",67
+"NZL","New Zealand",1,2010,"HPV",0
+"NZL","New Zealand",1,2011,"HPV",0
+"NZL","New Zealand",1,2012,"HPV",0
+"NZL","New Zealand",1,2013,"HPV",0
+"NZL","New Zealand",1,2014,"HPV",0
+"NZL","New Zealand",1,2015,"HPV",0
+"NZL","New Zealand",1,2016,"HPV",0
+"NZL","New Zealand",1,2017,"HPV",0
+"NZL","New Zealand",1,2018,"HPV",60
+"NZL","New Zealand",1,2019,"HPV",67
+"PAN","Panama",2,2010,"HPV",65
+"PAN","Panama",2,2011,"HPV",79
+"PAN","Panama",2,2012,"HPV",78
+"PAN","Panama",2,2013,"HPV",75
+"PAN","Panama",2,2014,"HPV",81
+"PAN","Panama",2,2015,"HPV",58
+"PAN","Panama",2,2016,"HPV",53
+"PAN","Panama",2,2017,"HPV",69
+"PAN","Panama",2,2018,"HPV",69
+"PAN","Panama",2,2019,"HPV",73
+"PAN","Panama",1,2010,"HPV",0
+"PAN","Panama",1,2011,"HPV",0
+"PAN","Panama",1,2012,"HPV",0
+"PAN","Panama",1,2013,"HPV",0
+"PAN","Panama",1,2014,"HPV",0
+"PAN","Panama",1,2015,"HPV",0
+"PAN","Panama",1,2016,"HPV",0
+"PAN","Panama",1,2017,"HPV",0
+"PAN","Panama",1,2018,"HPV",38
+"PAN","Panama",1,2019,"HPV",63
+"PER","Peru",2,2010,"HPV",0
+"PER","Peru",2,2011,"HPV",0
+"PER","Peru",2,2012,"HPV",0
+"PER","Peru",2,2013,"HPV",0.1
+"PER","Peru",2,2014,"HPV",2
+"PER","Peru",2,2015,"HPV",52
+"PER","Peru",2,2016,"HPV",51
+"PER","Peru",2,2017,"HPV",57
+"PER","Peru",2,2018,"HPV",64
+"PER","Peru",2,2019,"HPV",76
+"PER","Peru",1,2010,"HPV",0
+"PER","Peru",1,2011,"HPV",0
+"PER","Peru",1,2012,"HPV",0
+"PER","Peru",1,2013,"HPV",0
+"PER","Peru",1,2014,"HPV",0
+"PER","Peru",1,2015,"HPV",0
+"PER","Peru",1,2016,"HPV",0
+"PER","Peru",1,2017,"HPV",0
+"PER","Peru",1,2018,"HPV",0
+"PER","Peru",1,2019,"HPV",0
+"PHL","Philippines (the)",2,2010,"HPV",0
+"PHL","Philippines (the)",2,2011,"HPV",0
+"PHL","Philippines (the)",2,2012,"HPV",0
+"PHL","Philippines (the)",2,2013,"HPV",0
+"PHL","Philippines (the)",2,2014,"HPV",0
+"PHL","Philippines (the)",2,2015,"HPV",0
+"PHL","Philippines (the)",2,2016,"HPV",23
+"PHL","Philippines (the)",2,2017,"HPV",0.2
+"PHL","Philippines (the)",2,2018,"HPV",0.7
+"PHL","Philippines (the)",2,2019,"HPV",0.2
+"PHL","Philippines (the)",1,2010,"HPV",0
+"PHL","Philippines (the)",1,2011,"HPV",0
+"PHL","Philippines (the)",1,2012,"HPV",0
+"PHL","Philippines (the)",1,2013,"HPV",0
+"PHL","Philippines (the)",1,2014,"HPV",0
+"PHL","Philippines (the)",1,2015,"HPV",0
+"PHL","Philippines (the)",1,2016,"HPV",0
+"PHL","Philippines (the)",1,2017,"HPV",0
+"PHL","Philippines (the)",1,2018,"HPV",0
+"PHL","Philippines (the)",1,2019,"HPV",0
+"PLW","Palau",2,2010,"HPV",9
+"PLW","Palau",2,2011,"HPV",4
+"PLW","Palau",2,2012,"HPV",11
+"PLW","Palau",2,2013,"HPV",23
+"PLW","Palau",2,2014,"HPV",26
+"PLW","Palau",2,2015,"HPV",24
+"PLW","Palau",2,2016,"HPV",31
+"PLW","Palau",2,2017,"HPV",36
+"PLW","Palau",2,2018,"HPV",47
+"PLW","Palau",2,2019,"HPV",67
+"PLW","Palau",1,2010,"HPV",0
+"PLW","Palau",1,2011,"HPV",0
+"PLW","Palau",1,2012,"HPV",0
+"PLW","Palau",1,2013,"HPV",0
+"PLW","Palau",1,2014,"HPV",0
+"PLW","Palau",1,2015,"HPV",0
+"PLW","Palau",1,2016,"HPV",0
+"PLW","Palau",1,2017,"HPV",0
+"PLW","Palau",1,2018,"HPV",0
+"PLW","Palau",1,2019,"HPV",0
+"PRT","Portugal",2,2010,"HPV",88
+"PRT","Portugal",2,2011,"HPV",85
+"PRT","Portugal",2,2012,"HPV",87
+"PRT","Portugal",2,2013,"HPV",88
+"PRT","Portugal",2,2014,"HPV",87
+"PRT","Portugal",2,2015,"HPV",88
+"PRT","Portugal",2,2016,"HPV",85
+"PRT","Portugal",2,2017,"HPV",83
+"PRT","Portugal",2,2018,"HPV",80
+"PRT","Portugal",2,2019,"HPV",81
+"PRT","Portugal",1,2010,"HPV",0
+"PRT","Portugal",1,2011,"HPV",0
+"PRT","Portugal",1,2012,"HPV",0
+"PRT","Portugal",1,2013,"HPV",0
+"PRT","Portugal",1,2014,"HPV",0
+"PRT","Portugal",1,2015,"HPV",0
+"PRT","Portugal",1,2016,"HPV",0
+"PRT","Portugal",1,2017,"HPV",0
+"PRT","Portugal",1,2018,"HPV",0
+"PRT","Portugal",1,2019,"HPV",0
+"PRY","Paraguay",2,2010,"HPV",0
+"PRY","Paraguay",2,2011,"HPV",0
+"PRY","Paraguay",2,2012,"HPV",0
+"PRY","Paraguay",2,2013,"HPV",71
+"PRY","Paraguay",2,2014,"HPV",30
+"PRY","Paraguay",2,2015,"HPV",38
+"PRY","Paraguay",2,2016,"HPV",62
+"PRY","Paraguay",2,2017,"HPV",64
+"PRY","Paraguay",2,2018,"HPV",55
+"PRY","Paraguay",2,2019,"HPV",61
+"PRY","Paraguay",1,2010,"HPV",0
+"PRY","Paraguay",1,2011,"HPV",0
+"PRY","Paraguay",1,2012,"HPV",0
+"PRY","Paraguay",1,2013,"HPV",0
+"PRY","Paraguay",1,2014,"HPV",0
+"PRY","Paraguay",1,2015,"HPV",0
+"PRY","Paraguay",1,2016,"HPV",0
+"PRY","Paraguay",1,2017,"HPV",0
+"PRY","Paraguay",1,2018,"HPV",0
+"PRY","Paraguay",1,2019,"HPV",0
+"RWA","Rwanda",2,2010,"HPV",0
+"RWA","Rwanda",2,2011,"HPV",35
+"RWA","Rwanda",2,2012,"HPV",45
+"RWA","Rwanda",2,2013,"HPV",56
+"RWA","Rwanda",2,2014,"HPV",67
+"RWA","Rwanda",2,2015,"HPV",78
+"RWA","Rwanda",2,2016,"HPV",86
+"RWA","Rwanda",2,2017,"HPV",83
+"RWA","Rwanda",2,2018,"HPV",87
+"RWA","Rwanda",2,2019,"HPV",94
+"RWA","Rwanda",1,2010,"HPV",0
+"RWA","Rwanda",1,2011,"HPV",0
+"RWA","Rwanda",1,2012,"HPV",0
+"RWA","Rwanda",1,2013,"HPV",0
+"RWA","Rwanda",1,2014,"HPV",0
+"RWA","Rwanda",1,2015,"HPV",0
+"RWA","Rwanda",1,2016,"HPV",0
+"RWA","Rwanda",1,2017,"HPV",0
+"RWA","Rwanda",1,2018,"HPV",0
+"RWA","Rwanda",1,2019,"HPV",0
+"SEN","Senegal",2,2010,"HPV",0
+"SEN","Senegal",2,2011,"HPV",0
+"SEN","Senegal",2,2012,"HPV",0
+"SEN","Senegal",2,2013,"HPV",0
+"SEN","Senegal",2,2014,"HPV",0
+"SEN","Senegal",2,2015,"HPV",0
+"SEN","Senegal",2,2016,"HPV",0
+"SEN","Senegal",2,2017,"HPV",0
+"SEN","Senegal",2,2018,"HPV",0
+"SEN","Senegal",2,2019,"HPV",25
+"SEN","Senegal",1,2010,"HPV",0
+"SEN","Senegal",1,2011,"HPV",0
+"SEN","Senegal",1,2012,"HPV",0
+"SEN","Senegal",1,2013,"HPV",0
+"SEN","Senegal",1,2014,"HPV",0
+"SEN","Senegal",1,2015,"HPV",0
+"SEN","Senegal",1,2016,"HPV",0
+"SEN","Senegal",1,2017,"HPV",0
+"SEN","Senegal",1,2018,"HPV",0
+"SEN","Senegal",1,2019,"HPV",0
+"SGP","Singapore",2,2010,"HPV",0
+"SGP","Singapore",2,2011,"HPV",0
+"SGP","Singapore",2,2012,"HPV",0.1
+"SGP","Singapore",2,2013,"HPV",0.2
+"SGP","Singapore",2,2014,"HPV",0.2
+"SGP","Singapore",2,2015,"HPV",0.1
+"SGP","Singapore",2,2016,"HPV",0.1
+"SGP","Singapore",2,2017,"HPV",0.1
+"SGP","Singapore",2,2018,"HPV",0.1
+"SGP","Singapore",2,2019,"HPV",0.1
+"SGP","Singapore",1,2010,"HPV",0
+"SGP","Singapore",1,2011,"HPV",0
+"SGP","Singapore",1,2012,"HPV",0
+"SGP","Singapore",1,2013,"HPV",0
+"SGP","Singapore",1,2014,"HPV",0
+"SGP","Singapore",1,2015,"HPV",0
+"SGP","Singapore",1,2016,"HPV",0
+"SGP","Singapore",1,2017,"HPV",0
+"SGP","Singapore",1,2018,"HPV",0
+"SGP","Singapore",1,2019,"HPV",0
+"SLB","Solomon Islands",2,2010,"HPV",0
+"SLB","Solomon Islands",2,2011,"HPV",0
+"SLB","Solomon Islands",2,2012,"HPV",0
+"SLB","Solomon Islands",2,2013,"HPV",0
+"SLB","Solomon Islands",2,2014,"HPV",0
+"SLB","Solomon Islands",2,2015,"HPV",0
+"SLB","Solomon Islands",2,2016,"HPV",0
+"SLB","Solomon Islands",2,2017,"HPV",0
+"SLB","Solomon Islands",2,2018,"HPV",0
+"SLB","Solomon Islands",2,2019,"HPV",0
+"SLB","Solomon Islands",1,2010,"HPV",0
+"SLB","Solomon Islands",1,2011,"HPV",0
+"SLB","Solomon Islands",1,2012,"HPV",0
+"SLB","Solomon Islands",1,2013,"HPV",0
+"SLB","Solomon Islands",1,2014,"HPV",0
+"SLB","Solomon Islands",1,2015,"HPV",0
+"SLB","Solomon Islands",1,2016,"HPV",0
+"SLB","Solomon Islands",1,2017,"HPV",0
+"SLB","Solomon Islands",1,2018,"HPV",0
+"SLB","Solomon Islands",1,2019,"HPV",0
+"SMR","San Marino",2,2010,"HPV",0
+"SMR","San Marino",2,2011,"HPV",0
+"SMR","San Marino",2,2012,"HPV",20
+"SMR","San Marino",2,2013,"HPV",15
+"SMR","San Marino",2,2014,"HPV",17
+"SMR","San Marino",2,2015,"HPV",15
+"SMR","San Marino",2,2016,"HPV",12
+"SMR","San Marino",2,2017,"HPV",14
+"SMR","San Marino",2,2018,"HPV",41
+"SMR","San Marino",2,2019,"HPV",50
+"SMR","San Marino",1,2010,"HPV",0
+"SMR","San Marino",1,2011,"HPV",0
+"SMR","San Marino",1,2012,"HPV",0
+"SMR","San Marino",1,2013,"HPV",0
+"SMR","San Marino",1,2014,"HPV",0
+"SMR","San Marino",1,2015,"HPV",0
+"SMR","San Marino",1,2016,"HPV",0
+"SMR","San Marino",1,2017,"HPV",0
+"SMR","San Marino",1,2018,"HPV",0
+"SMR","San Marino",1,2019,"HPV",0
+"SUR","Suriname",2,2010,"HPV",0
+"SUR","Suriname",2,2011,"HPV",0
+"SUR","Suriname",2,2012,"HPV",0
+"SUR","Suriname",2,2013,"HPV",0
+"SUR","Suriname",2,2014,"HPV",40
+"SUR","Suriname",2,2015,"HPV",68
+"SUR","Suriname",2,2016,"HPV",37
+"SUR","Suriname",2,2017,"HPV",55
+"SUR","Suriname",2,2018,"HPV",55
+"SUR","Suriname",2,2019,"HPV",38
+"SUR","Suriname",1,2010,"HPV",0
+"SUR","Suriname",1,2011,"HPV",0
+"SUR","Suriname",1,2012,"HPV",0
+"SUR","Suriname",1,2013,"HPV",0
+"SUR","Suriname",1,2014,"HPV",0
+"SUR","Suriname",1,2015,"HPV",0
+"SUR","Suriname",1,2016,"HPV",0
+"SUR","Suriname",1,2017,"HPV",0
+"SUR","Suriname",1,2018,"HPV",0
+"SUR","Suriname",1,2019,"HPV",0
+"SVN","Slovenia",2,2010,"HPV",49
+"SVN","Slovenia",2,2011,"HPV",55
+"SVN","Slovenia",2,2012,"HPV",55
+"SVN","Slovenia",2,2013,"HPV",49
+"SVN","Slovenia",2,2014,"HPV",46
+"SVN","Slovenia",2,2015,"HPV",45
+"SVN","Slovenia",2,2016,"HPV",44
+"SVN","Slovenia",2,2017,"HPV",46
+"SVN","Slovenia",2,2018,"HPV",50
+"SVN","Slovenia",2,2019,"HPV",59
+"SVN","Slovenia",1,2010,"HPV",0
+"SVN","Slovenia",1,2011,"HPV",0
+"SVN","Slovenia",1,2012,"HPV",0
+"SVN","Slovenia",1,2013,"HPV",0
+"SVN","Slovenia",1,2014,"HPV",0
+"SVN","Slovenia",1,2015,"HPV",0
+"SVN","Slovenia",1,2016,"HPV",0
+"SVN","Slovenia",1,2017,"HPV",0
+"SVN","Slovenia",1,2018,"HPV",0
+"SVN","Slovenia",1,2019,"HPV",0
+"SWE","Sweden",2,2010,"HPV",0
+"SWE","Sweden",2,2011,"HPV",0
+"SWE","Sweden",2,2012,"HPV",0
+"SWE","Sweden",2,2013,"HPV",0
+"SWE","Sweden",2,2014,"HPV",0
+"SWE","Sweden",2,2015,"HPV",0
+"SWE","Sweden",2,2016,"HPV",73
+"SWE","Sweden",2,2017,"HPV",72
+"SWE","Sweden",2,2018,"HPV",75
+"SWE","Sweden",2,2019,"HPV",80
+"SWE","Sweden",1,2010,"HPV",0
+"SWE","Sweden",1,2011,"HPV",0
+"SWE","Sweden",1,2012,"HPV",0
+"SWE","Sweden",1,2013,"HPV",0
+"SWE","Sweden",1,2014,"HPV",0
+"SWE","Sweden",1,2015,"HPV",0
+"SWE","Sweden",1,2016,"HPV",0
+"SWE","Sweden",1,2017,"HPV",0
+"SWE","Sweden",1,2018,"HPV",0
+"SWE","Sweden",1,2019,"HPV",0
+"SYC","Seychelles",2,2010,"HPV",0
+"SYC","Seychelles",2,2011,"HPV",0
+"SYC","Seychelles",2,2012,"HPV",0
+"SYC","Seychelles",2,2013,"HPV",0
+"SYC","Seychelles",2,2014,"HPV",83
+"SYC","Seychelles",2,2015,"HPV",93
+"SYC","Seychelles",2,2016,"HPV",99
+"SYC","Seychelles",2,2017,"HPV",82
+"SYC","Seychelles",2,2018,"HPV",96
+"SYC","Seychelles",2,2019,"HPV",68
+"SYC","Seychelles",1,2010,"HPV",0
+"SYC","Seychelles",1,2011,"HPV",0
+"SYC","Seychelles",1,2012,"HPV",0
+"SYC","Seychelles",1,2013,"HPV",0
+"SYC","Seychelles",1,2014,"HPV",0
+"SYC","Seychelles",1,2015,"HPV",0
+"SYC","Seychelles",1,2016,"HPV",0
+"SYC","Seychelles",1,2017,"HPV",0
+"SYC","Seychelles",1,2018,"HPV",0
+"SYC","Seychelles",1,2019,"HPV",0
+"THA","Thailand",2,2010,"HPV",0
+"THA","Thailand",2,2011,"HPV",0
+"THA","Thailand",2,2012,"HPV",0
+"THA","Thailand",2,2013,"HPV",0
+"THA","Thailand",2,2014,"HPV",0
+"THA","Thailand",2,2015,"HPV",0
+"THA","Thailand",2,2016,"HPV",0
+"THA","Thailand",2,2017,"HPV",0
+"THA","Thailand",2,2018,"HPV",0
+"THA","Thailand",2,2019,"HPV",66
+"THA","Thailand",1,2010,"HPV",0
+"THA","Thailand",1,2011,"HPV",0
+"THA","Thailand",1,2012,"HPV",0
+"THA","Thailand",1,2013,"HPV",0
+"THA","Thailand",1,2014,"HPV",0
+"THA","Thailand",1,2015,"HPV",0
+"THA","Thailand",1,2016,"HPV",0
+"THA","Thailand",1,2017,"HPV",0
+"THA","Thailand",1,2018,"HPV",0
+"THA","Thailand",1,2019,"HPV",0
+"TKM","Turkmenistan",2,2010,"HPV",0
+"TKM","Turkmenistan",2,2011,"HPV",0
+"TKM","Turkmenistan",2,2012,"HPV",0
+"TKM","Turkmenistan",2,2013,"HPV",0
+"TKM","Turkmenistan",2,2014,"HPV",0
+"TKM","Turkmenistan",2,2015,"HPV",0
+"TKM","Turkmenistan",2,2016,"HPV",0
+"TKM","Turkmenistan",2,2017,"HPV",95
+"TKM","Turkmenistan",2,2018,"HPV",99
+"TKM","Turkmenistan",2,2019,"HPV",99
+"TKM","Turkmenistan",1,2010,"HPV",0
+"TKM","Turkmenistan",1,2011,"HPV",0
+"TKM","Turkmenistan",1,2012,"HPV",0
+"TKM","Turkmenistan",1,2013,"HPV",0
+"TKM","Turkmenistan",1,2014,"HPV",0
+"TKM","Turkmenistan",1,2015,"HPV",0
+"TKM","Turkmenistan",1,2016,"HPV",0
+"TKM","Turkmenistan",1,2017,"HPV",95
+"TKM","Turkmenistan",1,2018,"HPV",99
+"TKM","Turkmenistan",1,2019,"HPV",99
+"TTO","Trinidad and Tobago",2,2010,"HPV",0
+"TTO","Trinidad and Tobago",2,2011,"HPV",0
+"TTO","Trinidad and Tobago",2,2012,"HPV",0
+"TTO","Trinidad and Tobago",2,2013,"HPV",8
+"TTO","Trinidad and Tobago",2,2014,"HPV",0
+"TTO","Trinidad and Tobago",2,2015,"HPV",6
+"TTO","Trinidad and Tobago",2,2016,"HPV",6
+"TTO","Trinidad and Tobago",2,2017,"HPV",12
+"TTO","Trinidad and Tobago",2,2018,"HPV",14
+"TTO","Trinidad and Tobago",2,2019,"HPV",9
+"TTO","Trinidad and Tobago",1,2010,"HPV",0
+"TTO","Trinidad and Tobago",1,2011,"HPV",0
+"TTO","Trinidad and Tobago",1,2012,"HPV",0
+"TTO","Trinidad and Tobago",1,2013,"HPV",0
+"TTO","Trinidad and Tobago",1,2014,"HPV",0
+"TTO","Trinidad and Tobago",1,2015,"HPV",6
+"TTO","Trinidad and Tobago",1,2016,"HPV",6
+"TTO","Trinidad and Tobago",1,2017,"HPV",12
+"TTO","Trinidad and Tobago",1,2018,"HPV",14
+"TTO","Trinidad and Tobago",1,2019,"HPV",9
+"TZA","United Republic of Tanzania",2,2010,"HPV",0
+"TZA","United Republic of Tanzania",2,2011,"HPV",0
+"TZA","United Republic of Tanzania",2,2012,"HPV",0
+"TZA","United Republic of Tanzania",2,2013,"HPV",0
+"TZA","United Republic of Tanzania",2,2014,"HPV",0
+"TZA","United Republic of Tanzania",2,2015,"HPV",0
+"TZA","United Republic of Tanzania",2,2016,"HPV",0
+"TZA","United Republic of Tanzania",2,2017,"HPV",0
+"TZA","United Republic of Tanzania",2,2018,"HPV",19
+"TZA","United Republic of Tanzania",2,2019,"HPV",49
+"TZA","United Republic of Tanzania",1,2010,"HPV",0
+"TZA","United Republic of Tanzania",1,2011,"HPV",0
+"TZA","United Republic of Tanzania",1,2012,"HPV",0
+"TZA","United Republic of Tanzania",1,2013,"HPV",0
+"TZA","United Republic of Tanzania",1,2014,"HPV",0
+"TZA","United Republic of Tanzania",1,2015,"HPV",0
+"TZA","United Republic of Tanzania",1,2016,"HPV",0
+"TZA","United Republic of Tanzania",1,2017,"HPV",0
+"TZA","United Republic of Tanzania",1,2018,"HPV",0
+"TZA","United Republic of Tanzania",1,2019,"HPV",0
+"UGA","Uganda",2,2010,"HPV",0
+"UGA","Uganda",2,2011,"HPV",0
+"UGA","Uganda",2,2012,"HPV",0
+"UGA","Uganda",2,2013,"HPV",0
+"UGA","Uganda",2,2014,"HPV",0
+"UGA","Uganda",2,2015,"HPV",0
+"UGA","Uganda",2,2016,"HPV",30
+"UGA","Uganda",2,2017,"HPV",57
+"UGA","Uganda",2,2018,"HPV",74
+"UGA","Uganda",2,2019,"HPV",64
+"UGA","Uganda",1,2010,"HPV",0
+"UGA","Uganda",1,2011,"HPV",0
+"UGA","Uganda",1,2012,"HPV",0
+"UGA","Uganda",1,2013,"HPV",0
+"UGA","Uganda",1,2014,"HPV",0
+"UGA","Uganda",1,2015,"HPV",0
+"UGA","Uganda",1,2016,"HPV",0
+"UGA","Uganda",1,2017,"HPV",0
+"UGA","Uganda",1,2018,"HPV",0
+"UGA","Uganda",1,2019,"HPV",0
+"URY","Uruguay",2,2010,"HPV",0
+"URY","Uruguay",2,2011,"HPV",0
+"URY","Uruguay",2,2012,"HPV",0
+"URY","Uruguay",2,2013,"HPV",0
+"URY","Uruguay",2,2014,"HPV",0
+"URY","Uruguay",2,2015,"HPV",26
+"URY","Uruguay",2,2016,"HPV",45
+"URY","Uruguay",2,2017,"HPV",44
+"URY","Uruguay",2,2018,"HPV",43
+"URY","Uruguay",2,2019,"HPV",38
+"URY","Uruguay",1,2010,"HPV",0
+"URY","Uruguay",1,2011,"HPV",0
+"URY","Uruguay",1,2012,"HPV",0
+"URY","Uruguay",1,2013,"HPV",0
+"URY","Uruguay",1,2014,"HPV",0
+"URY","Uruguay",1,2015,"HPV",0
+"URY","Uruguay",1,2016,"HPV",0
+"URY","Uruguay",1,2017,"HPV",0
+"URY","Uruguay",1,2018,"HPV",0
+"URY","Uruguay",1,2019,"HPV",8
+"USA","United States of America (the)",2,2010,"HPV",23
+"USA","United States of America (the)",2,2011,"HPV",23
+"USA","United States of America (the)",2,2012,"HPV",20
+"USA","United States of America (the)",2,2013,"HPV",26
+"USA","United States of America (the)",2,2014,"HPV",26
+"USA","United States of America (the)",2,2015,"HPV",30
+"USA","United States of America (the)",2,2016,"HPV",36
+"USA","United States of America (the)",2,2017,"HPV",44
+"USA","United States of America (the)",2,2018,"HPV",39
+"USA","United States of America (the)",2,2019,"HPV",39
+"USA","United States of America (the)",1,2010,"HPV",0
+"USA","United States of America (the)",1,2011,"HPV",2
+"USA","United States of America (the)",1,2012,"HPV",7
+"USA","United States of America (the)",1,2013,"HPV",12
+"USA","United States of America (the)",1,2014,"HPV",16
+"USA","United States of America (the)",1,2015,"HPV",25
+"USA","United States of America (the)",1,2016,"HPV",31
+"USA","United States of America (the)",1,2017,"HPV",34
+"USA","United States of America (the)",1,2018,"HPV",41
+"USA","United States of America (the)",1,2019,"HPV",41
+"UZB","Uzbekistan",2,2010,"HPV",0
+"UZB","Uzbekistan",2,2011,"HPV",0
+"UZB","Uzbekistan",2,2012,"HPV",0
+"UZB","Uzbekistan",2,2013,"HPV",0
+"UZB","Uzbekistan",2,2014,"HPV",0
+"UZB","Uzbekistan",2,2015,"HPV",0
+"UZB","Uzbekistan",2,2016,"HPV",0
+"UZB","Uzbekistan",2,2017,"HPV",0
+"UZB","Uzbekistan",2,2018,"HPV",0
+"UZB","Uzbekistan",2,2019,"HPV",0
+"UZB","Uzbekistan",1,2010,"HPV",0
+"UZB","Uzbekistan",1,2011,"HPV",0
+"UZB","Uzbekistan",1,2012,"HPV",0
+"UZB","Uzbekistan",1,2013,"HPV",0
+"UZB","Uzbekistan",1,2014,"HPV",0
+"UZB","Uzbekistan",1,2015,"HPV",0
+"UZB","Uzbekistan",1,2016,"HPV",0
+"UZB","Uzbekistan",1,2017,"HPV",0
+"UZB","Uzbekistan",1,2018,"HPV",0
+"UZB","Uzbekistan",1,2019,"HPV",0
+"VCT","Saint Vincent and the Grenadines",2,2010,"HPV",0
+"VCT","Saint Vincent and the Grenadines",2,2011,"HPV",0
+"VCT","Saint Vincent and the Grenadines",2,2012,"HPV",0
+"VCT","Saint Vincent and the Grenadines",2,2013,"HPV",0
+"VCT","Saint Vincent and the Grenadines",2,2014,"HPV",0
+"VCT","Saint Vincent and the Grenadines",2,2015,"HPV",0
+"VCT","Saint Vincent and the Grenadines",2,2016,"HPV",0
+"VCT","Saint Vincent and the Grenadines",2,2017,"HPV",0
+"VCT","Saint Vincent and the Grenadines",2,2018,"HPV",4
+"VCT","Saint Vincent and the Grenadines",2,2019,"HPV",10
+"VCT","Saint Vincent and the Grenadines",1,2010,"HPV",0
+"VCT","Saint Vincent and the Grenadines",1,2011,"HPV",0
+"VCT","Saint Vincent and the Grenadines",1,2012,"HPV",0
+"VCT","Saint Vincent and the Grenadines",1,2013,"HPV",0
+"VCT","Saint Vincent and the Grenadines",1,2014,"HPV",0
+"VCT","Saint Vincent and the Grenadines",1,2015,"HPV",0
+"VCT","Saint Vincent and the Grenadines",1,2016,"HPV",0
+"VCT","Saint Vincent and the Grenadines",1,2017,"HPV",0
+"VCT","Saint Vincent and the Grenadines",1,2018,"HPV",0
+"VCT","Saint Vincent and the Grenadines",1,2019,"HPV",0
+"ZAF","South Africa",2,2010,"HPV",0
+"ZAF","South Africa",2,2011,"HPV",0
+"ZAF","South Africa",2,2012,"HPV",0
+"ZAF","South Africa",2,2013,"HPV",0
+"ZAF","South Africa",2,2014,"HPV",65
+"ZAF","South Africa",2,2015,"HPV",61
+"ZAF","South Africa",2,2016,"HPV",61
+"ZAF","South Africa",2,2017,"HPV",56
+"ZAF","South Africa",2,2018,"HPV",56
+"ZAF","South Africa",2,2019,"HPV",56
+"ZAF","South Africa",1,2010,"HPV",0
+"ZAF","South Africa",1,2011,"HPV",0
+"ZAF","South Africa",1,2012,"HPV",0
+"ZAF","South Africa",1,2013,"HPV",0
+"ZAF","South Africa",1,2014,"HPV",0
+"ZAF","South Africa",1,2015,"HPV",0
+"ZAF","South Africa",1,2016,"HPV",0
+"ZAF","South Africa",1,2017,"HPV",0
+"ZAF","South Africa",1,2018,"HPV",0
+"ZAF","South Africa",1,2019,"HPV",0
+"ZMB","Zambia",2,2010,"HPV",0
+"ZMB","Zambia",2,2011,"HPV",0
+"ZMB","Zambia",2,2012,"HPV",0
+"ZMB","Zambia",2,2013,"HPV",0
+"ZMB","Zambia",2,2014,"HPV",0
+"ZMB","Zambia",2,2015,"HPV",0
+"ZMB","Zambia",2,2016,"HPV",0
+"ZMB","Zambia",2,2017,"HPV",0
+"ZMB","Zambia",2,2018,"HPV",0
+"ZMB","Zambia",2,2019,"HPV",0
+"ZMB","Zambia",1,2010,"HPV",0
+"ZMB","Zambia",1,2011,"HPV",0
+"ZMB","Zambia",1,2012,"HPV",0
+"ZMB","Zambia",1,2013,"HPV",0
+"ZMB","Zambia",1,2014,"HPV",0
+"ZMB","Zambia",1,2015,"HPV",0
+"ZMB","Zambia",1,2016,"HPV",0
+"ZMB","Zambia",1,2017,"HPV",0
+"ZMB","Zambia",1,2018,"HPV",0
+"ZMB","Zambia",1,2019,"HPV",0
+"ZWE","Zimbabwe",2,2010,"HPV",0
+"ZWE","Zimbabwe",2,2011,"HPV",0
+"ZWE","Zimbabwe",2,2012,"HPV",0
+"ZWE","Zimbabwe",2,2013,"HPV",0
+"ZWE","Zimbabwe",2,2014,"HPV",0
+"ZWE","Zimbabwe",2,2015,"HPV",0
+"ZWE","Zimbabwe",2,2016,"HPV",0
+"ZWE","Zimbabwe",2,2017,"HPV",0
+"ZWE","Zimbabwe",2,2018,"HPV",0
+"ZWE","Zimbabwe",2,2019,"HPV",67
+"ZWE","Zimbabwe",1,2010,"HPV",0
+"ZWE","Zimbabwe",1,2011,"HPV",0
+"ZWE","Zimbabwe",1,2012,"HPV",0
+"ZWE","Zimbabwe",1,2013,"HPV",0
+"ZWE","Zimbabwe",1,2014,"HPV",0
+"ZWE","Zimbabwe",1,2015,"HPV",0
+"ZWE","Zimbabwe",1,2016,"HPV",0
+"ZWE","Zimbabwe",1,2017,"HPV",0
+"ZWE","Zimbabwe",1,2018,"HPV",0
+"ZWE","Zimbabwe",1,2019,"HPV",0
