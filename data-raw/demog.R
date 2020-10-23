@@ -8,14 +8,15 @@ wpp_data_links <- list(
     life_table = file.path(WPP_ROOT, "WPP2019_Life_Table_Medium.csv")
 )
 dt_list <- lapply(wpp_data_links, fread)
-un_locs <- fread("data/un_locs.csv")
+
+# Pull in location table to sub in IDs
+un_locs <- fread("data-raw/un_locs.csv")
 un_locs[country_name == "Democratic People's Republic of Korea",
         country_name := "Dem. People's Republic of Korea"]
 un_locs[country_name == "Micronesia (Federated States of)",
         country_name := "Micronesia (Fed. States of)"]
 setnames(un_locs, "country_name", "Location")
-
-setdiff(un_locs$country_name, unique(pop$Location) ) 
+un_locs[, country_iso3 := NULL]
 
 # Prep population
 pop <- rbind(dt_list[["pop_past"]], dt_list[["pop_future"]])
@@ -55,9 +56,8 @@ lt <- data.table::melt.data.table(
 lt <- merge(lt, un_locs)
 lt[, Location := NULL]
 
-demog <- list(
-    population = pop,
-    fertility = fert,
-    life_tables = lt
-)
-usethis::use_data(demog, overwrite = TRUE)
+mydb <- dbConnect(RSQLite::SQLite(), "vieIA2030.db")
+
+DBI::dbWriteTable(mydb, "population_inputs", pop, overwrite = TRUE)
+DBI::dbWriteTable(mydb, "fertility_inputs", fert, overwrite = TRUE)
+DBI::dbWriteTable(mydb, "life_table_inputs", lt, overwrite = TRUE)

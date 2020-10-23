@@ -85,18 +85,14 @@ prep_hpv_coverage_data <- function() {
 }
 
 wuenic_dt <- prep_wuenic_data()
-write.csv(wuenic_dt, "data-raw/wuenic.csv", row.names = F)
-
 hpv_dt <- prep_hpv_coverage_data()
-write.csv(hpv_dt, "data-raw/hpv.csv", row.names = F)
-
 reported_dt <- prep_reported_coverage_data()
-write.csv(reported_dt, "data-raw/reported.csv", row.names = F)
 
 coverage <- data.table::rbindlist(
     list(wuenic_dt, hpv_dt, reported_dt),
     use.names = T
 )
 coverage[is.na(value), value := 0]
-class(coverage) <- c("coverage", class(coverage))
-usethis::use_data(coverage, overwrite = TRUE)
+
+mydb <- dbConnect(RSQLite::SQLite(), "vieIA2030.db")
+dbWriteTable(mydb, "coverage_inputs", coverage, overwrite = TRUE)
