@@ -15,3 +15,4 @@ vimc_impact <- melt_dt[order(
 
 mydb <- dbConnect(RSQLite::SQLite(), "vieIA2030.db")
 dbWriteTable(mydb, "vimc_impact_estimates", vimc_impact, overwrite = TRUE)
+dbDisconnect(mydb)

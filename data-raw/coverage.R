@@ -25,7 +25,7 @@ prep_wuenic_data <- function() {
     )
     dt[, sex_id := 3]
     # NOTE: We are subsetting to specific dose numbers here
-    vaccine_short_map <- data.table(
+    vaccine_short_map <- data.table::data.table(
         Vaccine = c("Hib3", "RCV1", "RotaC", "YFV", "Pol3", "HepB3", "MCV1",
             "PCV3", "DTP3", "BCG"),
         vaccine_short = c("Hib", "Rubella", "Rota", "YF", "Polio", "HepB",
@@ -93,6 +93,8 @@ coverage <- data.table::rbindlist(
     use.names = T
 )
 coverage[is.na(value), value := 0]
+coverage[, value := value / 100]
 
 mydb <- dbConnect(RSQLite::SQLite(), "vieIA2030.db")
 dbWriteTable(mydb, "coverage_inputs", coverage, overwrite = TRUE)
+dbDisconnect(mydb)
