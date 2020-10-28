@@ -34,7 +34,9 @@ pop <- merge(
 )
 pop[, variable := NULL]
 pop <- merge(pop, un_locs)
-pop[, Location := NULL]
+pop[, c("Location", "AgeGrpSpan") := NULL]
+setnames(pop, c("Time", "AgeGrpStart"), c("year", "age"))
+pop[, value := value * 1e3]
 
 # Prep fertility
 fert <- dt_list[["fertility"]]
@@ -56,9 +58,9 @@ lt <- data.table::melt.data.table(
 lt <- merge(lt, un_locs)
 lt[, Location := NULL]
 
-mydb <- dbConnect(RSQLite::SQLite(), "vieIA2030.db")
+mydb <- DBI::dbConnect(RSQLite::SQLite(), "vieIA2030.db")
 
 DBI::dbWriteTable(mydb, "population_inputs", pop, overwrite = TRUE)
 DBI::dbWriteTable(mydb, "fertility_inputs", fert, overwrite = TRUE)
 DBI::dbWriteTable(mydb, "life_table_inputs", lt, overwrite = TRUE)
-dbDisconnect(mydb)
+DBI::dbDisconnect(mydb)
