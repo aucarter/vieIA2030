@@ -12,15 +12,11 @@ melt_dt[, value := gsub("·", ".", value)]
 melt_dt[, value := as.numeric(value)]
 melt_dt <- unique(melt_dt)
 
-## Use Western Europe for Liechtenstein
-melt_dt[Location == "Western Europe", Location := "Liechtenstein"]
-
-## Use North Africa and Middle East for Palestine
-melt_dt[Location == "North Africa and Middle East", Location := "Palestine"]
-
-## Use Italy for Holy See
-hs_dt <- data.table::copy(melt_dt[Location == "Italy"])
-hs_dt[, Location := "Holy See"]
+## Use Oceania for Cook Islands and Niue
+hs_dt <- data.table::copy(melt_dt[Location == "Oceania"])
+hs_dt[, Location := "Cook Islands"]
+bind_dt <- rbind(melt_dt, hs_dt)
+hs_dt[, Location := "Niue"]
 bind_dt <- rbind(melt_dt, hs_dt)
 
 ## Location mapping
