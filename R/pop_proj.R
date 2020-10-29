@@ -1,7 +1,6 @@
 #' Generate population projection parameters from WPP data
 #' @param wpp_dt A data.table with WPP data
 #' @return A list of parameters
-#' @import data.table
 #' @export
 make_params <- function(wpp_dt) {
     n0 <- wpp_dt[measure %in% c("popM", "popF") &

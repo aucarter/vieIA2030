@@ -1,3 +1,5 @@
 inst/doc
 docs
 docs/
+.DS_Store
+vieIA2030.db

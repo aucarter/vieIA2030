@@ -1,0 +1,196 @@
+"country_iso3","country_name","country_id"
+"AFG","Afghanistan",1
+"ALB","Albania",2
+"DZA","Algeria",3
+"AND","Andorra",4
+"AGO","Angola",5
+"ATG","Antigua and Barbuda",6
+"ARG","Argentina",7
+"ARM","Armenia",8
+"AUS","Australia",9
+"AUT","Austria",10
+"AZE","Azerbaijan",11
+"BHS","Bahamas",12
+"BHR","Bahrain",13
+"BGD","Bangladesh",14
+"BRB","Barbados",15
+"BLR","Belarus",16
+"BEL","Belgium",17
+"BLZ","Belize",18
+"BEN","Benin",19
+"BTN","Bhutan",20
+"BOL","Bolivia (Plurinational State of)",21
+"BIH","Bosnia and Herzegovina",22
+"BWA","Botswana",23
+"BRA","Brazil",24
+"BRN","Brunei Darussalam",25
+"BGR","Bulgaria",26
+"BFA","Burkina Faso",27
+"BDI","Burundi",28
+"CPV","Cabo Verde",29
+"KHM","Cambodia",30
+"CMR","Cameroon",31
+"CAN","Canada",32
+"CAF","Central African Republic",33
+"TCD","Chad",34
+"CHL","Chile",35
+"CHN","China",36
+"COL","Colombia",37
+"COM","Comoros",38
+"COD","Democratic Republic of the Congo",39
+"COG","Congo",40
+"CRI","Costa Rica",41
+"CIV","Côte d'Ivoire",42
+"HRV","Croatia",43
+"CUB","Cuba",44
+"CYP","Cyprus",45
+"CZE","Czechia",46
+"DNK","Denmark",47
+"DJI","Djibouti",48
+"DMA","Dominica",49
+"DOM","Dominican Republic",50
+"ECU","Ecuador",51
+"EGY","Egypt",52
+"SLV","El Salvador",53
+"GNQ","Equatorial Guinea",54
+"ERI","Eritrea",55
+"EST","Estonia",56
+"SWZ","Eswatini",57
+"ETH","Ethiopia",58
+"FJI","Fiji",59
+"FIN","Finland",60
+"FRA","France",61
+"GAB","Gabon",62
+"GMB","Gambia",63
+"GEO","Georgia",64
+"DEU","Germany",65
+"GHA","Ghana",66
+"GRC","Greece",67
+"GRD","Grenada",68
+"GTM","Guatemala",69
+"GIN","Guinea",70
+"GNB","Guinea-Bissau",71
+"GUY","Guyana",72
+"HTI","Haiti",73
+"VAT","Holy See",74
+"HND","Honduras",75
+"HUN","Hungary",76
+"ISL","Iceland",77
+"IND","India",78
+"IDN","Indonesia",79
+"IRN","Iran (Islamic Republic of)",80
+"IRQ","Iraq",81
+"IRL","Ireland",82
+"ISR","Israel",83
+"ITA","Italy",84
+"JAM","Jamaica",85
+"JPN","Japan",86
+"JOR","Jordan",87
+"KAZ","Kazakhstan",88
+"KEN","Kenya",89
+"KIR","Kiribati",90
+"PRK","Democratic People's Republic of Korea",91
+"KOR","Republic of Korea",92
+"KWT","Kuwait",93
+"KGZ","Kyrgyzstan",94
+"LAO","Lao People's Democratic Republic",95
+"LVA","Latvia",96
+"LBN","Lebanon",97
+"LSO","Lesotho",98
+"LBR","Liberia",99
+"LBY","Libya",100
+"LIE","Liechtenstein",101
+"LTU","Lithuania",102
+"LUX","Luxembourg",103
+"MKD","North Macedonia",104
+"MDG","Madagascar",105
+"MWI","Malawi",106
+"MYS","Malaysia",107
+"MDV","Maldives",108
+"MLI","Mali",109
+"MLT","Malta",110
+"MHL","Marshall Islands",111
+"MRT","Mauritania",112
+"MUS","Mauritius",113
+"MEX","Mexico",114
+"FSM","Micronesia (Federated States of)",115
+"MDA","Republic of Moldova",116
+"MCO","Monaco",117
+"MNG","Mongolia",118
+"MNE","Montenegro",119
+"MAR","Morocco",120
+"MOZ","Mozambique",121
+"MMR","Myanmar",122
+"NAM","Namibia",123
+"NRU","Nauru",124
+"NPL","Nepal",125
+"NLD","Netherlands",126
+"NZL","New Zealand",127
+"NIC","Nicaragua",128
+"NER","Niger",129
+"NGA","Nigeria",130
+"NOR","Norway",131
+"OMN","Oman",132
+"PAK","Pakistan",133
+"PLW","Palau",134
+"PSE","Palestine",135
+"PAN","Panama",136
+"PNG","Papua New Guinea",137
+"PRY","Paraguay",138
+"PER","Peru",139
+"PHL","Philippines",140
+"POL","Poland",141
+"PRT","Portugal",142
+"QAT","Qatar",143
+"ROU","Romania",144
+"RUS","Russian Federation",145
+"RWA","Rwanda",146
+"KNA","Saint Kitts and Nevis",147
+"LCA","Saint Lucia",148
+"VCT","Saint Vincent and the Grenadines",149
+"WSM","Samoa",150
+"SMR","San Marino",151
+"STP","Sao Tome and Principe",152
+"SAU","Saudi Arabia",153
+"SEN","Senegal",154
+"SRB","Serbia",155
+"SYC","Seychelles",156
+"SLE","Sierra Leone",157
+"SGP","Singapore",158
+"SVK","Slovakia",159
+"SVN","Slovenia",160
+"SLB","Solomon Islands",161
+"SOM","Somalia",162
+"ZAF","South Africa",163
+"SSD","South Sudan",164
+"ESP","Spain",165
+"LKA","Sri Lanka",166
+"SDN","Sudan",167
+"SUR","Suriname",168
+"SWE","Sweden",169
+"CHE","Switzerland",170
+"SYR","Syrian Arab Republic",171
+"TJK","Tajikistan",172
+"TZA","United Republic of Tanzania",173
+"THA","Thailand",174
+"TLS","Timor-Leste",175
+"TGO","Togo",176
+"TON","Tonga",177
+"TTO","Trinidad and Tobago",178
+"TUN","Tunisia",179
+"TUR","Turkey",180
+"TKM","Turkmenistan",181
+"TUV","Tuvalu",182
+"UGA","Uganda",183
+"UKR","Ukraine",184
+"ARE","United Arab Emirates",185
+"GBR","United Kingdom",186
+"USA","United States of America",187
+"URY","Uruguay",188
+"UZB","Uzbekistan",189
+"VUT","Vanuatu",190
+"VEN","Venezuela (Bolivarian Republic of)",191
+"VNM","Viet Nam",192
+"YEM","Yemen",193
+"ZMB","Zambia",194
+"ZWE","Zimbabwe",195
