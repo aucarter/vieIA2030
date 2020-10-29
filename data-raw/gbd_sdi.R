@@ -1,7 +1,10 @@
 # Prep GBD 2019 SDI for use as a covariate
 
 ## Read data
-dt <- data.table::fread("inst/extdata/gbd19_sdi.csv", header = T)
+dt <- data.table::fread(
+    system.file("extdata", "gbd19_sdi.csv", package = "vieIA2030"),
+    header = T
+)
 
 ## Make long
 melt_dt <- data.table::melt(
@@ -11,13 +14,6 @@ melt_dt[, year := as.integer(as.character(year))]
 melt_dt[, value := gsub("·", ".", value)]
 melt_dt[, value := as.numeric(value)]
 melt_dt <- unique(melt_dt)
-
-## Use Oceania for Cook Islands and Niue
-hs_dt <- data.table::copy(melt_dt[Location == "Oceania"])
-hs_dt[, Location := "Cook Islands"]
-bind_dt <- rbind(melt_dt, hs_dt)
-hs_dt[, Location := "Niue"]
-bind_dt <- rbind(melt_dt, hs_dt)
 
 ## Location mapping
 data(loc_table)
