@@ -12,7 +12,8 @@ melt_dt <- data.table::melt.data.table(
 vimc_impact <- melt_dt[order(
     country_iso3, country_name, year, age, vaccine_short
 )]
+vimc_impact <- vimc_impact[!is.na(value) & value > 0]
 
-mydb <- dbConnect(RSQLite::SQLite(), "vieIA2030.db")
-dbWriteTable(mydb, "vimc_impact_estimates", vimc_impact, overwrite = TRUE)
-dbDisconnect(mydb)
+mydb <- DBI::dbConnect(RSQLite::SQLite(), "vieIA2030.db")
+DBI::dbWriteTable(mydb, "vimc_impact_estimates", vimc_impact, overwrite = TRUE)
+DBI::dbDisconnect(mydb)
