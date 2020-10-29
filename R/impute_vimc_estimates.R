@@ -1,4 +1,4 @@
-# Impute VIMC estimates
+# Impute VIMC estimates in missing locations
 # TODO: Bring in single-age deaths as denominator
 
 ## Load location table
