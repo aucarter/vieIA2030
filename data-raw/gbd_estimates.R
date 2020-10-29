@@ -18,7 +18,7 @@ gbd_estimates[, c("upper", "lower") := NULL]
 data(vaccine_table)
 gbd_estimates <- merge(
     gbd_estimates,
-    vaccine_table[, .(vaccine_short, cause_name)]
+    vaccine_table[, .(vaccine_id, cause_name)]
 )
 
 usethis::use_data(gbd_estimates, overwrite = TRUE)

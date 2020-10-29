@@ -95,6 +95,25 @@ coverage <- data.table::rbindlist(
 coverage[is.na(value), value := 0]
 coverage[, value := value / 100]
 
-mydb <- dbConnect(RSQLite::SQLite(), "vieIA2030.db")
-dbWriteTable(mydb, "coverage_inputs", coverage, overwrite = TRUE)
-dbDisconnect(mydb)
+## Merge on country_id
+data(loc_table)
+coverage <- merge(coverage, loc_table[, .(country_iso3, country_id)])
+coverage[, c("country_iso3", "country_name") := NULL]
+
+## Use DTP for D, T, and P
+dtp_dt <- coverage[vaccine_short == "DTP"]
+dtp_add <- rbindlist(
+    lapply(c("D", "T", "P"), function(v) {
+        copy(dtp_dt)[, vaccine_short := v]
+    })
+)
+coverage <- rbind(coverage[vaccine_short != "DTP"], dtp_add)
+
+## Merge on vaccine_id
+data(vaccine_table)
+coverage <- merge(coverage, vaccine_table[, .(vaccine_short, vaccine_id)])
+coverage[, vaccine_short := NULL]
+
+mydb <- DBI::dbConnect(RSQLite::SQLite(), "vieIA2030.db")
+DBI::dbWriteTable(mydb, "coverage_inputs", coverage, overwrite = TRUE)
+DBI::dbDisconnect(mydb)
