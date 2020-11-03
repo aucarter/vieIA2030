@@ -18,7 +18,7 @@ library(MortalityLaws)
 # Load all data
 #######################################################################################################################
 
-load("wppinput.Rda")
+load("ccpm/wppinput.Rda")
 locsall   <- loc %>% filter(location_name %in% unique(wpp.input$location_name)) %>% select(iso3, location_name) %>% arrange(iso3)
 countries <- locsall$location_name
 
