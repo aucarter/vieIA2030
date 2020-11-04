@@ -10,7 +10,7 @@ lt_est(y)
 \item{y}{Vector of mortality rates}
 }
 \value{
-
+A vector of life-expectancy, 1q0, and 5q0
 }
 \description{
 Calculate life-table values from mortality rates

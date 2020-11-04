@@ -18,9 +18,5 @@ A ggplot object with a world map
 Make a showing presence or absence of an indicator
 }
 \examples{
-dt <- prep_wuenic_data()
-map_locations(
-     unique(dt$country_iso3),
-     "Availability of WUENIC Coverage Estimates"
-)
+map_locations(loc_table$country_iso3, "All locations")
 }

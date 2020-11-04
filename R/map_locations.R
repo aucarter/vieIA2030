@@ -4,11 +4,7 @@
 #' @param title A string with the title of the plot
 #' @returns A ggplot object with a world map
 #' @examples 
-#' dt <- prep_wuenic_data()
-#' map_locations(
-#'      unique(dt$country_iso3),
-#'      "Availability of WUENIC Coverage Estimates"
-#' )
+#' map_locations(loc_table$country_iso3, "All locations")
 #' @export
 map_locations <- function(locations, title) {
     ggplot2::theme_set(ggplot2::theme_bw())
