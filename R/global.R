@@ -90,7 +90,6 @@ get_person <- function(x) {
 #' @param y Vector of mortality rates
 #' @return  A vector of life-expectancy, 1q0, and 5q0
 lt_est <- function(y) {
-  browser()
   px <- exp(-y)
   lx <- c(1, cumprod(px))
   ex <- round(sum(head(lx, -1) + tail(lx, -1)) / 2, 3)
