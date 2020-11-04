@@ -53,21 +53,21 @@ get_x <- function(fl, rn, sx, my) {
   }
 
   x <- readxl::read_excel(fl, sheet = sh, range = rh) %>%
-    dplyr::mutate(sex_name = sx) %>%
-    dplyr::select(
+    mutate(sex_name = sx) %>%
+    select(
       -c("Index", "Variant", "Region, subregion, country or area *", "Notes",
           "Type", "Parent code")
     ) %>%
-    dplyr::rename(
+    rename(
       year_id = `Reference date (as of 1 July)`,
       country_code = `Country code`
     ) %>%
     tidyr::gather(age, val, -country_code, -sex_name, -year_id) %>%
-    dplyr::filter(year_id > 1979 & year_id < my) %>%
-    dplyr::mutate(age = as.numeric(age), val = val * 1000) %>%
-    dplyr::group_by(country_code, year_id, sex_name, age) %>%
-    dplyr::summarise(nx = sum(val)) %>%
-    dplyr::ungroup()
+    filter(year_id > 1979 & year_id < my) %>%
+    mutate(age = as.numeric(age), val = val * 1000) %>%
+    group_by(country_code, year_id, sex_name, age) %>%
+    summarise(nx = sum(val)) %>%
+    ungroup()
 
   return(x)
 }
@@ -88,19 +88,19 @@ get_mx <- function() {
 
   mx_f <- mxF %>%
     tidyr::gather(year, mx, -country_code, -name, -age) %>%
-    dplyr::mutate(year = as.numeric(substr(year, 1, 4)) + 2.5) %>%
-    dplyr::filter(year > 1977) %>%
+    mutate(year = as.numeric(substr(year, 1, 4)) + 2.5) %>%
+    filter(year > 1977) %>%
     tidyr::spread(year, mx) %>%
-    dplyr::select(-c(name)) %>%
-    dplyr::mutate(sex_name = "Female")
+    select(-c(name)) %>%
+    mutate(sex_name = "Female")
   mx_m <- mxM %>%
-    dplyr::distinct() %>%
+    distinct() %>%
     tidyr::gather(year, mx, -country_code, -name, -age) %>%
-    dplyr::mutate(year = as.numeric(substr(year, 1, 4)) + 2.5) %>%
-    dplyr::filter(year > 1977) %>%
+    mutate(year = as.numeric(substr(year, 1, 4)) + 2.5) %>%
+    filter(year > 1977) %>%
     tidyr::spread(year, mx) %>%
-    dplyr::select(-c(name)) %>%
-    dplyr::mutate(sex_name = "Male")
+    select(-c(name)) %>%
+    mutate(sex_name = "Male")
   wppmx42   <- rbind(mx_f, mx_m)
   for (j in seq(1977.5, 2092.5, 5)) {
     for (i in (j + 0.5):(j + 4.5)) {
@@ -109,7 +109,7 @@ get_mx <- function() {
         parse(
           text = paste(
             paste(
-              "wppmx42 <- wppmx42 %>% dplyr::mutate(`",
+              "wppmx42 <- wppmx42 %>% mutate(`",
               i,
               "` = `",
               j,
@@ -127,7 +127,7 @@ get_mx <- function() {
     }
   }
   wppmx42 <- wppmx42 %>%
-    dplyr::select(country_code, sex_name, age, paste0(1980:2096))
+    select(country_code, sex_name, age, paste0(1980:2096))
 
   wppmx <- data.table(
     sex_name = character(),
@@ -139,22 +139,22 @@ get_mx <- function() {
   for (code in unique(wppmx42$country_code)) {
     print(paste0(code))
     dpred <- wppmx42 %>%
-      dplyr::filter(country_code == code) %>%
-      dplyr::arrange(sex_name, age) %>%
-      dplyr::select(-c(country_code, sex_name, age)) %>%
+      filter(country_code == code) %>%
+      arrange(sex_name, age) %>%
+      select(-c(country_code, sex_name, age)) %>%
       as.matrix()
     dpred[is.nan(dpred) | is.na(dpred)] <- 0.5
     dpred_mat <- apply(dpred, 2, split_rate)
     dpred_matb <- dpred_mat %>%
       data.table() %>%
-      dplyr::mutate(
+      mutate(
         sex_name = rep(c("Female", "Male"), each = 101),
         country_code = code,
         age = rep(0:100, 2)
       ) %>%
       tidyr::gather(year, mx, -country_code, -sex_name, -age) %>%
-      dplyr::mutate(year = as.numeric(year)) %>%
-      dplyr::rename(year_id = year)
+      mutate(year = as.numeric(year)) %>%
+      rename(year_id = year)
     wppmx <- rbind(wppmx, dpred_matb)
   }
 
@@ -166,19 +166,19 @@ get_fx <- function() {
   data("tfrprojMed", package = "wpp2019")
 
   tfra <- tfr %>%
-    dplyr::select(-c(last.observed)) %>%
+    select(-c(last.observed)) %>%
     tidyr::gather(year, tfr, -country_code, -name) %>%
-    dplyr::mutate(year = as.numeric(substr(year, 1, 4)) + 2.5) %>%
-    dplyr::filter(year > 1977) %>%
+    mutate(year = as.numeric(substr(year, 1, 4)) + 2.5) %>%
+    filter(year > 1977) %>%
     tidyr::spread(year, tfr) %>%
-    dplyr::select(-c(name))
+    select(-c(name))
   tfrb <- tfrprojMed %>%
     tidyr::gather(year, tfr, -country_code, -name) %>%
-    dplyr::mutate(year = as.numeric(substr(year, 1, 4)) + 2.5) %>%
-    dplyr::filter(year > 1977) %>%
+    mutate(year = as.numeric(substr(year, 1, 4)) + 2.5) %>%
+    filter(year > 1977) %>%
     tidyr::spread(year, tfr) %>%
-    dplyr::select(-c(name))
-  tfrall   <- dplyr::left_join(tfra, tfrb, by = "country_code")
+    select(-c(name))
+  tfrall   <- left_join(tfra, tfrb, by = "country_code")
   for (j in seq(1977.5, 2092.5, 5)) {
     for (i in (j + 0.5):(j + 4.5)) {
       k <- j + 5
@@ -186,7 +186,7 @@ get_fx <- function() {
         parse(
           text = paste(
             paste(
-              "tfrall <- tfrall %>% dplyr::mutate(`",
+              "tfrall <- tfrall %>% mutate(`",
               i,
               "` = `",
               j,
@@ -204,28 +204,28 @@ get_fx <- function() {
     }
   }
   tfrall <- tfrall %>%
-    dplyr::select(country_code, paste0(1980:2096)) %>%
+    select(country_code, paste0(1980:2096)) %>%
     tidyr::gather(year, tfr, -country_code) %>%
-    dplyr::mutate(year = as.numeric(year))
+    mutate(year = as.numeric(year))
 
   data("percentASFR", package = "wpp2019")
 
-  agef <- dplyr::tibble(
+  agef <- tibble(
     agec = paste0(seq(15, 45, 5), "-", seq(15, 45, 5) + 4),
     age = seq(15, 45, 5)
   )
   asfr <- percentASFR %>%
     tidyr::gather(year, afr, -country_code, -name, -age) %>%
-    dplyr::mutate(year = as.numeric(substr(year, 1, 4)) + 2.5) %>%
-    dplyr::filter(year > 1977) %>%
+    mutate(year = as.numeric(substr(year, 1, 4)) + 2.5) %>%
+    filter(year > 1977) %>%
     tidyr::spread(year, afr)  %>%
-    dplyr::rename(agec = age) %>%
-    dplyr::mutate(agec = paste0(agec)) %>%
-    dplyr::left_join(agef, by = "agec") %>%
-    dplyr::select(-c(name, agec)) %>%
-    dplyr::arrange(country_code, age)
+    rename(agec = age) %>%
+    mutate(agec = paste0(agec)) %>%
+    left_join(agef, by = "agec") %>%
+    select(-c(name, agec)) %>%
+    arrange(country_code, age)
 
-  age_asfr <- dplyr::tibble(agen = rep(seq(15, 45, 5), each = 5), age = 15:49)
+  age_asfr <- tibble(agen = rep(seq(15, 45, 5), each = 5), age = 15:49)
 
   for (j in seq(1977.5, 2092.5, 5)) {
     for (i in (j + 0.5):(j + 4.5)) {
@@ -234,7 +234,7 @@ get_fx <- function() {
         parse(
           text = paste(
             paste(
-              "asfr <- asfr %>% dplyr::mutate(`",
+              "asfr <- asfr %>% mutate(`",
               i,
               "` = `",
               j,
@@ -252,25 +252,25 @@ get_fx <- function() {
     }
   }
   asfrall <- asfr %>%
-    dplyr::select(country_code, age, paste0(1980:2096)) %>%
-    dplyr::rename(agen = age) %>%
-    dplyr::left_join(age_asfr, by = "agen") %>%
-    dplyr::select(-c(agen)) %>%
+    select(country_code, age, paste0(1980:2096)) %>%
+    rename(agen = age) %>%
+    left_join(age_asfr, by = "agen") %>%
+    select(-c(agen)) %>%
     tidyr::gather(year, fx, -country_code, -age) %>%
-    dplyr::group_by(country_code, year) %>%
-    dplyr::mutate(sfr = sum(fx, na.rm = T)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(asfr = fx / sfr)  %>%
-    dplyr::select(country_code, age, year, asfr) %>%
-    dplyr::mutate(year = as.numeric(year))
+    group_by(country_code, year) %>%
+    mutate(sfr = sum(fx, na.rm = T)) %>%
+    ungroup() %>%
+    mutate(asfr = fx / sfr)  %>%
+    select(country_code, age, year, asfr) %>%
+    mutate(year = as.numeric(year))
 
-  wppfx <- dplyr::left_join(tfrall, asfrall, by = c("country_code", "year")) %>%
-    dplyr::mutate(fx = asfr * tfr) %>%
-    dplyr::select(country_code, age, year, fx) %>%
+  wppfx <- left_join(tfrall, asfrall, by = c("country_code", "year")) %>%
+    mutate(fx = asfr * tfr) %>%
+    select(country_code, age, year, fx) %>%
     tidyr::spread(year, fx) %>%
-    dplyr::arrange(country_code, age) %>%
+    arrange(country_code, age) %>%
     tidyr::gather(year_id, fx, -age, -country_code) %>%
-    dplyr::mutate(sex_name = "Female", year_id = as.numeric(year_id))
+    mutate(sex_name = "Female", year_id = as.numeric(year_id))
 
   return(wppfx)
 }
@@ -328,36 +328,36 @@ get_mig <- function(is, nx, sx, fx, z) {
 }
 
 loc <- data.table::fread(f3)
-agem <- dplyr::tibble(
+agem <- tibble(
   agen = c(seq(0, 100, 5)),
   agec = c(paste0(seq(0, 95, 5), "-", seq(4, 99, 5)), "100+")
 )
 
 wpppop <- get_pop(f1, f2)
 wppmx <- get_mx()
-wpp_in <- dplyr::left_join(wpppop, loc, by = "country_code") %>%
-  dplyr::left_join(
+wpp_in <- left_join(wpppop, loc, by = "country_code") %>%
+  left_join(
     wppmx,
     by = c("country_code", "sex_name", "year_id", "age")
   ) %>%
-  dplyr::mutate(dx = mx * nx, age = ifelse(age > 95, 95, age)) %>%
-  dplyr::group_by(sex_name, year_id, age, country_code, location_name) %>%
-  dplyr::summarise(nx = sum(nx, na.rm = T), dx = sum(dx, na.rm = T)) %>%
-  dplyr::ungroup() %>%
-  dplyr::mutate(mx = ifelse(nx == 0, 0, dx / nx))
+  mutate(dx = mx * nx, age = ifelse(age > 95, 95, age)) %>%
+  group_by(sex_name, year_id, age, country_code, location_name) %>%
+  summarise(nx = sum(nx, na.rm = T), dx = sum(dx, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(mx = ifelse(nx == 0, 0, dx / nx))
 
 wppfx <- get_fx()
 wpp_in   <- wpp_in %>%
-  dplyr::left_join(
+  left_join(
     wppfx,
     by = c("country_code", "sex_name", "year_id", "age")
   ) %>%
-  dplyr::mutate(fx = ifelse(is.na(fx), 0, fx)) %>%
-  dplyr::select(location_name, sex_name, age, year_id, nx, mx, fx) %>%
-  dplyr::filter(!is.na(sex_name) & !is.na(location_name)) %>%
-  dplyr::arrange(location_name, sex_name, age) %>%
-  dplyr::left_join(
-    loc %>% dplyr::select(location_name, iso3),
+  mutate(fx = ifelse(is.na(fx), 0, fx)) %>%
+  select(location_name, sex_name, age, year_id, nx, mx, fx) %>%
+  filter(!is.na(sex_name) & !is.na(location_name)) %>%
+  arrange(location_name, sex_name, age) %>%
+  left_join(
+    loc %>% select(location_name, iso3),
     by = "location_name"
   )
 
@@ -369,23 +369,23 @@ wpp_in_list <- list(isn)
 for (c in 1:isn) {
   is <- isc[c]
   wpp_ina <- wpp_in  %>%
-    dplyr::filter(location_name == is) %>%
-    dplyr::arrange(sex_name, age, year_id)
+    filter(location_name == is) %>%
+    arrange(sex_name, age, year_id)
   fx <- wpp_ina %>%
-    dplyr::select(sex_name, age, year_id, fx) %>%
+    select(sex_name, age, year_id, fx) %>%
     tidyr::spread(year_id, fx) %>%
-    dplyr::select(-c(sex_name, age)) %>%
+    select(-c(sex_name, age)) %>%
     as.matrix()
   nx <- wpp_ina %>%
-    dplyr::select(sex_name, age, year_id, nx) %>%
+    select(sex_name, age, year_id, nx) %>%
     tidyr::spread(year_id, nx) %>%
-    dplyr::select(-c(sex_name, age)) %>%
+    select(-c(sex_name, age)) %>%
     as.matrix()
   nx[nx == 0] <- 1e-09
   mx <- wpp_ina %>%
-    dplyr::select(sex_name, age, year_id, mx) %>%
+    select(sex_name, age, year_id, mx) %>%
     tidyr::spread(year_id, mx) %>%
-    dplyr::select(-c(sex_name, age)) %>%
+    select(-c(sex_name, age)) %>%
     as.matrix()
   mx[mx == 0] <- 1e-09
   sx <- exp(-mx)
@@ -401,29 +401,29 @@ for (c in 1:isn) {
   colnames(migs) <- yrv
 
   migs <- migs %>%
-    dplyr::mutate(age = agv, sex_name = sxv) %>%
+    mutate(age = agv, sex_name = sxv) %>%
     tidyr::gather(year_id, mig, -age, -sex_name) %>%
-    dplyr::mutate(year_id = as.numeric(year_id)) %>%
-    dplyr::arrange(sex_name, age, year_id)
+    mutate(year_id = as.numeric(year_id)) %>%
+    arrange(sex_name, age, year_id)
 
-  wpp_in_list[[c]] <- dplyr::right_join(
+  wpp_in_list[[c]] <- right_join(
       wpp_ina,
       migs,
       by = c("year_id", "sex_name", "age")
     ) %>%
-    dplyr::select(location_name, iso3, sex_name, age, year_id, nx, mx, fx, mig)
+    select(location_name, iso3, sex_name, age, year_id, nx, mx, fx, mig)
 }
 
 wpp_input <- rbindlist(wpp_in_list)
 
 obs_wpp  <- fread(f4) %>%
-  dplyr::filter(!(variant == "Medium variant" & year == 2020)) %>%
-  dplyr::select(-c(variant)) %>%
-  dplyr::filter(year %in% 1980:2095) %>%
-  dplyr::right_join(loc, by = "country_code") %>%
-  dplyr::select(-c(country_code)) %>%
-  dplyr::filter(!is.na(year)) %>%
-  dplyr::mutate(
+  filter(!(variant == "Medium variant" & year == 2020)) %>%
+  select(-c(variant)) %>%
+  filter(year %in% 1980:2095) %>%
+  right_join(loc, by = "country_code") %>%
+  select(-c(country_code)) %>%
+  filter(!is.na(year)) %>%
+  mutate(
     deaths_both = deaths_both * 1e03,
     deaths_male = deaths_male * 1e03,
     deaths_female = deaths_female * 1e03,

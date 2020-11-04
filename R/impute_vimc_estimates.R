@@ -7,8 +7,8 @@ data(loc_table)
 ## Pull in VIMC estimates
 mydb <- DBI::dbConnect(RSQLite::SQLite(), "vieIA2030.db")
 vimc_dt <- data.table::as.data.table(
-    dplyr::collect(
-        dplyr::tbl(mydb, "vimc_impact_estimates")
+    collect(
+        tbl(mydb, "vimc_impact_estimates")
     )
 )
 data.table::setnames(vimc_dt, "value", "deaths_averted")

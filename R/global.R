@@ -1,19 +1,3 @@
-data(wpp_input)
-data(obs_wpp)
-data(loc)
-
-locsall <- loc %>%
-  dplyr::filter(location_name %in% unique(wpp_input$location_name)) %>%
-  dplyr::select(iso3, location_name) %>%
-  dplyr::arrange(iso3)
-countries <- locsall$location_name
-
-cols <- c(
-  "#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02",
-  "#A6761D", "#666666", "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3",
-  "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3"
-)
-
 get_ccpm <- function(nx, sx, fx, mig, z, n) {
   nxf <- nx[1:z, ]
   nxm <- nx[(z + 1):(2 * z), ]
@@ -82,7 +66,9 @@ get_ccpm <- function(nx, sx, fx, mig, z, n) {
       .5 * migm[1, i])
   }
 
-  list(population = rbind(pf, pm)[, 1:n], births = bxf + bxm)
+  ccpm <- list(population = rbind(pf, pm)[, 1:n], births = bxf + bxm)
+
+  return(ccpm)
 }
 
 get_person <- function(x) {
@@ -99,30 +85,33 @@ lt_est <- function(y) {
 }
 
 project_pop <- function(is, y0, y1) {
+  data(wpp_input)
+  data(obs_wpp)
+
   wpp_ina <- wpp_input  %>%
-    dplyr::filter(location_name == is & year_id %in% y0:(y1 + 1)) %>%
-    dplyr::select(-c(location_name)) %>%
-    dplyr::arrange(sex_name, age, year_id)
+    filter(location_name == is & year_id %in% y0:(y1 + 1)) %>%
+    select(-c(location_name)) %>%
+    arrange(sex_name, age, year_id)
   fx <- wpp_ina %>%
-    dplyr::select(sex_name, age, year_id, fx) %>%
+    select(sex_name, age, year_id, fx) %>%
     tidyr::spread(year_id, fx) %>%
-    dplyr::select(-c(sex_name, age)) %>%
+    select(-c(sex_name, age)) %>%
     as.matrix()
   nx <- wpp_ina %>%
-    dplyr::select(sex_name, age, year_id, nx) %>%
+    select(sex_name, age, year_id, nx) %>%
     tidyr::spread(year_id, nx) %>%
-    dplyr::select(-c(sex_name, age)) %>%
+    select(-c(sex_name, age)) %>%
     as.matrix()
   nx[nx == 0]   <- 1e-09
   mig <- wpp_ina %>%
-    dplyr::select(sex_name, age, year_id, mig) %>%
+    select(sex_name, age, year_id, mig) %>%
     tidyr::spread(year_id, mig) %>%
-    dplyr::select(-c(sex_name, age)) %>%
+    select(-c(sex_name, age)) %>%
     as.matrix()
   mx <- wpp_ina %>%
-    dplyr::select(sex_name, age, year_id, mx) %>%
+    select(sex_name, age, year_id, mx) %>%
     tidyr::spread(year_id, mx) %>%
-    dplyr::select(-c(sex_name, age)) %>%
+    select(-c(sex_name, age)) %>%
     as.matrix()
   mx[mx == 0] <- 1e-09
   sx <- exp(-mx)
@@ -154,8 +143,8 @@ project_pop <- function(is, y0, y1) {
   u5mr <- lt_out_both[3, ]
 
   locs <- loc %>%
-    dplyr::filter(location_name == is) %>%
-    dplyr::select(iso3, location_name)
+    filter(location_name == is) %>%
+    select(iso3, location_name)
 
   out_df <- data.table::data.table(
     group = "CCPM",
@@ -170,14 +159,21 @@ project_pop <- function(is, y0, y1) {
   ) %>%
   rbind(
     obs_wpp %>%
-    dplyr::filter(location_name == is & year %in% y0:y1) %>%
-    dplyr::mutate(group = "WPP2019")
+    filter(location_name == is & year %in% y0:y1) %>%
+    mutate(group = "WPP2019")
   )
 
   list(population = population, deaths = deaths, out_df = out_df)
 }
 
 get_all_deaths <- function(y0, y1) {
+  data(loc)
+  data(wpp_input)
+
+  locsall <- loc %>%
+    filter(location_name %in% unique(wpp_input$location_name)) %>%
+    select(iso3, location_name) %>%
+    arrange(iso3)
 
   isc <- locsall$location_name
   isco <- locsall$iso3
@@ -201,14 +197,14 @@ get_all_deaths <- function(y0, y1) {
     colnames(out) <- yrv
 
     out <- out %>%
-      dplyr::mutate(age = agv, sex_name = sxv) %>%
+      mutate(age = agv, sex_name = sxv) %>%
       tidyr::gather(year_id, deaths, -age, -sex_name) %>%
-      dplyr::mutate(
+      mutate(
         year_id = as.numeric(year_id),
         location_name = is,
         iso3 = iso
       ) %>%
-      dplyr::arrange(sex_name, age, year_id)
+      arrange(sex_name, age, year_id)
 
     death_list[[c]] <- out
   }

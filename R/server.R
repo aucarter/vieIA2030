@@ -3,9 +3,24 @@
 ###  Server    ########################################
 #######################################################
 
-server = shinyServer(function(input, output, session) {
-  
-values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL, year1 = NULL, year2 = NULL)
+
+cols <- c(
+  "#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02",
+  "#A6761D", "#666666", "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3",
+  "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3"
+)
+data(loc)
+data(wpp_input)
+locsall <- loc %>%
+  filter(location_name %in% unique(wpp_input$location_name)) %>%
+  select(iso3, location_name) %>%
+  arrange(iso3)
+countries <- locsall$location_name
+
+
+server <- shiny::shinyServer(function(input, output, session) {
+
+values <- shiny::reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL, year1 = NULL, year2 = NULL)
   
   observeEvent(c(input$loc, input$range[1], input$range[2]),{
     if(!is.null(input$loc)){
@@ -31,13 +46,13 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
 
   # The demography tab outputs
   
-  output$deathp <- renderHighchart ({
+  output$deathp <- highcharter::renderHighchart ({
     if(is.null(values)) return(NULL)
     y   <- values[["dem_out"]]
     loc <- values[["country"]]  
     
     y %>% 
-      hchart(., 
+      highcharter::hchart(., 
              type = "spline", 
              hcaes(x = year_id, 
                    y = deaths_both,
@@ -50,13 +65,13 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
       hc_add_theme(hc_theme_smpl())
   })
   
-  output$birthp <- renderHighchart ({
+  output$birthp <- highcharter::renderHighchart ({
     if(is.null(values)) return(NULL)
     y   <- values[["dem_out"]]
     loc <- values[["country"]]  
     
     y %>% 
-      hchart(., 
+      highcharter::hchart(., 
              type = "spline", 
              hcaes(x = year_id, 
                    y = births,
@@ -69,13 +84,13 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
       hc_add_theme(hc_theme_smpl())
   })
   
-  output$e0p <- renderHighchart ({
+  output$e0p <- highcharter::renderHighchart ({
     if(is.null(values)) return(NULL)
     y   <- values[["dem_out"]]
     loc <- values[["country"]]  
     
     y %>% 
-      hchart(., 
+      highcharter::hchart(., 
              type = "spline", 
              hcaes(x = year_id, 
                    y = e0,
@@ -88,13 +103,13 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
       hc_add_theme(hc_theme_smpl())
   })
   
-  output$imrp <- renderHighchart ({
+  output$imrp <- highcharter::renderHighchart ({
     if(is.null(values)) return(NULL)
     y   <- values[["dem_out"]]
     loc <- values[["country"]]  
     
     y %>% 
-      hchart(., 
+      highcharter::hchart(., 
              type = "spline", 
              hcaes(x = year_id, 
                    y = e0,
@@ -107,13 +122,13 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
       hc_add_theme(hc_theme_smpl())
   })
   
-  output$u5mrp <- renderHighchart ({
+  output$u5mrp <- highcharter::renderHighchart ({
     if(is.null(values)) return(NULL)
     y   <- values[["dem_out"]]
     loc <- values[["country"]]  
     
     y %>% 
-      hchart(., 
+      highcharter::hchart(., 
              type = "spline", 
              hcaes(x = year_id, 
                    y = u5mr,
@@ -126,7 +141,7 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
       hc_add_theme(hc_theme_smpl())
   })
   
-  output$poppy0 <- renderHighchart ({
+  output$poppy0 <- highcharter::renderHighchart ({
     if(is.null(values)) return(NULL)
     y   <- values[["pop_out"]] 
     loc <- values[["country"]]
@@ -141,7 +156,7 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
     
     categories = 0:95
     
-    highchart() %>%
+    highcharter::highchart() %>%
       hc_chart(type= 'bar')%>%
       hc_title(text= paste0(loc," ",y0, ", N = ",formatC(1000*sum(xd,yd), format="f", big.mark = ",", digits=0))) %>%
       hc_subtitle(text="Population pyramid is given in thousands") %>%
@@ -156,7 +171,7 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
       hc_exporting(enabled = TRUE) %>% hc_colors(cols[2:4]) 
 })
   
-  output$poppy1 <- renderHighchart ({
+  output$poppy1 <- highcharter::renderHighchart ({
     if(is.null(values)) return(NULL)
     y   <- values[["pop_out"]] 
     loc <- values[["country"]]
@@ -173,7 +188,7 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
     
     categories = 0:95
     
-    highchart() %>%
+    highcharter::highchart() %>%
       hc_chart(type= 'bar')%>%
       hc_title(text= paste0(loc," ",y1, ", N = ",formatC(1000*sum(xd,yd), format="f", big.mark = ",", digits=0))) %>%
       hc_subtitle(text="Population pyramid is given in thousands") %>%
@@ -188,7 +203,7 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
       hc_exporting(enabled = TRUE) %>% hc_colors(cols[2:4]) 
   })
   
-  output$poppy2 <- renderHighchart ({
+  output$poppy2 <- highcharter::renderHighchart ({
     if(is.null(values)) return(NULL)
     y   <- values[["pop_out"]] 
     loc <- values[["country"]]
@@ -205,7 +220,7 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
     
     categories = 0:95
     
-    highchart() %>%
+    highcharter::highchart() %>%
       hc_chart(type= 'bar')%>%
       hc_title(text= paste0(loc," ",y2, ", N = ",formatC(1000*sum(xd,yd), format="f", big.mark = ",", digits=0))) %>%
       hc_subtitle(text="Population pyramid is given in thousands") %>%
@@ -221,13 +236,13 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
   })
   
   
-  output$pin_table <- renderDataTable({
+  output$pin_table <- DT::renderDataTable({
     datatable(values$all.pin.df, 
               options = list(pageLength = 15))
   })
   
 
-  output$downloaddem <- downloadHandler(
+  output$downloaddem <- shiny::downloadHandler(
     filename = function() {
       loc <- values[["country"]]
       paste0(loc," DEM.csv")
@@ -237,7 +252,7 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
     }
   )
   
-  output$downloadpin <- downloadHandler(
+  output$downloadpin <- shiny::downloadHandler(
     filename = function() {
       loc <- values[["country"]]
       paste0(loc," PIN data.csv")
