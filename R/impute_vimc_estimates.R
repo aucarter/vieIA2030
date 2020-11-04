@@ -17,24 +17,24 @@ data.table::setnames(vimc_dt, "value", "deaths_averted")
 data(gbd_sdi)
 gbd_sdi[, c("country_name", "country_id") := NULL]
 data.table::setnames(gbd_sdi, "value", "sdi")
-dt <- merge(vimc_dt, gbd_sdi, by = c("country_iso3", "year"))
-dt <- dt[deaths_averted > 0 & !is.na(deaths_averted)]
+# dt <- merge(vimc_dt, gbd_sdi, by = c("country_iso3", "year"))
+# dt <- dt[deaths_averted > 0 & !is.na(deaths_averted)]
 
-## Look at Measles by age
-gg <- ggplot2::ggplot(
-    data = dt[vaccine_short == "Measles" & age < 11],
-    ggplot2::aes(x = age, y = deaths_averted, color = sdi)
-) + ggplot2::geom_point()
-gg
+# ## Look at Measles by age
+# gg <- ggplot2::ggplot(
+#     data = dt[vaccine_short == "Measles" & age < 11],
+#     ggplot2::aes(x = age, y = deaths_averted, color = sdi)
+# ) + ggplot2::geom_point()
+# gg
 
-## Model deaths_averted as function of SDI
-fit_deaths_averted <- brms::brm(
-    deaths_averted ~ 1 + sdi + s(age, k = 8),
-    knots = list(age = c(0, 1, 2, 3, 4, 5, 10, 50)),
-    family=Gamma(link="log"),
-    dt[vaccine_short == "Measles"],
-    cores = 4
-)
+# ## Model deaths_averted as function of SDI
+# fit_deaths_averted <- brms::brm(
+#     deaths_averted ~ 1 + sdi + s(age, k = 8),
+#     knots = list(age = c(0, 1, 2, 3, 4, 5, 10, 50)),
+#     family=Gamma(link="log"),
+#     dt[vaccine_short == "Measles"],
+#     cores = 4
+# )
 
 # ## Predict for missing locations
 # missing_locs  <- setdiff(loc_table$country_iso3, dt$country_iso3)
