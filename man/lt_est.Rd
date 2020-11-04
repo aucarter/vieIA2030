@@ -9,6 +9,9 @@ lt_est(y)
 \arguments{
 \item{y}{Vector of mortality rates}
 }
+\value{
+
+}
 \description{
 Calculate life-table values from mortality rates
 }

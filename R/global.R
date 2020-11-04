@@ -88,7 +88,7 @@ get_person <- function(x) {
 
 #' Calculate life-table values from mortality rates
 #' @param y Vector of mortality rates
-#' @return 
+#' @return  A vector of life-expectancy, 1q0, and 5q0
 lt_est <- function(y) {
   browser()
   px <- exp(-y)
@@ -101,6 +101,11 @@ lt_est <- function(y) {
   return(lt)
 }
 
+#' Run the population projection for a particular country and year range
+#' @param is Location name
+#' @param y0 Start year of projection
+#' @param y1 End year of projection
+#' @return A list of tables with population projection results
 project_pop <- function(is, y0, y1) {
   data(wpp_input)
   data(obs_wpp)
