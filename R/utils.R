@@ -1,3 +1,8 @@
+
+# mainly doing this for %>% pipe operator
+#' @import dplyr
+NULL
+
 # data.table is generally careful to minimize the scope for namespace
 # conflicts (i.e., functions with the same name as in other packages);
 # a more conservative approach using @importFrom should be careful to
@@ -9,4 +14,13 @@
 # advice (vignette('datatable-importing', 'data.table')).
 #
 #' @import data.table
+NULL
+
+# for shiny plots
+#' @import highcharter
+#' @import shiny
+NULL
+
+# for static plots
+#' @import ggplot2
 NULL
