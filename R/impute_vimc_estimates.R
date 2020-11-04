@@ -8,10 +8,9 @@ impute_vimc_estimates <- function() {
 ## Pull in VIMC estimates
 mydb <- DBI::dbConnect(RSQLite::SQLite(), "vieIA2030.db")
 vimc_dt <- data.table::as.data.table(
-    collect(
-        tbl(mydb, "vimc_impact_estimates")
-    )
-    data.table::setnames(vimc_dt, "value", "deaths_averted")
+    collect(tbl(mydb, "vimc_impact_estimates"))
+)
+data.table::setnames(vimc_dt, "value", "deaths_averted")
 
 ## Load SDI and merge on
 data(gbd_sdi)
