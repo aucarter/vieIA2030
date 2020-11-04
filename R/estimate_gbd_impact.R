@@ -8,9 +8,7 @@ combine_inputs <- function() {
     ## Pull in coverage
     mydb <- DBI::dbConnect(RSQLite::SQLite(), "vieIA2030.db")
     coverage_dt <- data.table::as.data.table(
-        collect(
-            tbl(mydb, "coverage_inputs")
-        )
+        collect(tbl(mydb, "coverage_inputs"))
     )
     DBI::dbDisconnect(mydb)
 

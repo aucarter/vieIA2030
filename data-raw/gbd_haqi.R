@@ -18,4 +18,9 @@ loc_merge[!is.na(un_name), country_name := un_name]
 loc_merge[, un_name := NULL]
 gbd_haqi <- merge(loc_table, loc_merge, all.x = T, by = "country_name")
 setnames(gbd_haqi, c("year_id", "val"), c("year", "value"))
+
+## Ignore uncertainty (for now)
+gbd_haqi[, c("upper", "lower") := NULL]
+gbd_haqi[, c("country_name", "country_iso3") := NULL]
+
 usethis::use_data(gbd_haqi, overwrite = TRUE)

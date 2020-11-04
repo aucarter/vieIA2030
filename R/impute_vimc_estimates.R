@@ -1,8 +1,9 @@
-# Impute VIMC estimates
+# Impute VIMC estimates in missing locations
 # TODO: Bring in single-age deaths as denominator
 
-## Load location table
-data(loc_table)
+impute_vimc_estimates <- function() {
+    ## Load location table
+    data(loc_table)
 
 ## Pull in VIMC estimates
 mydb <- DBI::dbConnect(RSQLite::SQLite(), "vieIA2030.db")
@@ -10,8 +11,7 @@ vimc_dt <- data.table::as.data.table(
     collect(
         tbl(mydb, "vimc_impact_estimates")
     )
-)
-data.table::setnames(vimc_dt, "value", "deaths_averted")
+    data.table::setnames(vimc_dt, "value", "deaths_averted")
 
 ## Load SDI and merge on
 data(gbd_sdi)
@@ -36,30 +36,31 @@ data.table::setnames(gbd_sdi, "value", "sdi")
 #     cores = 4
 # )
 
-# ## Predict for missing locations
-# missing_locs  <- setdiff(loc_table$country_iso3, dt$country_iso3)
-# pred_dt <- data.table::rbindlist(
-#     lapply(
-#         unique(cov_dt$vaccine_short), function(vacc) {
-#             gbd_sdi[country_iso3 %in% missing_locs][, vaccine_short := vacc]
-#         }
-#     )
-# )
-# pred_dt[, coverage := predict(fit_coverage, pred_dt)]
+    # ## Predict for missing locations
+    # missing_locs  <- setdiff(loc_table$country_iso3, dt$country_iso3)
+    # pred_dt <- data.table::rbindlist(
+    #     lapply(
+    #         unique(cov_dt$vaccine_id), function(vacc) {
+    #             gbd_sdi[country_iso3 %in% missing_locs][, vaccine_id := vacc]
+    #         }
+    #     )
+    # )
+    # pred_dt[, coverage := predict(fit_coverage, pred_dt)]
 
-# ## Predict start year
-# start_dt <- dt[, .(year = min(year)), by = .(country_iso3, vaccine_short)]
-# merge_dt <- merge(
-#     start_dt,
-#     dt[, .(country_iso3, year, vaccine_short, sdi)],
-#     by = c("country_iso3", "year", "vaccine_short")
-# )
-# fit_start <- lm(
-#     year ~ 1 + sdi + vaccine_short,
-#     merge_dt
-# )
-# pred_dt[, start_year := round(predict(fit_start, pred_dt))]
-# pred_dt[year < start_year, coverage := 0]
-# pred_dt[, start_year := NULL]
+    # ## Predict start year
+    # start_dt <- dt[, .(year = min(year)), by = .(country_iso3, vaccine_id)]
+    # merge_dt <- merge(
+    #     start_dt,
+    #     dt[, .(country_iso3, year, vaccine_id, sdi)],
+    #     by = c("country_iso3", "year", "vaccine_id")
+    # )
+    # fit_start <- lm(
+    #     year ~ 1 + sdi + vaccine_id,
+    #     merge_dt
+    # )
+    # pred_dt[, start_year := round(predict(fit_start, pred_dt))]
+    # pred_dt[year < start_year, coverage := 0]
+    # pred_dt[, start_year := NULL]
 
-# coverage <- rbind(cov_dt, pred_dt)
+    # coverage <- rbind(cov_dt, pred_dt)
+}
