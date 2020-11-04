@@ -1,3 +1,12 @@
+#' Execute cohort-component projection model
+#' @param nx Population matrix
+#' @param sx Survival matrix
+#' @param fx Fertility matrix
+#' @param mig Migration matrix
+#' @param z Number of age groups
+#' @param n Number of years of projection
+#' @return A list with population and births matrices
+#' @export
 get_ccpm <- function(nx, sx, fx, mig, z, n) {
   nxf <- nx[1:z, ]
   nxm <- nx[(z + 1):(2 * z), ]
@@ -71,17 +80,25 @@ get_ccpm <- function(nx, sx, fx, mig, z, n) {
   return(ccpm)
 }
 
+# TODO: This could be more clear
+#' Not sure why this is needed
 get_person <- function(x) {
   x[1:96] + x[-c(1:96)]
 }
 
+#' Calculate life-table values from mortality rates
+#' @param y Vector of mortality rates
+#' @return 
 lt_est <- function(y) {
+  browser()
   px <- exp(-y)
   lx <- c(1, cumprod(px))
   ex <- round(sum(head(lx, -1) + tail(lx, -1)) / 2, 3)
   q5 <- 1000 * (1 - lx[6])
   q1 <- 1000 * (1 - lx[2])
-  c(ex, q1, q5)
+  lt <- c(ex, q1, q5)
+
+  return(lt)
 }
 
 project_pop <- function(is, y0, y1) {
@@ -166,6 +183,10 @@ project_pop <- function(is, y0, y1) {
   list(population = population, deaths = deaths, out_df = out_df)
 }
 
+#' Calculate all single-year deaths
+#' @param y0 Start year of projection
+#' @param y1 End year of projection
+#' @return A data.table with single-year deaths
 get_all_deaths <- function(y0, y1) {
   data(loc)
   data(wpp_input)
