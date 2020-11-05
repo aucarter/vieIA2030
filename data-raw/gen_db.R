@@ -1,6 +1,3 @@
-message("Prepping demography...")
-source("data-raw/demog.R")
-
 message("Prepping vaccine coverage...")
 source("data-raw/coverage.R")
 
