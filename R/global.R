@@ -163,9 +163,9 @@ project_pop <- function(is, y0, y1) {
   imr <- lt_out_both[2, ]
   u5mr <- lt_out_both[3, ]
 
-  locs <- loc %>%
+  locs <- loc_table %>%
     filter(location_name == is) %>%
-    select(iso3, location_name)
+    select(location_iso3, location_name)
 
   out_df <- data.table::data.table(
     group = "CCPM",
@@ -192,16 +192,13 @@ project_pop <- function(is, y0, y1) {
 #' @param y1 End year of projection
 #' @return A data.table with single-year deaths
 get_all_deaths <- function(y0, y1) {
-  data(loc)
-  data(wpp_input)
-
   locsall <- loc %>%
     filter(location_name %in% unique(wpp_input$location_name)) %>%
-    select(iso3, location_name) %>%
-    arrange(iso3)
+    select(location_iso3, location_name) %>%
+    arrange(location_iso3)
 
   isc <- locsall$location_name
-  isco <- locsall$iso3
+  isco <- locsall$location_iso3
   isn <- length(isc)
   death_list <- list(isn)
 
@@ -227,7 +224,7 @@ get_all_deaths <- function(y0, y1) {
       mutate(
         year_id = as.numeric(year_id),
         location_name = is,
-        iso3 = iso
+        location_iso3 = iso
       ) %>%
       arrange(sex_name, age, year_id)
 
