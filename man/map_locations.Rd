@@ -18,5 +18,5 @@ A ggplot object with a world map
 Make a showing presence or absence of an indicator
 }
 \examples{
-map_locations(loc_table$country_iso3, "All locations")
+map_locations(loc_table$location_iso3, "All locations")
 }
