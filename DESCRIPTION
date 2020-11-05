@@ -28,7 +28,8 @@ Imports:
     sf,
     rnaturalearth,
     rnaturalearthdata,
-    rgeos
+    rgeos,
+    utils
 Suggests: 
     knitr,
     rmarkdown,

@@ -26,5 +26,5 @@ NULL
 NULL
 
 # based on devtools::check() recommendations
-#' @importFrom("utils", "data", "head", "tail", "write.csv")
+#' @importFrom utils data head tail write.csv
 NULL
