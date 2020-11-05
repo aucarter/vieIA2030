@@ -14,11 +14,6 @@ dt[metric_id == 3,
     c("val", "upper", "lower") := .(val / 1e5, upper / 1e5, lower / 1e5)]
 
 dt[cause_name == "pertussis", cause_name := "Pertussis"]
-data(loc_table)
-gbd_loc_map <- loc_table
-setnames(gbd_loc_map, "country_name", "location_name")
-dt <- merge(dt, gbd_loc_map)
-dt[, c("location_name", "country_iso3") := NULL]
 
 age_map <- data.table(
     age_name = c(

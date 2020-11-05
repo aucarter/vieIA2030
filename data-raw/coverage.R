@@ -21,7 +21,7 @@ prep_wuenic_data <- function() {
     data.table::setnames(
         dt,
         c("ISO_code", "Cname"),
-        c("country_iso3", "country_name")
+        c("location_iso3", "location_name")
     )
     dt[, sex_id := 3]
     # NOTE: We are subsetting to specific dose numbers here
@@ -50,7 +50,7 @@ prep_reported_coverage_data <- function() {
     data.table::setnames(
         dt,
         c("ISO_code", "Cname", "Vaccine", "Year", "Percent_covrage"),
-        c("country_iso3", "country_name", "vaccine_short", "year", "value")
+        c("location_iso3", "location_name", "vaccine_short", "year", "value")
     )
     dt <- dt[vaccine_short %in% c("JapEnc", "MenA")]
     dt[vaccine_short == "JapEnc", vaccine_short := "JE"]
@@ -73,13 +73,13 @@ prep_hpv_coverage_data <- function() {
     setnames(
         dt,
         c("iso3code", "area_name"),
-        c("country_iso3", "country_name")
+        c("location_iso3", "location_name")
     )
     dt[, sex_id := ifelse(sex == "Male", 1, 2)]
     dt[, value_no_pct := data.table::tstrsplit(value_str, "%")[[1]]]
     dt[value_no_pct == "-", value_no_pct := "0"]
     dt[, value := as.numeric(value_no_pct)]
-    dt <- dt[, .(country_iso3, country_name, sex_id, year, vaccine_short, value)]
+    dt <- dt[, .(location_iso3, location_name, sex_id, year, vaccine_short, value)]
 
     return(dt)
 }
@@ -95,10 +95,9 @@ coverage <- data.table::rbindlist(
 coverage[is.na(value), value := 0]
 coverage[, value := value / 100]
 
-## Merge on country_id
-data(loc_table)
-coverage <- merge(coverage, loc_table[, .(country_iso3, country_id)])
-coverage[, c("country_iso3", "country_name") := NULL]
+## Merge on location_id
+coverage <- merge(coverage, loc_table[, .(location_iso3, location_id)])
+coverage[, c("location_iso3", "location_name") := NULL]
 
 ## Use DTP for D, T, and P
 dtp_dt <- coverage[vaccine_short == "DTP"]
