@@ -1,6 +1,6 @@
 
 # mainly doing this for %>% pipe operator
-#' @import dplyr
+#' @rawNamespace import(dplyr, except = c(last, first, between))
 NULL
 
 # data.table is generally careful to minimize the scope for namespace
@@ -23,4 +23,8 @@ NULL
 
 # for static plots
 #' @import ggplot2
+NULL
+
+# based on devtools::check() recommendations
+#' @importFrom("utils", "data", "head", "tail", "write.csv")
 NULL
