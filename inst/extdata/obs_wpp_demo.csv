@@ -1,4 +1,4 @@
-variant,country_code,year,deaths_both,deaths_male,deaths_female,e0,e0_male,e0_female,imr,u5mr,births
+variant,location_code,year,deaths_both,deaths_male,deaths_female,e0,e0_male,e0_female,imr,u5mr,births
 Estimates,900,1950,51344.793,26760.98,24583.821,45.733,44.342,47.184,145.904,223.391,97375.317
 Estimates,900,1951,51137.291,26667.514,24469.773,46.069,44.655,47.544,144.157,220.441,97429.766
 Estimates,900,1952,50778.719,26507.018,24271.705,46.712,45.257,48.23,140.826,214.83,97655
