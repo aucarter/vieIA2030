@@ -15,10 +15,10 @@ gbd_estimates[, metric_id := NULL]
 gbd_estimates[, c("upper", "lower") := NULL]
 
 ## Merge on associated vaccine info
-data(vaccine_table)
 gbd_estimates <- merge(
     gbd_estimates,
-    vaccine_table[, .(vaccine_id, cause_name)]
+    vaccine_table[, .(vaccine_id, cause_name)],
+    by = "cause_name"
 )
 
 usethis::use_data(gbd_estimates, overwrite = TRUE)
