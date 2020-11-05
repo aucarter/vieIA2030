@@ -109,7 +109,6 @@ dtp_add <- rbindlist(
 coverage <- rbind(coverage[vaccine_short != "DTP"], dtp_add)
 
 ## Merge on vaccine_id
-data(vaccine_table)
 coverage <- merge(coverage, vaccine_table[, .(vaccine_short, vaccine_id)])
 coverage[, vaccine_short := NULL]
 

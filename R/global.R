@@ -106,9 +106,6 @@ lt_est <- function(y) {
 #' @param y1 End year of projection
 #' @return A list of tables with population projection results
 project_pop <- function(is, y0, y1) {
-  data(wpp_input)
-  data(obs_wpp)
-
   wpp_ina <- wpp_input  %>%
     filter(location_name == is & year_id %in% y0:(y1 + 1)) %>%
     select(-c(location_name)) %>%

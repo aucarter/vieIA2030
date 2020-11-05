@@ -13,7 +13,6 @@ vimc_dt <- data.table::as.data.table(
 data.table::setnames(vimc_dt, "value", "deaths_averted")
 
 ## Load SDI and merge on
-data(gbd_sdi)
 gbd_sdi[, c("location_name", "location_id") := NULL]
 data.table::setnames(gbd_sdi, "value", "sdi")
 # dt <- merge(vimc_dt, gbd_sdi, by = c("location_iso3", "year"))
