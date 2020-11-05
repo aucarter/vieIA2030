@@ -2,19 +2,18 @@
 #######################################################
 ###  Server    ########################################
 #######################################################
-
+data(loc_table)
+data(wpp_input)
 
 cols <- c(
   "#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02",
   "#A6761D", "#666666", "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3",
   "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3"
 )
-data(loc)
-data(wpp_input)
-locsall <- loc %>%
+locsall <- loc_table %>%
   filter(location_name %in% unique(wpp_input$location_name)) %>%
-  select(iso3, location_name) %>%
-  arrange(iso3)
+  select(location_iso3, location_name) %>%
+  arrange(location_iso3)
 countries <- locsall$location_name
 
 
