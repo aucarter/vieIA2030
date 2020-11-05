@@ -3,7 +3,7 @@
 
 impute_vimc_estimates <- function() {
     ## Load location table
-    data(loc_table)
+
 
 ## Pull in VIMC estimates
 mydb <- DBI::dbConnect(RSQLite::SQLite(), "vieIA2030.db")
@@ -14,9 +14,9 @@ data.table::setnames(vimc_dt, "value", "deaths_averted")
 
 ## Load SDI and merge on
 data(gbd_sdi)
-gbd_sdi[, c("country_name", "country_id") := NULL]
+gbd_sdi[, c("location_name", "location_id") := NULL]
 data.table::setnames(gbd_sdi, "value", "sdi")
-# dt <- merge(vimc_dt, gbd_sdi, by = c("country_iso3", "year"))
+# dt <- merge(vimc_dt, gbd_sdi, by = c("location_iso3", "year"))
 # dt <- dt[deaths_averted > 0 & !is.na(deaths_averted)]
 
 # ## Look at Measles by age
@@ -36,22 +36,22 @@ data.table::setnames(gbd_sdi, "value", "sdi")
 # )
 
     # ## Predict for missing locations
-    # missing_locs  <- setdiff(loc_table$country_iso3, dt$country_iso3)
+    # missing_locs  <- setdiff(loc_table$location_iso3, dt$location_iso3)
     # pred_dt <- data.table::rbindlist(
     #     lapply(
     #         unique(cov_dt$vaccine_id), function(vacc) {
-    #             gbd_sdi[country_iso3 %in% missing_locs][, vaccine_id := vacc]
+    #             gbd_sdi[location_iso3 %in% missing_locs][, vaccine_id := vacc]
     #         }
     #     )
     # )
     # pred_dt[, coverage := predict(fit_coverage, pred_dt)]
 
     # ## Predict start year
-    # start_dt <- dt[, .(year = min(year)), by = .(country_iso3, vaccine_id)]
+    # start_dt <- dt[, .(year = min(year)), by = .(location_iso3, vaccine_id)]
     # merge_dt <- merge(
     #     start_dt,
-    #     dt[, .(country_iso3, year, vaccine_id, sdi)],
-    #     by = c("country_iso3", "year", "vaccine_id")
+    #     dt[, .(location_iso3, year, vaccine_id, sdi)],
+    #     by = c("location_iso3", "year", "vaccine_id")
     # )
     # fit_start <- lm(
     #     year ~ 1 + sdi + vaccine_id,
