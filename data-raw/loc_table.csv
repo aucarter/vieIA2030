@@ -1,195 +1,195 @@
-"location_name","location_iso3","gbd_alt_name","wpp_name","wpp_location_code"
-"Afghanistan","AFG","Afghanistan","Afghanistan",4
-"Albania","ALB","Albania","Albania",8
-"Algeria","DZA","Algeria","Algeria",12
-"Andorra","AND","Andorra",NA,NA
-"Angola","AGO","Angola","Angola",24
-"Antigua and Barbuda","ATG","Antigua and Barbuda","Antigua and Barbuda",28
-"Argentina","ARG","Argentina","Argentina",32
-"Armenia","ARM","Armenia","Armenia",51
-"Australia","AUS","Australia","Australia",36
-"Austria","AUT","Austria","Austria",40
-"Azerbaijan","AZE","Azerbaijan","Azerbaijan",31
-"Bahamas","BHS","The Bahamas","Bahamas",44
-"Bahrain","BHR","Bahrain","Bahrain",48
-"Bangladesh","BGD","Bangladesh","Bangladesh",50
-"Barbados","BRB","Barbados","Barbados",52
-"Belarus","BLR","Belarus","Belarus",112
-"Belgium","BEL","Belgium","Belgium",56
-"Belize","BLZ","Belize","Belize",84
-"Benin","BEN","Benin","Benin",204
-"Bhutan","BTN","Bhutan","Bhutan",64
-"Bolivia (Plurinational State of)","BOL","Bolivia","Bolivia (Plurinational State of)",68
-"Bosnia and Herzegovina","BIH","Bosnia and Herzegovina","Bosnia and Herzegovina",70
-"Botswana","BWA","Botswana","Botswana",72
-"Brazil","BRA","Brazil","Brazil",76
-"Brunei Darussalam","BRN","Brunei","Brunei Darussalam",96
-"Bulgaria","BGR","Bulgaria","Bulgaria",100
-"Burkina Faso","BFA","Burkina Faso","Burkina Faso",854
-"Burundi","BDI","Burundi","Burundi",108
-"Cabo Verde","CPV","Cape Verde","Cabo Verde",132
-"Cambodia","KHM","Cambodia","Cambodia",116
-"Cameroon","CMR","Cameroon","Cameroon",120
-"Canada","CAN","Canada","Canada",124
-"Central African Republic","CAF","Central African Republic","Central African Republic",140
-"Chad","TCD","Chad","Chad",148
-"Chile","CHL","Chile","Chile",152
-"China","CHN","China","China",156
-"Colombia","COL","Colombia","Colombia",170
-"Comoros","COM","Comoros","Comoros",174
-"Congo","COG","Congo (Brazzaville)","Congo",178
-"Cook Islands","COK","Cook Islands",NA,NA
-"Costa Rica","CRI","Costa Rica","Costa Rica",188
-"Croatia","HRV","Croatia","Croatia",191
-"Cuba","CUB","Cuba","Cuba",192
-"Cyprus","CYP","Cyprus","Cyprus",196
-"Czechia","CZE","Czech Republic","Czechia",203
-"Côte d'Ivoire","CIV","Côte d'Ivoire","Cote d'Ivoire",384
-"Democratic People's Republic of Korea","PRK","North Korea","Dem. People's Rep. of Korea",408
-"Democratic Republic of the Congo","COD","DR Congo","Dem. Republic of the Congo",180
-"Denmark","DNK","Denmark","Denmark",208
-"Djibouti","DJI","Djibouti","Djibouti",262
-"Dominica","DMA","Dominica",NA,NA
-"Dominican Republic","DOM","Dominican Republic","Dominican Republic",214
-"Ecuador","ECU","Ecuador","Ecuador",218
-"Egypt","EGY","Egypt","Egypt",818
-"El Salvador","SLV","El Salvador","El Salvador",222
-"Equatorial Guinea","GNQ","Equatorial Guinea","Equatorial Guinea",226
-"Eritrea","ERI","Eritrea","Eritrea",232
-"Estonia","EST","Estonia","Estonia",233
-"Eswatini","SWZ","eSwatini","Eswatini",748
-"Ethiopia","ETH","Ethiopia","Ethiopia",231
-"Fiji","FJI","Fiji","Fiji",242
-"Finland","FIN","Finland","Finland",246
-"France","FRA","France","France",250
-"Gabon","GAB","Gabon","Gabon",266
-"Gambia","GMB","The Gambia","Gambia",270
-"Georgia","GEO","Georgia","Georgia",268
-"Germany","DEU","Germany","Germany",276
-"Ghana","GHA","Ghana","Ghana",288
-"Greece","GRC","Greece","Greece",300
-"Grenada","GRD","Grenada","Grenada",308
-"Guatemala","GTM","Guatemala","Guatemala",320
-"Guinea","GIN","Guinea","Guinea",324
-"Guinea-Bissau","GNB","Guinea-Bissau","Guinea-Bissau",624
-"Guyana","GUY","Guyana","Guyana",328
-"Haiti","HTI","Haiti","Haiti",332
-"Honduras","HND","Honduras","Honduras",340
-"Hungary","HUN","Hungary","Hungary",348
-"Iceland","ISL","Iceland","Iceland",352
-"India","IND","India","India",356
-"Indonesia","IDN","Indonesia","Indonesia",360
-"Iran (Islamic Republic of)","IRN","Iran","Iran (Islamic Republic of)",364
-"Iraq","IRQ","Iraq","Iraq",368
-"Ireland","IRL","Ireland","Ireland",372
-"Israel","ISR","Israel","Israel",376
-"Italy","ITA","Italy","Italy",380
-"Jamaica","JAM","Jamaica","Jamaica",388
-"Japan","JPN","Japan","Japan",392
-"Jordan","JOR","Jordan","Jordan",400
-"Kazakhstan","KAZ","Kazakhstan","Kazakhstan",398
-"Kenya","KEN","Kenya","Kenya",404
-"Kiribati","KIR","Kiribati","Kiribati",296
-"Kuwait","KWT","Kuwait","Kuwait",414
-"Kyrgyzstan","KGZ","Kyrgyzstan","Kyrgyzstan",417
-"Lao People's Democratic Republic","LAO","Laos","Lao People's Dem. Republic",418
-"Latvia","LVA","Latvia","Latvia",428
-"Lebanon","LBN","Lebanon","Lebanon",422
-"Lesotho","LSO","Lesotho","Lesotho",426
-"Liberia","LBR","Liberia","Liberia",430
-"Libya","LBY","Libya","Libya",434
-"Lithuania","LTU","Lithuania","Lithuania",440
-"Luxembourg","LUX","Luxembourg","Luxembourg",442
-"Madagascar","MDG","Madagascar","Madagascar",450
-"Malawi","MWI","Malawi","Malawi",454
-"Malaysia","MYS","Malaysia","Malaysia",458
-"Maldives","MDV","Maldives","Maldives",462
-"Mali","MLI","Mali","Mali",466
-"Malta","MLT","Malta","Malta",470
-"Marshall Islands","MHL","Marshall Islands",NA,NA
-"Mauritania","MRT","Mauritania","Mauritania",478
-"Mauritius","MUS","Mauritius","Mauritius",480
-"Mexico","MEX","Mexico","Mexico",484
-"Micronesia (Federated States of)","FSM","Federated States of Micronesia","Micronesia (Fed. States of)",583
-"Monaco","MCO","Monaco",NA,NA
-"Mongolia","MNG","Mongolia","Mongolia",496
-"Montenegro","MNE","Montenegro","Montenegro",499
-"Morocco","MAR","Morocco","Morocco",504
-"Mozambique","MOZ","Mozambique","Mozambique",508
-"Myanmar","MMR","Myanmar","Myanmar",104
-"Namibia","NAM","Namibia","Namibia",516
-"Nauru","NRU","Nauru",NA,NA
-"Nepal","NPL","Nepal","Nepal",524
-"Netherlands","NLD","Netherlands","Netherlands",528
-"New Zealand","NZL","New Zealand","New Zealand",554
-"Nicaragua","NIC","Nicaragua","Nicaragua",558
-"Niger","NER","Niger","Niger",562
-"Nigeria","NGA","Nigeria","Nigeria",566
-"Niue","NIU","Niue",NA,NA
-"North Macedonia","MKD","North Macedonia","North Macedonia",807
-"Norway","NOR","Norway","Norway",578
-"Oman","OMN","Oman","Oman",512
-"Pakistan","PAK","Pakistan","Pakistan",586
-"Palau","PLW","Palau",NA,NA
-"Panama","PAN","Panama","Panama",591
-"Papua New Guinea","PNG","Papua New Guinea","Papua New Guinea",598
-"Paraguay","PRY","Paraguay","Paraguay",600
-"Peru","PER","Peru","Peru",604
-"Philippines","PHL","Philippines","Philippines",608
-"Poland","POL","Poland","Poland",616
-"Portugal","PRT","Portugal","Portugal",620
-"Qatar","QAT","Qatar","Qatar",634
-"Republic of Korea","KOR","South Korea","Republic of Korea",410
-"Republic of Moldova","MDA","Moldova","Republic of Moldova",498
-"Romania","ROU","Romania","Romania",642
-"Russian Federation","RUS","Russia","Russian Federation",643
-"Rwanda","RWA","Rwanda","Rwanda",646
-"Saint Kitts and Nevis","KNA","Saint Kitts and Nevis",NA,NA
-"Saint Lucia","LCA","Saint Lucia","Saint Lucia",662
-"Saint Vincent and the Grenadines","VCT","Saint Vincent and the Grenadines","St. Vincent and the Grenadines",670
-"Samoa","WSM","Samoa","Samoa",882
-"San Marino","SMR","San Marino",NA,NA
-"Sao Tome and Principe","STP","São Tomé and PrÍncipe","Sao Tome and Principe",678
-"Saudi Arabia","SAU","Saudi Arabia","Saudi Arabia",682
-"Senegal","SEN","Senegal","Senegal",686
-"Serbia","SRB","Serbia","Serbia",688
-"Seychelles","SYC","Seychelles","Seychelles",690
-"Sierra Leone","SLE","Sierra Leone","Sierra Leone",694
-"Singapore","SGP","Singapore","Singapore",702
-"Slovakia","SVK","Slovakia","Slovakia",703
-"Slovenia","SVN","Slovenia","Slovenia",705
-"Solomon Islands","SLB","Solomon Islands","Solomon Islands",90
-"Somalia","SOM","Somalia","Somalia",706
-"South Africa","ZAF","South Africa","South Africa",710
-"South Sudan","SSD","South Sudan","South Sudan",728
-"Spain","ESP","Spain","Spain",724
-"Sri Lanka","LKA","Sri Lanka","Sri Lanka",144
-"Sudan","SDN","Sudan","Sudan",729
-"Suriname","SUR","Suriname","Suriname",740
-"Sweden","SWE","Sweden","Sweden",752
-"Switzerland","CHE","Switzerland","Switzerland",756
-"Syrian Arab Republic","SYR","Syria","Syrian Arab Republic",760
-"Tajikistan","TJK","Tajikistan","Tajikistan",762
-"Thailand","THA","Thailand","Thailand",764
-"Timor-Leste","TLS","Timor-Leste","Timor-Leste",626
-"Togo","TGO","Togo","Togo",768
-"Tonga","TON","Tonga","Tonga",776
-"Trinidad and Tobago","TTO","Trinidad and Tobago","Trinidad and Tobago",780
-"Tunisia","TUN","Tunisia","Tunisia",788
-"Turkey","TUR","Turkey","Turkey",792
-"Turkmenistan","TKM","Turkmenistan","Turkmenistan",795
-"Tuvalu","TUV","Tuvalu",NA,NA
-"Uganda","UGA","Uganda","Uganda",800
-"Ukraine","UKR","Ukraine","Ukraine",804
-"United Arab Emirates","ARE","United Arab Emirates","United Arab Emirates",784
-"United Kingdom","GBR","UK","United Kingdom",826
-"United Republic of Tanzania","TZA","Tanzania","United Republic of Tanzania",834
-"United States of America","USA","USA","United States of America",840
-"Uruguay","URY","Uruguay","Uruguay",858
-"Uzbekistan","UZB","Uzbekistan","Uzbekistan",860
-"Vanuatu","VUT","Vanuatu","Vanuatu",548
-"Venezuela (Bolivarian Republic of)","VEN","Venezuela","Venezuela (Bolivarian Republic of)",862
-"Viet Nam","VNM","Vietnam","Viet Nam",704
-"Yemen","YEM","Yemen","Yemen",887
-"Zambia","ZMB","Zambia","Zambia",894
-"Zimbabwe","ZWE","Zimbabwe","Zimbabwe",716
+"location_id","location_name","location_iso3","gbd_alt_name","wpp_name","wpp_location_code"
+1,"Afghanistan","AFG","Afghanistan","Afghanistan",4
+2,"Albania","ALB","Albania","Albania",8
+3,"Algeria","DZA","Algeria","Algeria",12
+4,"Andorra","AND","Andorra",NA,NA
+5,"Angola","AGO","Angola","Angola",24
+6,"Antigua and Barbuda","ATG","Antigua and Barbuda","Antigua and Barbuda",28
+7,"Argentina","ARG","Argentina","Argentina",32
+8,"Armenia","ARM","Armenia","Armenia",51
+9,"Australia","AUS","Australia","Australia",36
+10,"Austria","AUT","Austria","Austria",40
+11,"Azerbaijan","AZE","Azerbaijan","Azerbaijan",31
+12,"Bahamas","BHS","The Bahamas","Bahamas",44
+13,"Bahrain","BHR","Bahrain","Bahrain",48
+14,"Bangladesh","BGD","Bangladesh","Bangladesh",50
+15,"Barbados","BRB","Barbados","Barbados",52
+16,"Belarus","BLR","Belarus","Belarus",112
+17,"Belgium","BEL","Belgium","Belgium",56
+18,"Belize","BLZ","Belize","Belize",84
+19,"Benin","BEN","Benin","Benin",204
+20,"Bhutan","BTN","Bhutan","Bhutan",64
+21,"Bolivia (Plurinational State of)","BOL","Bolivia","Bolivia (Plurinational State of)",68
+22,"Bosnia and Herzegovina","BIH","Bosnia and Herzegovina","Bosnia and Herzegovina",70
+23,"Botswana","BWA","Botswana","Botswana",72
+24,"Brazil","BRA","Brazil","Brazil",76
+25,"Brunei Darussalam","BRN","Brunei","Brunei Darussalam",96
+26,"Bulgaria","BGR","Bulgaria","Bulgaria",100
+27,"Burkina Faso","BFA","Burkina Faso","Burkina Faso",854
+28,"Burundi","BDI","Burundi","Burundi",108
+29,"Cabo Verde","CPV","Cape Verde","Cabo Verde",132
+30,"Cambodia","KHM","Cambodia","Cambodia",116
+31,"Cameroon","CMR","Cameroon","Cameroon",120
+32,"Canada","CAN","Canada","Canada",124
+33,"Central African Republic","CAF","Central African Republic","Central African Republic",140
+34,"Chad","TCD","Chad","Chad",148
+35,"Chile","CHL","Chile","Chile",152
+36,"China","CHN","China","China",156
+37,"Colombia","COL","Colombia","Colombia",170
+38,"Comoros","COM","Comoros","Comoros",174
+39,"Congo","COG","Congo (Brazzaville)","Congo",178
+40,"Cook Islands","COK","Cook Islands",NA,NA
+41,"Costa Rica","CRI","Costa Rica","Costa Rica",188
+42,"Croatia","HRV","Croatia","Croatia",191
+43,"Cuba","CUB","Cuba","Cuba",192
+44,"Cyprus","CYP","Cyprus","Cyprus",196
+45,"Czechia","CZE","Czech Republic","Czechia",203
+46,"Côte d'Ivoire","CIV","Côte d'Ivoire","Cote d'Ivoire",384
+47,"Democratic People's Republic of Korea","PRK","North Korea","Dem. People's Rep. of Korea",408
+48,"Democratic Republic of the Congo","COD","DR Congo","Dem. Republic of the Congo",180
+49,"Denmark","DNK","Denmark","Denmark",208
+50,"Djibouti","DJI","Djibouti","Djibouti",262
+51,"Dominica","DMA","Dominica",NA,NA
+52,"Dominican Republic","DOM","Dominican Republic","Dominican Republic",214
+53,"Ecuador","ECU","Ecuador","Ecuador",218
+54,"Egypt","EGY","Egypt","Egypt",818
+55,"El Salvador","SLV","El Salvador","El Salvador",222
+56,"Equatorial Guinea","GNQ","Equatorial Guinea","Equatorial Guinea",226
+57,"Eritrea","ERI","Eritrea","Eritrea",232
+58,"Estonia","EST","Estonia","Estonia",233
+59,"Eswatini","SWZ","eSwatini","Eswatini",748
+60,"Ethiopia","ETH","Ethiopia","Ethiopia",231
+61,"Fiji","FJI","Fiji","Fiji",242
+62,"Finland","FIN","Finland","Finland",246
+63,"France","FRA","France","France",250
+64,"Gabon","GAB","Gabon","Gabon",266
+65,"Gambia","GMB","The Gambia","Gambia",270
+66,"Georgia","GEO","Georgia","Georgia",268
+67,"Germany","DEU","Germany","Germany",276
+68,"Ghana","GHA","Ghana","Ghana",288
+69,"Greece","GRC","Greece","Greece",300
+70,"Grenada","GRD","Grenada","Grenada",308
+71,"Guatemala","GTM","Guatemala","Guatemala",320
+72,"Guinea","GIN","Guinea","Guinea",324
+73,"Guinea-Bissau","GNB","Guinea-Bissau","Guinea-Bissau",624
+74,"Guyana","GUY","Guyana","Guyana",328
+75,"Haiti","HTI","Haiti","Haiti",332
+76,"Honduras","HND","Honduras","Honduras",340
+77,"Hungary","HUN","Hungary","Hungary",348
+78,"Iceland","ISL","Iceland","Iceland",352
+79,"India","IND","India","India",356
+80,"Indonesia","IDN","Indonesia","Indonesia",360
+81,"Iran (Islamic Republic of)","IRN","Iran","Iran (Islamic Republic of)",364
+82,"Iraq","IRQ","Iraq","Iraq",368
+83,"Ireland","IRL","Ireland","Ireland",372
+84,"Israel","ISR","Israel","Israel",376
+85,"Italy","ITA","Italy","Italy",380
+86,"Jamaica","JAM","Jamaica","Jamaica",388
+87,"Japan","JPN","Japan","Japan",392
+88,"Jordan","JOR","Jordan","Jordan",400
+89,"Kazakhstan","KAZ","Kazakhstan","Kazakhstan",398
+90,"Kenya","KEN","Kenya","Kenya",404
+91,"Kiribati","KIR","Kiribati","Kiribati",296
+92,"Kuwait","KWT","Kuwait","Kuwait",414
+93,"Kyrgyzstan","KGZ","Kyrgyzstan","Kyrgyzstan",417
+94,"Lao People's Democratic Republic","LAO","Laos","Lao People's Dem. Republic",418
+95,"Latvia","LVA","Latvia","Latvia",428
+96,"Lebanon","LBN","Lebanon","Lebanon",422
+97,"Lesotho","LSO","Lesotho","Lesotho",426
+98,"Liberia","LBR","Liberia","Liberia",430
+99,"Libya","LBY","Libya","Libya",434
+100,"Lithuania","LTU","Lithuania","Lithuania",440
+101,"Luxembourg","LUX","Luxembourg","Luxembourg",442
+102,"Madagascar","MDG","Madagascar","Madagascar",450
+103,"Malawi","MWI","Malawi","Malawi",454
+104,"Malaysia","MYS","Malaysia","Malaysia",458
+105,"Maldives","MDV","Maldives","Maldives",462
+106,"Mali","MLI","Mali","Mali",466
+107,"Malta","MLT","Malta","Malta",470
+108,"Marshall Islands","MHL","Marshall Islands",NA,NA
+109,"Mauritania","MRT","Mauritania","Mauritania",478
+110,"Mauritius","MUS","Mauritius","Mauritius",480
+111,"Mexico","MEX","Mexico","Mexico",484
+112,"Micronesia (Federated States of)","FSM","Federated States of Micronesia","Micronesia (Fed. States of)",583
+113,"Monaco","MCO","Monaco",NA,NA
+114,"Mongolia","MNG","Mongolia","Mongolia",496
+115,"Montenegro","MNE","Montenegro","Montenegro",499
+116,"Morocco","MAR","Morocco","Morocco",504
+117,"Mozambique","MOZ","Mozambique","Mozambique",508
+118,"Myanmar","MMR","Myanmar","Myanmar",104
+119,"Namibia","NAM","Namibia","Namibia",516
+120,"Nauru","NRU","Nauru",NA,NA
+121,"Nepal","NPL","Nepal","Nepal",524
+122,"Netherlands","NLD","Netherlands","Netherlands",528
+123,"New Zealand","NZL","New Zealand","New Zealand",554
+124,"Nicaragua","NIC","Nicaragua","Nicaragua",558
+125,"Niger","NER","Niger","Niger",562
+126,"Nigeria","NGA","Nigeria","Nigeria",566
+127,"Niue","NIU","Niue",NA,NA
+128,"North Macedonia","MKD","North Macedonia","North Macedonia",807
+129,"Norway","NOR","Norway","Norway",578
+130,"Oman","OMN","Oman","Oman",512
+131,"Pakistan","PAK","Pakistan","Pakistan",586
+132,"Palau","PLW","Palau",NA,NA
+133,"Panama","PAN","Panama","Panama",591
+134,"Papua New Guinea","PNG","Papua New Guinea","Papua New Guinea",598
+135,"Paraguay","PRY","Paraguay","Paraguay",600
+136,"Peru","PER","Peru","Peru",604
+137,"Philippines","PHL","Philippines","Philippines",608
+138,"Poland","POL","Poland","Poland",616
+139,"Portugal","PRT","Portugal","Portugal",620
+140,"Qatar","QAT","Qatar","Qatar",634
+141,"Republic of Korea","KOR","South Korea","Republic of Korea",410
+142,"Republic of Moldova","MDA","Moldova","Republic of Moldova",498
+143,"Romania","ROU","Romania","Romania",642
+144,"Russian Federation","RUS","Russia","Russian Federation",643
+145,"Rwanda","RWA","Rwanda","Rwanda",646
+146,"Saint Kitts and Nevis","KNA","Saint Kitts and Nevis",NA,NA
+147,"Saint Lucia","LCA","Saint Lucia","Saint Lucia",662
+148,"Saint Vincent and the Grenadines","VCT","Saint Vincent and the Grenadines","St. Vincent and the Grenadines",670
+149,"Samoa","WSM","Samoa","Samoa",882
+150,"San Marino","SMR","San Marino",NA,NA
+151,"Sao Tome and Principe","STP","São Tomé and PrÍncipe","Sao Tome and Principe",678
+152,"Saudi Arabia","SAU","Saudi Arabia","Saudi Arabia",682
+153,"Senegal","SEN","Senegal","Senegal",686
+154,"Serbia","SRB","Serbia","Serbia",688
+155,"Seychelles","SYC","Seychelles","Seychelles",690
+156,"Sierra Leone","SLE","Sierra Leone","Sierra Leone",694
+157,"Singapore","SGP","Singapore","Singapore",702
+158,"Slovakia","SVK","Slovakia","Slovakia",703
+159,"Slovenia","SVN","Slovenia","Slovenia",705
+160,"Solomon Islands","SLB","Solomon Islands","Solomon Islands",90
+161,"Somalia","SOM","Somalia","Somalia",706
+162,"South Africa","ZAF","South Africa","South Africa",710
+163,"South Sudan","SSD","South Sudan","South Sudan",728
+164,"Spain","ESP","Spain","Spain",724
+165,"Sri Lanka","LKA","Sri Lanka","Sri Lanka",144
+166,"Sudan","SDN","Sudan","Sudan",729
+167,"Suriname","SUR","Suriname","Suriname",740
+168,"Sweden","SWE","Sweden","Sweden",752
+169,"Switzerland","CHE","Switzerland","Switzerland",756
+170,"Syrian Arab Republic","SYR","Syria","Syrian Arab Republic",760
+171,"Tajikistan","TJK","Tajikistan","Tajikistan",762
+172,"Thailand","THA","Thailand","Thailand",764
+173,"Timor-Leste","TLS","Timor-Leste","Timor-Leste",626
+174,"Togo","TGO","Togo","Togo",768
+175,"Tonga","TON","Tonga","Tonga",776
+176,"Trinidad and Tobago","TTO","Trinidad and Tobago","Trinidad and Tobago",780
+177,"Tunisia","TUN","Tunisia","Tunisia",788
+178,"Turkey","TUR","Turkey","Turkey",792
+179,"Turkmenistan","TKM","Turkmenistan","Turkmenistan",795
+180,"Tuvalu","TUV","Tuvalu",NA,NA
+181,"Uganda","UGA","Uganda","Uganda",800
+182,"Ukraine","UKR","Ukraine","Ukraine",804
+183,"United Arab Emirates","ARE","United Arab Emirates","United Arab Emirates",784
+184,"United Kingdom","GBR","UK","United Kingdom",826
+185,"United Republic of Tanzania","TZA","Tanzania","United Republic of Tanzania",834
+186,"United States of America","USA","USA","United States of America",840
+187,"Uruguay","URY","Uruguay","Uruguay",858
+188,"Uzbekistan","UZB","Uzbekistan","Uzbekistan",860
+189,"Vanuatu","VUT","Vanuatu","Vanuatu",548
+190,"Venezuela (Bolivarian Republic of)","VEN","Venezuela","Venezuela (Bolivarian Republic of)",862
+191,"Viet Nam","VNM","Vietnam","Viet Nam",704
+192,"Yemen","YEM","Yemen","Yemen",887
+193,"Zambia","ZMB","Zambia","Zambia",894
+194,"Zimbabwe","ZWE","Zimbabwe","Zimbabwe",716
