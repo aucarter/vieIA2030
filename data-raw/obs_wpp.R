@@ -13,5 +13,8 @@ obs_wpp  <- fread(file) %>%
     deaths_female = deaths_female * 1e03,
     births = births * 1e03
   ) %>%
-  select(-c(gbd_alt_name, wpp_name))
-usethis::use_data(obs_wpp, overwrite = TRUE)
+  select(-c(gbd_alt_name, wpp_name, location_name, location_iso3))
+
+mydb <- open_connection()
+DBI::dbWriteTable(mydb, "obs_wpp", obs_wpp, overwrite = TRUE)
+DBI::dbDisconnect(mydb)

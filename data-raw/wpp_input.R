@@ -34,46 +34,6 @@ split_rate <- function(mx) {
   exp(pop2)
 }
 
-get_x <- function(fl, rn, sx, my) {
-  if (rn == 1) {
-    sh <- "ESTIMATES"
-    rh <- "A17:DE18122"
-  } else {
-    sh <- "MEDIUM VARIANT"
-    rh <- "A17:DE20672"
-  }
-
-  x <- readxl::read_excel(fl, sheet = sh, range = rh) %>%
-    mutate(sex_name = sx) %>%
-    select(
-      -c("Index", "Variant", "Region, subregion, country or area *", "Notes",
-          "Type", "Parent code")
-    ) %>%
-    rename(
-      year_id = `Reference date (as of 1 July)`,
-      location_code = `Country code`
-    ) %>%
-    tidyr::gather(age, val, -location_code, -sex_name, -year_id) %>%
-    filter(year_id > 1979 & year_id < my) %>%
-    mutate(age = as.numeric(age), val = val * 1000) %>%
-    group_by(location_code, year_id, sex_name, age) %>%
-    summarise(nx = sum(val)) %>%
-    ungroup()
-
-  return(x)
-}
-
-get_pop <- function(f1, f2) {
-  pm1 <- get_x(f1, 1, "Male", 2020)
-  pm2 <- get_x(f1, 2, "Male", 2097)
-  pf1 <- get_x(f2, 1, "Female", 2020)
-  pf2 <- get_x(f2, 2, "Female", 2097)
-  wpppop <- rbind(pm1, pm2, pf1, pf2) %>%
-    rename(wpp_location_code = location_code)
-
-  return(wpppop)
-}
-
 get_mx <- function() {
   data(mxF, package = "wpp2019")
   data(mxM, package = "wpp2019")
@@ -129,7 +89,6 @@ get_mx <- function() {
     mx = integer()
   )
   for (code in unique(wppmx42$country_code)) {
-    print(paste0(code))
     dpred <- wppmx42 %>%
       filter(country_code == code) %>%
       arrange(sex_name, age) %>%
@@ -327,9 +286,17 @@ agem <- tibble(
   agec = c(paste0(seq(0, 95, 5), "-", seq(4, 99, 5)), "100+")
 )
 
-wpppop <- get_pop(f1, f2)
+load(
+  system.file("extdata", "wpp_input_pop.RData", package = "vieIA2030")
+)
+wpp_input_pop <- wpp_input_pop %>%
+    left_join(
+        data.table(sex_id = 1:2, sex_name = c("Male", "Female")),
+        by = "sex_id"
+    ) %>%
+    select(-c("sex_id"))
 wppmx <- get_mx()
-wpp_in <- left_join(wpppop, loc_table, by = "wpp_location_code") %>%
+wpp_in <- left_join(wpp_input_pop, loc_table, by = "wpp_location_code") %>%
   left_join(
     wppmx,
     by = c("wpp_location_code", "sex_name", "year_id", "age")
@@ -409,5 +376,14 @@ for (c in 1:isn) {
 }
 
 wpp_input <- rbindlist(wpp_in_list)
+wpp_input <- wpp_input %>%
+  right_join(
+    loc_table[, .(location_id, location_iso3)],
+    by = "location_iso3"
+  ) %>%
+  select(-c("location_name", "location_iso3")) %>%
+  filter(!is.na(nx))
 
-usethis::use_data(wpp_input, overwrite = TRUE)
+mydb <- open_connection()
+DBI::dbWriteTable(mydb, "wpp_input", wpp_input, overwrite = TRUE)
+DBI::dbDisconnect(mydb)
