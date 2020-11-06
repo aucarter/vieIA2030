@@ -29,8 +29,8 @@ vimc_mort_reduct <- function(wpp_input, obs_wpp, vimc) {
         warning("Over 1 or less than 0 mortality reduction")
     }
 
-    out_dt <- dt[, .(location_id, age, year, deaths_obs, deaths_averted,
-                     mort_reduct)]
+    out_dt <- dt[, .(location_id, age, year, vaccine_id, deaths_obs,
+                     deaths_averted, mort_reduct)]
 
     return(out_dt)
 }
