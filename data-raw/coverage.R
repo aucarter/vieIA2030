@@ -112,6 +112,6 @@ coverage <- rbind(coverage[vaccine_short != "DTP"], dtp_add)
 coverage <- merge(coverage, vaccine_table[, .(vaccine_short, vaccine_id)])
 coverage[, vaccine_short := NULL]
 
-mydb <- DBI::dbConnect(RSQLite::SQLite(), "vieIA2030.db")
+mydb <- open_connection()
 DBI::dbWriteTable(mydb, "coverage_inputs", coverage, overwrite = TRUE)
 DBI::dbDisconnect(mydb)

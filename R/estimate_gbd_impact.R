@@ -1,7 +1,7 @@
 ## Estimate GBD vaccine-related mortality reduction
 combine_inputs <- function() {
     ## Pull in coverage
-    mydb <- DBI::dbConnect(RSQLite::SQLite(), "vieIA2030.db")
+    mydb <- open_connection()
     coverage_dt <- as.data.table(
         collect(tbl(mydb, "coverage_inputs"))
     )

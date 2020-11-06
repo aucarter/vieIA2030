@@ -20,6 +20,6 @@ vimc_dt[, c("vaccine_long", "vaccine_short") := NULL]
 vimc_dt <- merge(vimc_dt, loc_table)
 vimc_dt[, c("location_name", "location_iso3") := NULL]
 
-mydb <- DBI::dbConnect(RSQLite::SQLite(), "vieIA2030.db")
+mydb <- open_connection()
 DBI::dbWriteTable(mydb, "vimc_impact_estimates", vimc_dt, overwrite = TRUE)
 DBI::dbDisconnect(mydb)
