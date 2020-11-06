@@ -6,7 +6,7 @@ impute_vimc_estimates <- function() {
 
 
 ## Pull in VIMC estimates
-mydb <- DBI::dbConnect(RSQLite::SQLite(), "vieIA2030.db")
+mydb <- open_connection()
 vimc_dt <- data.table::as.data.table(
     collect(tbl(mydb, "vimc_impact_estimates"))
 )
