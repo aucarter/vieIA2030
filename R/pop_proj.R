@@ -104,8 +104,10 @@ lt_est <- function(y) {
 #' @param is Location name
 #' @param y0 Start year of projection
 #' @param y1 End year of projection
+#' @param wpp_input Input WPP data
+#' @param obs_wpp Observed WPP data
 #' @return A list of tables with population projection results
-project_pop <- function(is, y0, y1) {
+project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
   wpp_ina <- wpp_input  %>%
     filter(location_name == is & year_id %in% y0:(y1 + 1)) %>%
     select(-c(location_name)) %>%
@@ -163,7 +165,6 @@ project_pop <- function(is, y0, y1) {
   locs <- loc_table %>%
     filter(location_name == is) %>%
     select(location_iso3, location_name)
-
   out_df <- data.table::data.table(
     group = "CCPM",
     year = y0:y1,
@@ -178,7 +179,8 @@ project_pop <- function(is, y0, y1) {
   rbind(
     obs_wpp %>%
     filter(location_name == is & year %in% y0:y1) %>%
-    mutate(group = "WPP2019")
+    mutate(group = "WPP2019") %>%
+    select(-c("location_id"))
   )
 
   list(population = population, deaths = deaths, out_df = out_df)
@@ -187,8 +189,10 @@ project_pop <- function(is, y0, y1) {
 #' Calculate all single-year deaths
 #' @param y0 Start year of projection
 #' @param y1 End year of projection
+#' @param wpp_input Input WPP data
+#' @param obs_wpp Observed WPP data
 #' @return A data.table with single-year deaths
-get_all_deaths <- function(y0, y1) {
+get_all_deaths <- function(y0, y1, wpp_input, obs_wpp) {
   locsall <- loc %>%
     filter(location_name %in% unique(wpp_input$location_name)) %>%
     select(location_iso3, location_name) %>%
@@ -205,7 +209,7 @@ get_all_deaths <- function(y0, y1) {
 
     print(paste(c, "of", isn, iso))
 
-    out  <- project_pop(is, y0, y1)$deaths %>%
+    out  <- project_pop(is, y0, y1, wpp_input, obs_wpp)$deaths %>%
       data.table::as.data.table()
     n    <- y1 - y0 + 1
 
