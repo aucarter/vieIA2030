@@ -193,7 +193,7 @@ project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
 #' @param obs_wpp Observed WPP data
 #' @return A data.table with single-year deaths
 get_all_deaths <- function(y0, y1, wpp_input, obs_wpp) {
-  locsall <- loc %>%
+  locsall <- loc_table %>%
     filter(location_name %in% unique(wpp_input$location_name)) %>%
     select(location_iso3, location_name) %>%
     arrange(location_iso3)
@@ -206,8 +206,6 @@ get_all_deaths <- function(y0, y1, wpp_input, obs_wpp) {
   for (c in 1:isn) {
     is   <- isc[c]
     iso  <- isco[c]
-
-    print(paste(c, "of", isn, iso))
 
     out  <- project_pop(is, y0, y1, wpp_input, obs_wpp)$deaths %>%
       data.table::as.data.table()
