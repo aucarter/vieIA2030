@@ -2,20 +2,12 @@
 #######################################################
 ###  Server    ########################################
 #######################################################
-data(loc_table)
-data(wpp_input)
 
 cols <- c(
   "#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02",
   "#A6761D", "#666666", "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3",
   "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3"
 )
-locsall <- loc_table %>%
-  filter(location_name %in% unique(wpp_input$location_name)) %>%
-  select(location_iso3, location_name) %>%
-  arrange(location_iso3)
-countries <- locsall$location_name
-
 
 server <- shinyServer(function(input, output, session) {
 
@@ -32,7 +24,7 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
 ###   Projection    ##############################################################################################
 ##############################################################################################################################    
 
-   Projection            <- project_pop(is, y0, y2)
+   Projection            <- project_pop(is, y0, y2, wpp_input, obs_wpp)
 
    values$dem_out        <- Projection$out_df %>% rename(year_id = year)
    values$pop_out        <- Projection$population
