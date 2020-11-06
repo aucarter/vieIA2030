@@ -4,12 +4,16 @@
 \alias{get_all_deaths}
 \title{Calculate all single-year deaths}
 \usage{
-get_all_deaths(y0, y1, wpp_input)
+get_all_deaths(y0, y1, wpp_input, obs_wpp)
 }
 \arguments{
 \item{y0}{Start year of projection}
 
 \item{y1}{End year of projection}
+
+\item{wpp_input}{Input WPP data}
+
+\item{obs_wpp}{Observed WPP data}
 }
 \value{
 A data.table with single-year deaths
