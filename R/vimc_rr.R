@@ -2,9 +2,9 @@
 #' Calculate all-cause mortality reduction by vaccine for VIMC 10
 #' @param wpp_input Input WPP data
 #' @param obs_wpp Observed WPP data
-#' @param vimc VIMC deaths averted
+#' @param vimc_impact_estimates VIMC deaths averted
 #' @return A list of tables with population projection results
-vimc_rr <- function(wpp_input, obs_wpp, vimc) {
+vimc_rr <- function(wpp_input, obs_wpp, vimc_impact_estimates) {
     # Calculate both-sexes deaths
     deaths <- get_all_deaths(1999, 2029, wpp_input, obs_wpp) %>%
         group_by(age, year_id, location_iso3) %>%
@@ -13,14 +13,18 @@ vimc_rr <- function(wpp_input, obs_wpp, vimc) {
         rename(year = year_id)
 
     # Calculate total deaths averted
-    vimc <- vimc %>%
+    vimc_impact_estimates <- vimc_impact_estimates %>%
         group_by(age, year, location_iso3) %>%
         mutate(deaths_averted = sum(value)) %>%
         ungroup() %>%
         as.data.table()
 
     # Merge on VIMC impact estimates and calculate mortality reduction
-    dt <- left_join(vimc, deaths, by = c("age", "year", "location_iso3")) %>%
+    dt <- left_join(
+            vimc_impact_estimates,
+            deaths,
+            by = c("age", "year", "location_iso3")
+        ) %>%
         rename(vaccine_deaths_averted = value) %>%
         mutate(rr = (deaths_obs + deaths_averted - vaccine_deaths_averted) /
             (deaths_obs + deaths_averted))
