@@ -27,8 +27,11 @@ vimc_rr <- function(wpp_input, obs_wpp, vimc) {
     # Check for missingness
     if (any(is.na(dt$rr))) {
         missing_locs <- unique(dt[is.na(rr)]$location_name)
-        warning(paste("Missing deaths for", paste(missing_locs, collapse = ", ")))
-        dt <- dt[!is.na(rr)]
+        warning(paste(
+            "Missing deaths for",
+            paste(missing_locs, collapse = ", ")
+        ))
+        dt <- dt[!is.na(dt$rr), ]
     }
 
     # Check for non-sensical numbers
@@ -36,8 +39,9 @@ vimc_rr <- function(wpp_input, obs_wpp, vimc) {
         warning("Over 1 or less than 0 mortality reduction")
     }
 
-    out_dt <- dt[, .(location_id, age, year, vaccine_id, deaths_obs,
-                     deaths_averted, rr)]
+    out_dt <- dt %>%
+        select(c(location_id, age, year, vaccine_id, deaths_obs,
+                     deaths_averted, rr))
 
     return(out_dt)
 }
