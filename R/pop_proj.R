@@ -22,11 +22,13 @@ get_ccpm <- function(nx, sx, fx, mig, z, n) {
   pm[, 1] <- nxm[, 1]
 
   for (i in 1:n) {
+    # Middle age groups
     pf[2:(z - 1), i + 1] <- pf[1:(z - 2), i] * (
         sxf[1:(z - 2), i] * (1 + .5 * migf[2:(z - 1), i]) +
         .5 * migf[2:(z - 1), i]
       )
 
+    # Final age group
     pf[z, i + 1] <- pf[z - 1, i] * (
         sxf[z - 1, i] * (1 + .5 * migf[z, i]) +
         .5 * migf[z, i]
@@ -36,6 +38,7 @@ get_ccpm <- function(nx, sx, fx, mig, z, n) {
         .5 * migf[z, i]
       )
 
+    # Calculate births
     fxbf <- ((1 + srb) ^ (-1) * (
         fx[10:54, i] +
         fx[11:55, i] * sxf[11:55, i]
@@ -45,11 +48,10 @@ get_ccpm <- function(nx, sx, fx, mig, z, n) {
         fxbf * pf[10:54, i] * ((1 + .5 * migf[10:54, i]) + .5 * migf[10:54, i])
       )
 
+    # First age group
     pf[1, i + 1] <- bxf[i] * (sxf[1, i] * (1 + .5 * migf[1, i]) +
       .5 * migf[1, i])
-  }
 
-  for (i in 1:n) {
     pm[2:(z - 1), i + 1] <- pm[1:(z - 2), i] * (
         sxm[1:(z - 2), i] * (1 + .5 * migm[2:(z - 1), i]) +
         .5 * migm[2:(z - 1), i]
