@@ -30,4 +30,4 @@ fit_vaccine_rr <- function(vacc) {
     coefs[, vaccine_short := vacc]
     return(coefs)
 }
-fit_dt <- rbindlist(lapply(unique(dt$vaccine_short), fit_vaccine_rr)) 
+fit_dt <- rbindlist(lapply(unique(dt$vaccine_short), fit_vaccine_rr))
