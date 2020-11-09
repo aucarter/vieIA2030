@@ -16,7 +16,8 @@ vimc_rr <- function(wpp_input, obs_wpp, vimc) {
     vimc <- vimc %>%
         group_by(age, year, location_iso3) %>%
         mutate(deaths_averted = sum(value)) %>%
-        ungroup()
+        ungroup() %>%
+        as.data.table()
 
     # Merge on VIMC impact estimates and calculate mortality reduction
     dt <- left_join(vimc, deaths, by = c("age", "year", "location_iso3")) %>%
@@ -31,7 +32,7 @@ vimc_rr <- function(wpp_input, obs_wpp, vimc) {
             "Missing deaths for",
             paste(missing_locs, collapse = ", ")
         ))
-        dt <- dt[!is.na(dt$rr), ]
+        dt <- dt[!is.na(rr)]
     }
 
     # Check for non-sensical numbers
