@@ -10,7 +10,7 @@ scatter_rr <- function(x_var) {
         facet_wrap(~vaccine_short, scales = "free_y") +
         theme_bw() +
         ggtitle(paste(x_var, "vs mortality reduction by vaccine")) +
-        xlab(xvar)
+        xlab(x_var)
 
     return(gg)
 }
