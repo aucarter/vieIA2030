@@ -111,6 +111,7 @@ lt_est <- function(y) {
 #' @return A list of tables with population projection results
 project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
   #TODO: This isn't returning the years that I would expect
+  #         - One year after for first and last year
   wpp_ina <- wpp_input  %>%
     filter(location_name == is & year_id %in% y0:(y1 + 1)) %>%
     select(-c(location_name)) %>%
