@@ -20,7 +20,7 @@ pdf("plots/vimc_rr_scatters.pdf")
 lapply(c("haqi", "sdi", "coverage"), scatter_rr)
 dev.off()
 
-## Simple model
+## Simple model for VIMC imputation
 library(lme4)
 fit_vaccine_rr <- function(vacc) {
     fit <- lmer(
@@ -33,9 +33,13 @@ fit_vaccine_rr <- function(vacc) {
 }
 fit_dt <- rbindlist(lapply(unique(dt$vaccine_short), fit_vaccine_rr))
 
+## Pull in GBD data
+gbd_dt <- prep_gbd_data()
+
 
 ## Project mortality rates conditional on future coverage and covariates
 prep_mx <- function(coverage, fit, covariates) {
+    #TODO: Figure out how to translate coverage, model, and covariates into mx
     mx <- NULL
     return(mx)
 }
