@@ -1,25 +1,20 @@
 dt <- rbindlist(
     lapply(
         list.files(
-            "/Users/austincarter/Downloads/GBD2019_Results",
+            "supp_data/GBD2019_Results",
             full.names =  T
         ),
         fread
     )
 )
 dt <- dt[age_name != "25 plus"]
-dt <- dt[, .(location_name, sex_id, age_name, cause_name, metric_id, year, val,
-             upper, lower)]
-dt[metric_id == 3,
-    c("val", "upper", "lower") := .(val / 1e5, upper / 1e5, lower / 1e5)]
+## Ignore uncertainty (for now)
+dt <- dt[, .(location_name, sex_id, age_name, cause_name, metric_id, year, val)]
+dt[metric_id == 3, val := val / 1e5]
 
 dt[cause_name == "pertussis", cause_name := "Pertussis"]
-data(loc_table)
-gbd_loc_map <- loc_table
-setnames(gbd_loc_map, "country_name", "location_name")
-dt <- merge(dt, gbd_loc_map)
-dt[, c("location_name", "country_iso3") := NULL]
 
+# Convert ages
 age_map <- data.table(
     age_name = c(
         "<1 year", "1 to 4", "5 to 9", "10 to 14", "15 to 19", "20 to 24",
@@ -31,5 +26,29 @@ age_map <- data.table(
 gbd_estimates <- merge(dt, age_map)
 gbd_estimates[, age_name := NULL]
 setnames(gbd_estimates, "val", "value")
+
+## Subset to DTP & TB
+cause_subset <- c("Tuberculosis", "Diphtheria", "Tetanus", "Pertussis")
+gbd_estimates <- gbd_estimates[cause_name %in% cause_subset]
+
+## Subset to rate
+gbd_estimates <- gbd_estimates[metric_id == 3]
+gbd_estimates[, metric_id := NULL]
+
+## Merge on associated vaccine info
+gbd_estimates <- merge(
+    gbd_estimates,
+    vaccine_table[, .(vaccine_id, cause_name)],
+    by = "cause_name"
+)
+
+## Merge on location_id
+gbd_estimates <- merge(
+    gbd_estimates,
+    loc_table[, .(location_name, location_id)],
+    by = "location_name"
+)
+
+gbd_estimates[, c("location_name", "cause_name") := NULL]
 
 save(gbd_estimates, file = "inst/extdata/gbd19_estimates.RData")

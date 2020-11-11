@@ -1,113 +1,238 @@
-#' Generate population projection parameters from WPP data
-#' @param wpp_dt A data.table with WPP data
-#' @return A list of parameters
+#' Execute cohort-component projection model
+#' @param nx Population matrix
+#' @param sx Survival matrix
+#' @param fx Fertility matrix
+#' @param mig Migration matrix
+#' @param z Number of age groups
+#' @param n Number of years of projection
+#' @return A list with population and births matrices
 #' @export
-make_params <- function(wpp_dt) {
-    n0 <- wpp_dt[measure %in% c("popM", "popF") &
-            year_start == min(year_start)]$value
-    ages <- unique(wpp_dt[measure %in% c("popM", "popF") &
-            year_start == min(year_start)]$age_start)
-    f_idx <- which(ages %in% unique(wpp_dt[measure == "percentASFR"]$age_start))
-    return(
-        list(wpp_dt = wpp_dt, n0 = n0, ages = ages, f_idx = f_idx)
-    )
+get_ccpm <- function(nx, sx, fx, mig, z, n) {
+  nxf <- nx[1:z, ]
+  nxm <- nx[(z + 1):(2 * z), ]
+  sxf <- sx[1:z, ]
+  sxm <- sx[(z + 1):(2 * z), ]
+  migf <- mig[1:z, ]
+  migm <- mig[(z + 1):(2 * z), ]
+  srb <- 1.05
+
+  bxm  <- bxf <- array(dim = n)
+  pm  <- pf <- array(dim = c(z, n + 1))
+  pf[, 1] <- nxf[, 1]
+  pm[, 1] <- nxm[, 1]
+
+  for (i in 1:n) {
+    pf[2:(z - 1), i + 1] <- pf[1:(z - 2), i] * (
+        sxf[1:(z - 2), i] * (1 + .5 * migf[2:(z - 1), i]) +
+        .5 * migf[2:(z - 1), i]
+      )
+
+    pf[z, i + 1] <- pf[z - 1, i] * (
+        sxf[z - 1, i] * (1 + .5 * migf[z, i]) +
+        .5 * migf[z, i]
+      ) +
+      pf[z, i] * (
+        sxf[z, i] * (1 + .5 * migf[z, i]) +
+        .5 * migf[z, i]
+      )
+
+    fxbf <- ((1 + srb) ^ (-1) * (
+        fx[10:54, i] +
+        fx[11:55, i] * sxf[11:55, i]
+      ) * 0.5)
+
+    bxf[i] <- sum(
+        fxbf * pf[10:54, i] * ((1 + .5 * migf[10:54, i]) + .5 * migf[10:54, i])
+      )
+
+    pf[1, i + 1] <- bxf[i] * (sxf[1, i] * (1 + .5 * migf[1, i]) +
+      .5 * migf[1, i])
+  }
+
+  for (i in 1:n) {
+    pm[2:(z - 1), i + 1] <- pm[1:(z - 2), i] * (
+        sxm[1:(z - 2), i] * (1 + .5 * migm[2:(z - 1), i]) +
+        .5 * migm[2:(z - 1), i]
+      )
+
+    pm[z, i + 1] <- pm[z - 1, i] * (
+        sxm[z - 1, i] * (1 + .5 * migm[z, i]) +
+        .5 * migm[z, i]
+      ) +
+      pm[z, i] * (
+        sxm[z, i] * (1 + .5 * migm[z, i]) +
+        .5 * migm[z, i]
+      )
+
+    fxbm <- (srb * (1 + srb) ^ (-1) * (
+        fx[10:54, i] +
+        fx[11:55, i] * sxf[11:55, i]
+      ) * 0.5)
+    bxm[i] <- sum(
+        fxbm * pf[10:54, i] * ((1 + .5 * migf[10:54, i]) + .5 * migf[10:54, i])
+      )
+    pm[1, i + 1] <- bxm[i] * (sxm[1, i] * (1 + .5 * migm[1, i]) +
+      .5 * migm[1, i])
+  }
+
+  ccpm <- list(population = rbind(pf, pm)[, 1:n], births = bxf + bxm)
+
+  return(ccpm)
 }
 
-
-#' Generate the parameters for a forward step
-#' @param params A list holding all population projection parameters
-#' @param year Integer time period
-#' @return A list with two elements:
-#'      (1) L - A matrix for survival and progression
-#'      (2) g - A vector with migration values
-forward_params <- function(params, year) {
-    # Pull in year-specific parameters
-    year_dt <- params[["wpp_dt"]][year >= year_start & year < year_end]
-    mx <- year_dt[measure %in% c("mxM", "mxF")]$value
-    tfr <- year_dt[measure == "tfr"]$value
-    asfr <- year_dt[measure == "percentASFR"]$value / 100
-    srb <- year_dt[measure == "sexRatio"]$value
-    L <- make_leslie(mx, tfr, asfr, srb, params)
-
-    # TODO: This is one value! How to split by age and sex?
-    g <- year_dt[measure == "migration"]$value
-    return(list(L = L, g = g))
+# TODO: This could be more clear
+#' Not sure why this is needed
+get_person <- function(x) {
+  x[1:96] + x[-c(1:96)]
 }
 
-make_leslie <- function(mx, tfr, asfr, srb, params) {
-    age_n <- length(params[["ages"]])
-    
-    # Survival
-    # TODO: I think we actually need q_x here?
-    s <- 1 - mx
-    s_m <- s[seq(length(s) / 2)]
-    s_f <- s[(length(s) / 2 + 1):length(s)]
-    # TODO: What to do about the more granular u5 age groups
-    s_m <- c((s_m[1] + 4 * s_m[2]) / 5, s_m[3:length(s_m)])
-    s_f <- c((s_f[1] + 4 * s_f[2]) / 5, s_f[3:length(s_f)])
-    s_term_m <- tail(s_m, 1)
-    s_term_f <- tail(s_f, 1)
-    
-    # Fertility
-    f <- tfr * asfr
-    f_bar_m <- rep(0, age_n)
-    f_bar_f <- f_bar_m
-    f_bar_m[params[["f_idx"]]] <- s[1] * (1 - (1 + srb)^(-1)) *
-                                  (f + c(tail(f, -1), 0)) * 0.5
-    f_bar_f[params[["f_idx"]]] <- s[1] * (1 + srb)^(-1) *
-                                  (f + c(tail(f, -1), 0)) * 0.5
-    
-    # Construct blocks of the Leslie matrix
-    A <- rbind(
-        f_bar_m,
-        cbind(
-            diag(c(tail(s_m, -1))),
-            c(rep(0, age_n - 2), s_term_m)
-        )
-    )
-    B <- diag(rep(0, age_n))
-    C <- B
-    C[1, ] <- f_bar_f
-    D <- rbind(
-        rep(0, age_n),
-        cbind(
-            diag(c(tail(s_f, -1))),
-            c(rep(0, age_n - 2), s_term_f)
-        )
-    )
-    L <- rbind(
-        cbind(A, B),
-        cbind(C, D)
-    )
+#' Calculate life-table values from mortality rates
+#' @param y Vector of mortality rates
+#' @return  A vector of life-expectancy, 1q0, and 5q0
+lt_est <- function(y) {
+  px <- exp(-y)
+  lx <- c(1, cumprod(px))
+  ex <- round(sum(head(lx, -1) + tail(lx, -1)) / 2, 3)
+  q5 <- 1000 * (1 - lx[6])
+  q1 <- 1000 * (1 - lx[2])
+  lt <- c(ex, q1, q5)
 
-    return(L)
+  return(lt)
 }
 
-#' Step the population forward one time period
-#' @param n A vector with the current population
-#' @param params A list holding all population projection parameters
-#' @param year Integer time period
-#' @return A vector with the population one time period forward
-step_forward <- function(n, params, year) {
-    p <- forward_params(params, year)
-    # NOTE: Assumes migration is equally distributed across age/sex
-    n_g <- n / sum(n) * p[["g"]] / 2
-    n <- p[["L"]] %*% (n + n_g) + n_g
-    return(n)
+#' Run the population projection for a particular country and year range
+#' @param is Location name
+#' @param y0 Start year of projection
+#' @param y1 End year of projection
+#' @param wpp_input Input WPP data
+#' @param obs_wpp Observed WPP data
+#' @return A list of tables with population projection results
+project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
+  wpp_ina <- wpp_input  %>%
+    filter(location_name == is & year_id %in% y0:(y1 + 1)) %>%
+    select(-c(location_name)) %>%
+    arrange(sex_name, age, year_id)
+  fx <- wpp_ina %>%
+    select(sex_name, age, year_id, fx) %>%
+    tidyr::spread(year_id, fx) %>%
+    select(-c(sex_name, age)) %>%
+    as.matrix()
+  nx <- wpp_ina %>%
+    select(sex_name, age, year_id, nx) %>%
+    tidyr::spread(year_id, nx) %>%
+    select(-c(sex_name, age)) %>%
+    as.matrix()
+  nx[nx == 0]   <- 1e-09
+  mig <- wpp_ina %>%
+    select(sex_name, age, year_id, mig) %>%
+    tidyr::spread(year_id, mig) %>%
+    select(-c(sex_name, age)) %>%
+    as.matrix()
+  mx <- wpp_ina %>%
+    select(sex_name, age, year_id, mx) %>%
+    tidyr::spread(year_id, mx) %>%
+    select(-c(sex_name, age)) %>%
+    as.matrix()
+  mx[mx == 0] <- 1e-09
+  sx <- exp(-mx)
+  n <- y1 - y0 + 1
+  z <- length(0:95)
+
+  ccpm_res <- get_ccpm(nx, sx, fx, mig, z, n)
+  population <- ccpm_res[["population"]]
+  births <- ccpm_res[["births"]]
+  deaths <- -1 * (log(sx)[, 1:n]) * population
+
+  pop_tot <- apply(population, 2, get_person)
+  deaths_tot <- apply(deaths, 2, get_person)
+  mx_both  <- deaths_tot / pop_tot
+
+  lt_out_both <- apply(mx_both, 2, lt_est)
+  lt_out_fmle <- apply(mx[1:96, 1:n], 2, lt_est)
+  lt_out_mle <- apply(mx[97:192, 1:n], 2, lt_est)
+
+  deaths_both <- apply(deaths, 2, sum)
+  deaths_male <- apply(deaths[97:192, ], 2, sum)
+  deaths_female <- apply(deaths[1:96, ], 2, sum)
+
+  e0 <- lt_out_both[1, ]
+  e0_male <- lt_out_mle[1, ]
+  e0_female <- lt_out_fmle[1, ]
+
+  imr <- lt_out_both[2, ]
+  u5mr <- lt_out_both[3, ]
+
+  locs <- loc_table %>%
+    filter(location_name == is) %>%
+    select(location_iso3, location_name)
+  out_df <- data.table::data.table(
+    group = "CCPM",
+    year = y0:y1,
+    deaths_both = deaths_both,
+    deaths_male = deaths_male,
+    deaths_female = deaths_female,
+    e0 = e0,
+    e0_male = e0_male,
+    e0_female = e0_female,
+    imr = imr, u5mr = u5mr, births = births, locs
+  ) %>%
+  rbind(
+    obs_wpp %>%
+    filter(location_name == is & year %in% y0:y1) %>%
+    mutate(group = "WPP2019") %>%
+    select(-c("location_id"))
+  )
+
+  list(population = population, deaths = deaths, out_df = out_df)
 }
 
-#' Project the population
-#' @param params A list holding all population projection parameters
-#' @return A matrix with the population in all time periods
-#' @export
-# TODO: Output mortality too!
-project_pop <- function(params) {
-    years <- params[["wpp_dt"]][measure == "tfr"]$year_start
-    n <- params[["n0"]]
-    n_mat <- matrix(n, nrow = length(n))
-    for (y in years) {
-        n <- step_forward(n, params, y)
-        n_mat <- cbind(n_mat, n)
-    }
-    return(n_mat)
+#' Calculate all single-year deaths
+#' @param y0 Start year of projection
+#' @param y1 End year of projection
+#' @param wpp_input Input WPP data
+#' @param obs_wpp Observed WPP data
+#' @return A data.table with single-year deaths
+get_all_deaths <- function(y0, y1, wpp_input, obs_wpp) {
+  locsall <- loc %>%
+    filter(location_name %in% unique(wpp_input$location_name)) %>%
+    select(location_iso3, location_name) %>%
+    arrange(location_iso3)
+
+  isc <- locsall$location_name
+  isco <- locsall$location_iso3
+  isn <- length(isc)
+  death_list <- list(isn)
+
+  for (c in 1:isn) {
+    is   <- isc[c]
+    iso  <- isco[c]
+
+    print(paste(c, "of", isn, iso))
+
+    out  <- project_pop(is, y0, y1, wpp_input, obs_wpp)$deaths %>%
+      data.table::as.data.table()
+    n    <- y1 - y0 + 1
+
+    yrv  <- paste0(y0 + 1:n)
+    sxv  <- rep(c("Female", "Male"), each = 96)
+    agv  <- c(0:95, 0:95)
+
+    colnames(out) <- yrv
+
+    out <- out %>%
+      mutate(age = agv, sex_name = sxv) %>%
+      tidyr::gather(year_id, deaths, -age, -sex_name) %>%
+      mutate(
+        year_id = as.numeric(year_id),
+        location_name = is,
+        location_iso3 = iso
+      ) %>%
+      arrange(sex_name, age, year_id)
+
+    death_list[[c]] <- out
+  }
+
+  all_deaths <- data.table::rbindlist(death_list)
+
+  return(all_deaths)
 }

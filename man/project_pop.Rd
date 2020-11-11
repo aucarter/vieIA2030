@@ -2,16 +2,20 @@
 % Please edit documentation in R/pop_proj.R
 \name{project_pop}
 \alias{project_pop}
-\title{Project the population}
+\title{Run the population projection for a particular country and year range}
 \usage{
-project_pop(params)
+project_pop(is, y0, y1, wpp_input, obs_wpp)
 }
 \arguments{
-\item{params}{A list holding all population projection parameters}
+\item{is}{Location name}
+
+\item{y0}{Start year of projection}
+
+\item{y1}{End year of projection}
 }
 \value{
-A matrix with the population in all time periods
+A list of tables with population projection results
 }
 \description{
-Project the population
+Run the population projection for a particular country and year range
 }

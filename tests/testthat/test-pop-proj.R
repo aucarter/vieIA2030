@@ -1,16 +1,12 @@
 testthat::test_that("population projection approximately works", {
-    # Testing that the difference in the projected pop is less than 10%
-    loc <- 840
-    wpp_dt <- prep_wpp_data()
-    loc_dt <- wpp_dt[country_code == loc]
-    params <- make_params(loc_dt)
-    pop_proj <- project_pop(params)
-
-    total_pop_proj <- colSums(pop_proj)
-
-    total_pop <- loc_dt[measure %in% c("popM", "popF"),
-                        .(t_pop = sum(value)), by = year_start]$t_pop
+    # Testing that the difference in the projected deaths is less than 5%
+    proj <- project_pop(
+        "South Africa", 2000, 2019, test_data$wpp_input, test_data$obs_wpp
+    )$out_df %>%
+        as.data.table()
+    estimate <- proj[group == "CCPM"]$deaths_both
+    test <- proj[group == "WPP2019"]$deaths_both
     testthat::expect_true(
-        sum(abs(total_pop_proj - total_pop))  / sum(total_pop) < 0.1
+        sum(abs(estimate - test))  / sum(test) < 0.05
     )
 })
