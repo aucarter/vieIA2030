@@ -22,11 +22,13 @@ get_ccpm <- function(nx, sx, fx, mig, z, n) {
   pm[, 1] <- nxm[, 1]
 
   for (i in 1:n) {
+    # Middle age groups
     pf[2:(z - 1), i + 1] <- pf[1:(z - 2), i] * (
         sxf[1:(z - 2), i] * (1 + .5 * migf[2:(z - 1), i]) +
         .5 * migf[2:(z - 1), i]
       )
 
+    # Final age group
     pf[z, i + 1] <- pf[z - 1, i] * (
         sxf[z - 1, i] * (1 + .5 * migf[z, i]) +
         .5 * migf[z, i]
@@ -36,6 +38,7 @@ get_ccpm <- function(nx, sx, fx, mig, z, n) {
         .5 * migf[z, i]
       )
 
+    # Calculate births
     fxbf <- ((1 + srb) ^ (-1) * (
         fx[10:54, i] +
         fx[11:55, i] * sxf[11:55, i]
@@ -45,11 +48,10 @@ get_ccpm <- function(nx, sx, fx, mig, z, n) {
         fxbf * pf[10:54, i] * ((1 + .5 * migf[10:54, i]) + .5 * migf[10:54, i])
       )
 
+    # First age group
     pf[1, i + 1] <- bxf[i] * (sxf[1, i] * (1 + .5 * migf[1, i]) +
       .5 * migf[1, i])
-  }
 
-  for (i in 1:n) {
     pm[2:(z - 1), i + 1] <- pm[1:(z - 2), i] * (
         sxm[1:(z - 2), i] * (1 + .5 * migm[2:(z - 1), i]) +
         .5 * migm[2:(z - 1), i]
@@ -108,6 +110,8 @@ lt_est <- function(y) {
 #' @param obs_wpp Observed WPP data
 #' @return A list of tables with population projection results
 project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
+  #TODO: This isn't returning the years that I would expect
+  #         - One year after for first and last year
   wpp_ina <- wpp_input  %>%
     filter(location_name == is & year_id %in% y0:(y1 + 1)) %>%
     select(-c(location_name)) %>%
@@ -193,7 +197,7 @@ project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
 #' @param obs_wpp Observed WPP data
 #' @return A data.table with single-year deaths
 get_all_deaths <- function(y0, y1, wpp_input, obs_wpp) {
-  locsall <- loc %>%
+  locsall <- loc_table %>%
     filter(location_name %in% unique(wpp_input$location_name)) %>%
     select(location_iso3, location_name) %>%
     arrange(location_iso3)
@@ -206,8 +210,6 @@ get_all_deaths <- function(y0, y1, wpp_input, obs_wpp) {
   for (c in 1:isn) {
     is   <- isc[c]
     iso  <- isco[c]
-
-    print(paste(c, "of", isn, iso))
 
     out  <- project_pop(is, y0, y1, wpp_input, obs_wpp)$deaths %>%
       data.table::as.data.table()

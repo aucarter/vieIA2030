@@ -12,6 +12,10 @@ project_pop(is, y0, y1, wpp_input, obs_wpp)
 \item{y0}{Start year of projection}
 
 \item{y1}{End year of projection}
+
+\item{wpp_input}{Input WPP data}
+
+\item{obs_wpp}{Observed WPP data}
 }
 \value{
 A list of tables with population projection results
