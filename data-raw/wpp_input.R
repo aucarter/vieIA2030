@@ -252,7 +252,7 @@ get_mig <- function(is, nx, sx, fx, z) {
     bxfs <- sum(
       fxbf *
       nxf[10:54, i] *
-      ((1 + .5 * migf[10:54, i]) + .5 * migf[10:54, i])
+      (1 + .5 * migf[10:54, i])
     )
     migf[1, i] <- 2 * (nxf[1, i + 1] / bxfs - sxf[1, i]) / (1 + sxf[1, i])
   }
@@ -271,7 +271,7 @@ get_mig <- function(is, nx, sx, fx, z) {
     bxms <- sum(
       fxbm *
       nxf[10:54, i] *
-      ((1 + .5 * migf[10:54, i]) + .5 * migf[10:54, i])
+      (1 + .5 * migf[10:54, i])
     )
     migm[1, i] <- 2 * (nxm[1, i + 1] / bxms - sxm[1, i]) / (1 + sxm[1, i])
   }
