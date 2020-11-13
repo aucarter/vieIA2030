@@ -14,3 +14,11 @@ We will use the cohort component method of population projection (CCMPP) to simu
 
 We plan to pull coverage from a mixture of WUENIC estimates and reported country data. Summarize 
 
+### Instructions
+
+1. Pull the `main` branch
+2. Open R and run:
+> devtools::load_all()
+3. Generate the database by runnning:
+> gen_db()
+4. Open the `main.R` script and run interactively
