@@ -45,7 +45,7 @@ get_ccpm <- function(nx, sx, fx, mig, z, n) {
       ) * 0.5)
 
     bxf[i] <- sum(
-        fxbf * pf[10:54, i] * ((1 + .5 * migf[10:54, i]) + .5 * migf[10:54, i])
+        fxbf * pf[10:54, i] * (1 + .5 * migf[10:54, i])
       )
 
     # First age group
@@ -71,7 +71,7 @@ get_ccpm <- function(nx, sx, fx, mig, z, n) {
         fx[11:55, i] * sxf[11:55, i]
       ) * 0.5)
     bxm[i] <- sum(
-        fxbm * pf[10:54, i] * ((1 + .5 * migf[10:54, i]) + .5 * migf[10:54, i])
+        fxbm * pf[10:54, i] * (1 + .5 * migf[10:54, i])
       )
     pm[1, i + 1] <- bxm[i] * (sxm[1, i] * (1 + .5 * migm[1, i]) +
       .5 * migm[1, i])
