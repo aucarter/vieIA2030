@@ -3,7 +3,7 @@
 prep_wuenic_data <- function() {
     url <- "http://www.who.int/entity/immunization/monitoring_surveillance/data/coverage_estimates_series.xls"
     xls <- tempfile()
-    download.file(url, xls, quiet = T)
+    download.file(url, xls, quiet = T, mode = 'wb')
     sheets <- readxl::excel_sheets(xls)
     data_list <- lapply(sheets[2:15], function(s) {
         df <- readxl::read_excel(path = xls, sheet = s)
@@ -40,7 +40,7 @@ prep_wuenic_data <- function() {
 prep_reported_coverage_data <- function() {
     url <- "http://www.who.int/entity/immunization/monitoring_surveillance/data/coverage_series.xls"
     xls <- tempfile()
-    download.file(url, xls, quiet = T)
+    download.file(url, xls, quiet = T, mode = 'wb')
     sheets <- readxl::excel_sheets(xls)
     dt <- suppressWarnings(
         data.table(readxl::read_excel(path = xls, sheet = sheets[2]))
@@ -62,7 +62,7 @@ prep_reported_coverage_data <- function() {
 prep_hpv_coverage_data <- function() {
     url <- "http://www.who.int/immunization/monitoring_surveillance/data/HPV_estimates.xlsx"
     xls <- tempfile()
-    download.file(url, xls, quiet = T)
+    download.file(url, xls, quiet = T, mode = 'wb')
     sheets <- readxl::excel_sheets(xls)
     dt <- data.table(readxl::read_excel(path = xls, sheet = sheets[2]))
     file.remove(xls)
