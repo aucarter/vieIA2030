@@ -1,5 +1,5 @@
 open_connection <- function() {
-    db_path <- system.file("vieIA2030.db", package = "vieIA2030")
+    db_path <- "vieIA2030.db"
     my_db <- DBI::dbConnect(RSQLite::SQLite(), db_path)
 
     return(my_db)
