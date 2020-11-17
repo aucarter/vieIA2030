@@ -1,5 +1,5 @@
 #' Generates the SQLite database with input data
-gen_db() <- function() {
+gen_db <- function() {
     if (!file.exists("vieIA2030.db")) {
         message("No database found -- building now")
 
