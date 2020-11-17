@@ -1,7 +1,7 @@
 ## Pull in various vaccine coverage data from the WHO website
 
 prep_wuenic_data <- function() {
-    url <- "www.who.int/entity/immunization/monitoring_surveillance/data/coverage_estimates_series.xls"
+    url <- "http://www.who.int/entity/immunization/monitoring_surveillance/data/coverage_estimates_series.xls"
     xls <- tempfile()
     download.file(url, xls, quiet = T)
     sheets <- readxl::excel_sheets(xls)
