@@ -108,8 +108,9 @@ lt_est <- function(y) {
 #' @param y0 Start year of projection
 #' @param y1 End year of projection
 #' @param wpp_input Input WPP data
+#' @param scenario Name of the scenario being run
 #' @return A list of tables with population projection results
-project_pop <- function(is, y0, y1, wpp_input) {
+project_pop <- function(is, y0, y1, wpp_input, scenario = "default") {
   n <- y1 - y0 + 1
   wpp_ina <- wpp_input  %>%
     filter(location_name == is & year_id %in% (y0 - 1):y1) %>%
@@ -134,12 +135,17 @@ project_pop <- function(is, y0, y1, wpp_input) {
     tidyr::spread(year_id, mig) %>%
     select(-c(sex_name, age)) %>%
     as.matrix()
-  mx <- wpp_ina %>%
+  if (scenario == "default") {
+    mx <- wpp_ina %>%
     select(sex_name, age, year_id, mx) %>%
     tidyr::spread(year_id, mx) %>%
     select(-c(sex_name, age)) %>%
     as.matrix()
-  mx[mx == 0] <- 1e-09
+    mx[mx == 0] <- 1e-09
+  } else {
+    mx <- get_mx_scenario(is, y0, y1, scenario)
+  }
+
   sx <- exp(-mx)
   
   ccpm_res <- get_ccpm(nx, sx, fx, mig)
