@@ -24,9 +24,12 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
 ###   Projection    ##############################################################################################
 ##############################################################################################################################    
 
-   Projection            <- project_pop(is, y0, y2, wpp_input, obs_wpp)
-
-   values$dem_out        <- Projection$out_df %>% rename(year_id = year)
+   Projection            <- project_pop(is, y0, y2, wpp_input)
+   
+   values$dem_out        <- Projection %>%
+                            add_lt(., is, y0, y2) %>%
+                            add_obs(., obs_wpp, is, y0, y2) %>%
+                            rename(year_id = year)
    values$pop_out        <- Projection$population
    values$country        <- is
    values$year0          <- y0
