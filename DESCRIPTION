@@ -29,7 +29,8 @@ Imports:
     rnaturalearth,
     rnaturalearthdata,
     rgeos,
-    utils
+    utils,
+    parallel
 Suggests: 
     knitr,
     rmarkdown,

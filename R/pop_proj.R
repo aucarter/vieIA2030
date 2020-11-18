@@ -221,9 +221,8 @@ get_all_deaths <- function(y0, y1, wpp_input, obs_wpp) {
   isc <- locsall$location_name
   isco <- locsall$location_iso3
   isn <- length(isc)
-  death_list <- list(isn)
 
-  for (c in 1:isn) {
+  all_deaths <- rbindlist(parallel::mclapply(1:isn, function(c) {
     is   <- isc[c]
     iso  <- isco[c]
 
@@ -246,11 +245,9 @@ get_all_deaths <- function(y0, y1, wpp_input, obs_wpp) {
         location_iso3 = iso
       ) %>%
       arrange(sex_name, age, year_id)
-
-    death_list[[c]] <- out
-  }
-
-  all_deaths <- rbindlist(death_list)
+    
+    return(out)
+  }))
 
   return(all_deaths)
 }
