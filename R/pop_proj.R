@@ -210,9 +210,8 @@ add_obs <- function(df, obs_wpp, is, y0, y1) {
 #' @param y0 Start year of projection
 #' @param y1 End year of projection
 #' @param wpp_input Input WPP data
-#' @param obs_wpp Observed WPP data
 #' @return A data.table with single-year deaths
-get_all_deaths <- function(y0, y1, wpp_input, obs_wpp) {
+get_all_deaths <- function(y0, y1, wpp_input) {
   locsall <- loc_table %>%
     filter(location_name %in% unique(wpp_input$location_name)) %>%
     select(location_iso3, location_name) %>%
@@ -230,7 +229,7 @@ get_all_deaths <- function(y0, y1, wpp_input, obs_wpp) {
       as.data.table()
     n    <- y1 - y0 + 1
 
-    yrv  <- paste0(y0 + 1:n)
+    yrv  <- paste0(y0:y1)
     sxv  <- rep(c("Female", "Male"), each = 96)
     agv  <- c(0:95, 0:95)
 
