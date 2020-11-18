@@ -47,7 +47,7 @@ prep_vimc_rr_data <- function() {
 #' @return A list of tables with population projection results
 vimc_rr <- function(wpp_input, obs_wpp, vimc_impact_estimates) {
     # Calculate both-sexes deaths
-    deaths <- get_all_deaths(1999, 2029, wpp_input, obs_wpp) %>%
+    deaths <- get_all_deaths(2000, 2030, wpp_input, obs_wpp) %>%
         group_by(age, year_id, location_iso3) %>%
         summarise(deaths_obs = sum(deaths)) %>%
         ungroup() %>%
