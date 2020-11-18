@@ -221,32 +221,34 @@ get_all_deaths <- function(y0, y1, wpp_input) {
   isco <- locsall$location_iso3
   isn <- length(isc)
 
-  all_deaths <- rbindlist(parallel::mclapply(1:isn, function(c) {
-    is   <- isc[c]
-    iso  <- isco[c]
+  all_deaths <- rbindlist(
+    parallel::mclapply(1:isn, function(c) {
+      is   <- isc[c]
+      iso  <- isco[c]
 
-    out  <- project_pop(is, y0, y1, wpp_input)$deaths %>%
-      as.data.table()
-    n    <- y1 - y0 + 1
+      out  <- project_pop(is, y0, y1, wpp_input)$deaths %>%
+        as.data.table()
+      n    <- y1 - y0 + 1
 
-    yrv  <- paste0(y0:y1)
-    sxv  <- rep(c("Female", "Male"), each = 96)
-    agv  <- c(0:95, 0:95)
+      yrv  <- paste0(y0:y1)
+      sxv  <- rep(c("Female", "Male"), each = 96)
+      agv  <- c(0:95, 0:95)
 
-    colnames(out) <- yrv
+      colnames(out) <- yrv
 
-    out <- out %>%
-      mutate(age = agv, sex_name = sxv) %>%
-      tidyr::gather(year_id, deaths, -age, -sex_name) %>%
-      mutate(
-        year_id = as.numeric(year_id),
-        location_name = is,
-        location_iso3 = iso
-      ) %>%
-      arrange(sex_name, age, year_id)
-    
-    return(out)
-  }))
+      out <- out %>%
+        mutate(age = agv, sex_name = sxv) %>%
+        tidyr::gather(year_id, deaths, -age, -sex_name) %>%
+        mutate(
+          year_id = as.numeric(year_id),
+          location_name = is,
+          location_iso3 = iso
+        ) %>%
+        arrange(sex_name, age, year_id)
+
+      return(out)
+    }, mc.cores = parallel::detectCores())
+  )
 
   return(all_deaths)
 }
