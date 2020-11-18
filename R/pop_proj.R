@@ -111,24 +111,25 @@ lt_est <- function(y) {
 #' @param obs_wpp Observed WPP data
 #' @return A list of tables with population projection results
 project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
-  #TODO: This isn't returning the years that I would expect
-  #         - One year after for first and last year
   n <- y1 - y0 + 1
   wpp_ina <- wpp_input  %>%
     filter(location_name == is & year_id %in% (y0 - 1):y1) %>%
     select(-c(location_name)) %>%
     arrange(sex_name, age, year_id)
-  fx <- wpp_ina %>%
-    select(sex_name, age, year_id, fx) %>%
-    tidyr::spread(year_id, fx) %>%
-    select(-c(sex_name, age)) %>%
-    as.matrix()
   nx <- wpp_ina %>%
     select(sex_name, age, year_id, nx) %>%
     tidyr::spread(year_id, nx) %>%
     select(-c(sex_name, age)) %>%
     as.matrix()
   nx[nx == 0]   <- 1e-09
+
+  wpp_ina <- wpp_ina %>%
+    filter(year_id %in% y0:y1)
+  fx <- wpp_ina %>%
+    select(sex_name, age, year_id, fx) %>%
+    tidyr::spread(year_id, fx) %>%
+    select(-c(sex_name, age)) %>%
+    as.matrix()
   mig <- wpp_ina %>%
     select(sex_name, age, year_id, mig) %>%
     tidyr::spread(year_id, mig) %>%
@@ -142,18 +143,18 @@ project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
   mx[mx == 0] <- 1e-09
   sx <- exp(-mx)
   
-  ccpm_res <- get_ccpm(nx, sx[, 1:n], fx[, 1:n], mig[, 1:n])
+  ccpm_res <- get_ccpm(nx, sx, fx, mig)
   population <- ccpm_res[["population"]]
   births <- ccpm_res[["births"]]
-  deaths <- -1 * (log(sx)[, 2:(n + 1)]) * population
+  deaths <- -1 * (log(sx)) * population[, 1:n]
 
   pop_tot <- apply(population, 2, get_person)
   deaths_tot <- apply(deaths, 2, get_person)
   mx_both  <- deaths_tot / pop_tot
 
   lt_out_both <- apply(mx_both, 2, lt_est)
-  lt_out_fmle <- apply(mx[1:96, 2:(n + 1)], 2, lt_est)
-  lt_out_mle <- apply(mx[97:192, 2:(n + 1)], 2, lt_est)
+  lt_out_fmle <- apply(mx[1:96, ], 2, lt_est)
+  lt_out_mle <- apply(mx[97:192, ], 2, lt_est)
 
   deaths_both <- apply(deaths, 2, sum)
   deaths_male <- apply(deaths[97:192, ], 2, sum)
