@@ -3,84 +3,85 @@
 #' @param sx Survival matrix
 #' @param fx Fertility matrix
 #' @param mig Migration matrix
-#' @param z Number of age groups
-#' @param n Number of years of projection
 #' @return A list with population and births matrices
 #' @export
-get_ccpm <- function(nx, sx, fx, mig, z, n) {
-  nxf <- nx[1:z, ]
-  nxm <- nx[(z + 1):(2 * z), ]
-  sxf <- sx[1:z, ]
-  sxm <- sx[(z + 1):(2 * z), ]
-  migf <- mig[1:z, ]
-  migm <- mig[(z + 1):(2 * z), ]
+get_ccpm <- function(nx, sx, fx, mig, n) {
+  z <- dim(sx)[1] / 2
+  n <- dim(sx)[2]
   srb <- 1.05
-
-  bxm  <- bxf <- array(dim = n)
-  pm  <- pf <- array(dim = c(z, n + 1))
-  pf[, 1] <- nxf[, 1]
-  pm[, 1] <- nxm[, 1]
-
+  bx <- array(dim = n)
+  p <- array(dim = c(2 * z, n + 1))
+  p[, 1] <- nx[, 1]
   for (i in 1:n) {
-    # Middle age groups
-    pf[2:(z - 1), i + 1] <- pf[1:(z - 2), i] * (
-        sxf[1:(z - 2), i] * (1 + .5 * migf[2:(z - 1), i]) +
-        .5 * migf[2:(z - 1), i]
-      )
-
-    # Final age group
-    pf[z, i + 1] <- pf[z - 1, i] * (
-        sxf[z - 1, i] * (1 + .5 * migf[z, i]) +
-        .5 * migf[z, i]
-      ) +
-      pf[z, i] * (
-        sxf[z, i] * (1 + .5 * migf[z, i]) +
-        .5 * migf[z, i]
-      )
-
-    # Calculate births
-    fxbf <- ((1 + srb) ^ (-1) * (
-        fx[10:54, i] +
-        fx[11:55, i] * sxf[11:55, i]
-      ) * 0.5)
-
-    bxf[i] <- sum(
-        fxbf * pf[10:54, i] * (1 + .5 * migf[10:54, i])
-      )
-
-    # First age group
-    pf[1, i + 1] <- bxf[i] * (sxf[1, i] * (1 + .5 * migf[1, i]) +
-      .5 * migf[1, i])
-
-    pm[2:(z - 1), i + 1] <- pm[1:(z - 2), i] * (
-        sxm[1:(z - 2), i] * (1 + .5 * migm[2:(z - 1), i]) +
-        .5 * migm[2:(z - 1), i]
-      )
-
-    pm[z, i + 1] <- pm[z - 1, i] * (
-        sxm[z - 1, i] * (1 + .5 * migm[z, i]) +
-        .5 * migm[z, i]
-      ) +
-      pm[z, i] * (
-        sxm[z, i] * (1 + .5 * migm[z, i]) +
-        .5 * migm[z, i]
-      )
-
-    fxbm <- (srb * (1 + srb) ^ (-1) * (
-        fx[10:54, i] +
-        fx[11:55, i] * sxf[11:55, i]
-      ) * 0.5)
-    bxm[i] <- sum(
-        fxbm * pf[10:54, i] * (1 + .5 * migf[10:54, i])
-      )
-    pm[1, i + 1] <- bxm[i] * (sxm[1, i] * (1 + .5 * migm[1, i]) +
-      .5 * migm[1, i])
+    next_pop <- update_pop(p[, i], sx[, i], fx[, i], mig[, i], z, srb)
+    p[, i + 1] <- next_pop[[1]]
+    bx[i] <- next_pop[[2]]
   }
 
-  ccpm <- list(population = rbind(pf, pm)[, 1:n], births = bxf + bxm)
+  ccpm <- list(population = p[, 2:(n + 1)], births = bx)
 
   return(ccpm)
 }
+
+update_pop <- function(p_in, sx, fx, mig, z, srb) {
+  p_out <- vector()
+  bx_out <- 0
+  for (sex in c("female", "male")) {
+    if (sex == "female") {
+      first_idx <- 1
+      mid_idx <- 2:(z - 1)
+      final_idx <- z
+    } else {
+      first_idx <- z + 1
+      mid_idx <- z + 2:(z - 1)
+      final_idx <- z + z
+    }
+
+    # Middle age groups
+    p_out[mid_idx] <- p_in[mid_idx - 1] * (
+        sx[mid_idx - 1] * (1 + .5 * mig[mid_idx]) +
+        .5 * mig[mid_idx]
+      )
+
+    # Final age group
+    p_out[final_idx] <- p_in[final_idx - 1] * (
+        sx[final_idx - 1] * (1 + .5 * mig[final_idx]) +
+        .5 * mig[final_idx]
+      ) +
+      p_in[final_idx] * (
+        sx[final_idx] * (1 + .5 * mig[final_idx]) +
+        .5 * mig[final_idx]
+      )
+    
+    # First age group
+    bx <- calc_births(srb, fx, sx, p_in, mig, sex)
+    bx_out <- bx_out + bx
+    p_out[first_idx] <- bx * (sx[first_idx] * (1 + .5 * mig[first_idx]) +
+      .5 * mig[first_idx])
+  }
+
+
+  return(list(p_out, bx_out))
+}
+
+calc_births <- function(srb, fx, sx, p_in, mig, sex = "female") {
+  # Calculate births
+  fxb <- ((1 + srb) ^ (-1) * (
+      fx[10:54] +
+      fx[11:55] * sx[11:55]
+    ) * 0.5)
+
+  if (sex == "male") {
+    fxb <- fxb * srb
+  }
+
+  bx <- sum(
+      fxb * p_in[10:54] * (1 + .5 * mig[10:54])
+    )
+
+  return(bx)
+}
+
 
 # TODO: This could be more clear
 #' Not sure why this is needed
@@ -112,8 +113,9 @@ lt_est <- function(y) {
 project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
   #TODO: This isn't returning the years that I would expect
   #         - One year after for first and last year
+  n <- y1 - y0 + 1
   wpp_ina <- wpp_input  %>%
-    filter(location_name == is & year_id %in% y0:(y1 + 1)) %>%
+    filter(location_name == is & year_id %in% (y0 - 1):y1) %>%
     select(-c(location_name)) %>%
     arrange(sex_name, age, year_id)
   fx <- wpp_ina %>%
@@ -139,21 +141,19 @@ project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
     as.matrix()
   mx[mx == 0] <- 1e-09
   sx <- exp(-mx)
-  n <- y1 - y0 + 1
-  z <- length(0:95)
-
-  ccpm_res <- get_ccpm(nx, sx, fx, mig, z, n)
+  
+  ccpm_res <- get_ccpm(nx, sx[, 1:n], fx[, 1:n], mig[, 1:n])
   population <- ccpm_res[["population"]]
   births <- ccpm_res[["births"]]
-  deaths <- -1 * (log(sx)[, 1:n]) * population
+  deaths <- -1 * (log(sx)[, 2:(n + 1)]) * population
 
   pop_tot <- apply(population, 2, get_person)
   deaths_tot <- apply(deaths, 2, get_person)
   mx_both  <- deaths_tot / pop_tot
 
   lt_out_both <- apply(mx_both, 2, lt_est)
-  lt_out_fmle <- apply(mx[1:96, 1:n], 2, lt_est)
-  lt_out_mle <- apply(mx[97:192, 1:n], 2, lt_est)
+  lt_out_fmle <- apply(mx[1:96, 2:(n + 1)], 2, lt_est)
+  lt_out_mle <- apply(mx[97:192, 2:(n + 1)], 2, lt_est)
 
   deaths_both <- apply(deaths, 2, sum)
   deaths_male <- apply(deaths[97:192, ], 2, sum)
