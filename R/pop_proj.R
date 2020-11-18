@@ -227,7 +227,7 @@ get_all_deaths <- function(y0, y1, wpp_input, obs_wpp) {
     is   <- isc[c]
     iso  <- isco[c]
 
-    out  <- project_pop(is, y0, y1, wpp_input, obs_wpp)$deaths %>%
+    out  <- project_pop(is, y0, y1, wpp_input)$deaths %>%
       data.table::as.data.table()
     n    <- y1 - y0 + 1
 
