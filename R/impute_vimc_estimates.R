@@ -7,14 +7,14 @@ impute_vimc_estimates <- function() {
 
 ## Pull in VIMC estimates
 mydb <- open_connection()
-vimc_dt <- data.table::as.data.table(
+vimc_dt <- as.data.table(
     collect(tbl(mydb, "vimc_impact_estimates"))
 )
-data.table::setnames(vimc_dt, "value", "deaths_averted")
+setnames(vimc_dt, "value", "deaths_averted")
 
 ## Load SDI and merge on
 gbd_sdi[, c("location_name", "location_id") := NULL]
-data.table::setnames(gbd_sdi, "value", "sdi")
+setnames(gbd_sdi, "value", "sdi")
 # dt <- merge(vimc_dt, gbd_sdi, by = c("location_iso3", "year"))
 # dt <- dt[deaths_averted > 0 & !is.na(deaths_averted)]
 
@@ -36,7 +36,7 @@ data.table::setnames(gbd_sdi, "value", "sdi")
 
     # ## Predict for missing locations
     # missing_locs  <- setdiff(loc_table$location_iso3, dt$location_iso3)
-    # pred_dt <- data.table::rbindlist(
+    # pred_dt <- rbindlist(
     #     lapply(
     #         unique(cov_dt$vaccine_id), function(vacc) {
     #             gbd_sdi[location_iso3 %in% missing_locs][, vaccine_id := vacc]

@@ -228,7 +228,7 @@ get_all_deaths <- function(y0, y1, wpp_input, obs_wpp) {
     iso  <- isco[c]
 
     out  <- project_pop(is, y0, y1, wpp_input)$deaths %>%
-      data.table::as.data.table()
+      as.data.table()
     n    <- y1 - y0 + 1
 
     yrv  <- paste0(y0 + 1:n)
@@ -250,7 +250,7 @@ get_all_deaths <- function(y0, y1, wpp_input, obs_wpp) {
     death_list[[c]] <- out
   }
 
-  all_deaths <- data.table::rbindlist(death_list)
+  all_deaths <- rbindlist(death_list)
 
   return(all_deaths)
 }
