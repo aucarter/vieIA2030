@@ -16,9 +16,7 @@ prep_vimc_rr_data <- function() {
 
     # Calculate relative risk
     message("Calculating relative risk...")
-    rr_dt <- vimc_rr(
-        wpp_input, obs_wpp, vimc_impact_estimates
-    )
+    rr_dt <- vimc_rr(wpp_input, vimc_impact_estimates)
 
     # Merge on covariates and coverage
     message("Merging on covariates and coverage...")
