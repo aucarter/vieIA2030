@@ -108,9 +108,8 @@ lt_est <- function(y) {
 #' @param y0 Start year of projection
 #' @param y1 End year of projection
 #' @param wpp_input Input WPP data
-#' @param obs_wpp Observed WPP data
 #' @return A list of tables with population projection results
-project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
+project_pop <- function(is, y0, y1, wpp_input) {
   n <- y1 - y0 + 1
   wpp_ina <- wpp_input  %>%
     filter(location_name == is & year_id %in% (y0 - 1):y1) %>%
@@ -148,6 +147,15 @@ project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
   births <- ccpm_res[["births"]]
   deaths <- -1 * (log(sx)) * population[, 1:n]
 
+  list(population = population, deaths = deaths, births = births, mx = mx)
+}
+
+add_lt <- function(projected_pop, is, y0, y1) {
+  population <- projected_pop$population
+  deaths <- projected_pop$deaths
+  births <- projected_pop$births
+  mx <- projected_pop$mx
+
   pop_tot <- apply(population, 2, get_person)
   deaths_tot <- apply(deaths, 2, get_person)
   mx_both  <- deaths_tot / pop_tot
@@ -170,8 +178,7 @@ project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
   locs <- loc_table %>%
     filter(location_name == is) %>%
     select(location_iso3, location_name)
-  out_df <- data.table::data.table(
-    group = "CCPM",
+  out_df <- data.table(
     year = y0:y1,
     deaths_both = deaths_both,
     deaths_male = deaths_male,
@@ -180,7 +187,15 @@ project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
     e0_male = e0_male,
     e0_female = e0_female,
     imr = imr, u5mr = u5mr, births = births, locs
-  ) %>%
+  )
+
+  return(out_df)
+}
+
+#' @param obs_wpp Observed WPP data
+add_obs <- function(df, obs_wpp, is, y0, y1) {
+  out_df <- df %>%
+  mutate(group = "CCPM") %>%
   rbind(
     obs_wpp %>%
     filter(location_name == is & year %in% y0:y1) %>%
@@ -188,7 +203,7 @@ project_pop <- function(is, y0, y1, wpp_input, obs_wpp) {
     select(-c("location_id"))
   )
 
-  list(population = population, deaths = deaths, out_df = out_df)
+  return(out_df)
 }
 
 #' Calculate all single-year deaths
