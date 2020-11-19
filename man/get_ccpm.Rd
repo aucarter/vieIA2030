@@ -4,7 +4,7 @@
 \alias{get_ccpm}
 \title{Execute cohort-component projection model}
 \usage{
-get_ccpm(nx, sx, fx, mig, z, n)
+get_ccpm(nx, sx, fx, mig, n)
 }
 \arguments{
 \item{nx}{Population matrix}
@@ -14,10 +14,6 @@ get_ccpm(nx, sx, fx, mig, z, n)
 \item{fx}{Fertility matrix}
 
 \item{mig}{Migration matrix}
-
-\item{z}{Number of age groups}
-
-\item{n}{Number of years of projection}
 }
 \value{
 A list with population and births matrices
