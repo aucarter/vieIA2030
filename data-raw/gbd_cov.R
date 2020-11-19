@@ -23,7 +23,7 @@ gbd_sdi <- merge(loc_table, melt_dt, all.x = T, by = "gbd_alt_name")
 # GBD 2019 HAQI for use as a covariate
 
 ## Read data
-dt <- fread(
+dt <- data.table::fread(
     system.file("extdata", "gbd19_haqi.csv", package = "vieIA2030"),
     header = T
 )

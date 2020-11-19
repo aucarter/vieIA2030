@@ -1,10 +1,10 @@
 # Prep VIMC vaccine impact estimates
-dt <- fread(
+dt <- data.table::fread(
     system.file("extdata", "vimc_estimates.csv", package = "vieIA2030")
 )
 dt[, c("gavi73", "who_region") := NULL]
-setnames(dt, "country", "location_iso3")
-melt_dt <- melt.data.table(
+data.table::setnames(dt, "country", "location_iso3")
+melt_dt <- data.table::melt.data.table(
     dt,
     id.vars = c("location_iso3", "location_name", "age", "year"),
     variable = "vaccine_short"

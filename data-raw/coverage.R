@@ -17,15 +17,15 @@ prep_wuenic_data <- function() {
     })
     file.remove(xls)
 
-    dt <- rbindlist(data_list, fill = T)
-    setnames(
+    dt <- data.table::rbindlist(data_list, fill = T)
+    data.table::setnames(
         dt,
         c("ISO_code", "Cname"),
         c("location_iso3", "location_name")
     )
     dt[, sex_id := 3]
     # NOTE: We are subsetting to specific dose numbers here
-    vaccine_short_map <- data.table(
+    vaccine_short_map <- data.table::data.table(
         Vaccine = c("Hib3", "RCV1", "RotaC", "YFV", "Pol3", "HepB3", "MCV1",
             "PCV3", "DTP3", "BCG"),
         vaccine_short = c("Hib", "Rubella", "Rota", "YF", "Polio", "HepB",
@@ -47,7 +47,7 @@ prep_reported_coverage_data <- function() {
     )
     file.remove(xls)
     dt[, c("WHO_REGION", "Continent", "Asterisc") := NULL]
-    setnames(
+    data.table::setnames(
         dt,
         c("ISO_code", "Cname", "Vaccine", "Year", "Percent_covrage"),
         c("location_iso3", "location_name", "vaccine_short", "year", "value")
@@ -76,7 +76,7 @@ prep_hpv_coverage_data <- function() {
         c("location_iso3", "location_name")
     )
     dt[, sex_id := ifelse(sex == "Male", 1, 2)]
-    dt[, value_no_pct := tstrsplit(value_str, "%")[[1]]]
+    dt[, value_no_pct := data.table::tstrsplit(value_str, "%")[[1]]]
     dt[value_no_pct == "-", value_no_pct := "0"]
     dt[, value := as.numeric(value_no_pct)]
     dt <- dt[, .(location_iso3, location_name, sex_id, year, vaccine_short, value)]
@@ -88,7 +88,7 @@ wuenic_dt <- prep_wuenic_data()
 hpv_dt <- prep_hpv_coverage_data()
 reported_dt <- prep_reported_coverage_data()
 
-coverage <- rbindlist(
+coverage <- data.table::rbindlist(
     list(wuenic_dt, hpv_dt, reported_dt),
     use.names = T
 )
