@@ -4,12 +4,10 @@
 \alias{vimc_rr}
 \title{Calculate all-cause mortality reduction by vaccine for VIMC 10}
 \usage{
-vimc_rr(wpp_input, obs_wpp, vimc_impact_estimates)
+vimc_rr(wpp_input, vimc_impact_estimates)
 }
 \arguments{
 \item{wpp_input}{Input WPP data}
-
-\item{obs_wpp}{Observed WPP data}
 
 \item{vimc_impact_estimates}{VIMC deaths averted}
 }

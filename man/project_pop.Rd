@@ -4,7 +4,7 @@
 \alias{project_pop}
 \title{Run the population projection for a particular country and year range}
 \usage{
-project_pop(is, y0, y1, wpp_input, obs_wpp)
+project_pop(is, y0, y1, wpp_input)
 }
 \arguments{
 \item{is}{Location name}
@@ -14,8 +14,6 @@ project_pop(is, y0, y1, wpp_input, obs_wpp)
 \item{y1}{End year of projection}
 
 \item{wpp_input}{Input WPP data}
-
-\item{obs_wpp}{Observed WPP data}
 }
 \value{
 A list of tables with population projection results
