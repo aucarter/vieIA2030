@@ -6,21 +6,18 @@ get_mx_scen <- function(is, y0, y1, scen, mx, nx) {
     deaths <- mx * nx
 
     ## VIMC
-    vimc_death_change <- vimc_impact_estimates %>%
-        left_join(default_coverage, by = c("year", "vaccine_id")) %>%
-        left_join(scen_coverage, by = c("year", "vaccine_id")) %>%
-        mutate(scalar = (default_cov - scen_cov) / default_cov) %>%
-        mutate(death_change = scalar * value)
+    vimc_deaths_change <- get_vimc_deaths_change(is, y0, y1, default_coverage,
+        scen_coverage, mx)
 
     ## DTP
     # Calculate relative risk given coverage and scale deaths accordingly
-    dtp_death_change <- NULL
+    dtp_deaths_change <- NULL
 
     ## BCG
-    bcg_death_change <- NULL
+    bcg_deaths_change <- NULL
 
-    scen_deaths <- deaths + vimc_death_change + dtp_death_change +
-        bcg_death_change
+    scen_deaths <- deaths + vimc_deaths_change + dtp_deaths_change +
+        bcg_deaths_change
 
     mx <- scen_deaths / nx
 
@@ -43,4 +40,35 @@ get_scen_coverage <- function(is, y0, y1, scen) {
     }
 
     return(coverage_dt)
+}
+
+get_vimc_deaths_change <- function(is, y0, y1, default_coverage, scen_coverage,
+    mx) {
+    vimc_deaths_change <- vimc_impact_estimates %>%
+        filter(location_name == is & year %in% y0:y1) %>%
+        left_join(default_coverage, by = c("year", "vaccine_id")) %>%
+        left_join(scen_coverage, by = c("year", "vaccine_id")) %>%
+        mutate(scalar = (default_cov - scen_cov) / default_cov) %>%
+        mutate(deaths_change = scalar * value) %>%
+        group_by(year, age) %>%
+        summarise(deaths_change = sum(deaths_change, na.rm = T)) %>%
+        ungroup() %>%
+        tidyr::spread(year, deaths_change) %>%
+        select(-c(age)) %>%
+        as.matrix()
+    # Fill in older age groups TODO: fix this on vimc_impact_estimates side
+    vimc_deaths_change <- rbind(
+        vimc_deaths_change,
+        matrix(
+            nrow = dim(mx)[1] / 2 - dim(vimc_deaths_change)[1],
+            ncol = dim(mx)[2]
+        )
+    )
+    # Split evenly across sexes
+    vimc_deaths_change <- rbind(
+        vimc_deaths_change / 2,
+        vimc_deaths_change / 2
+    )
+
+    return(vimc_deaths_change)
 }
