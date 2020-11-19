@@ -13,6 +13,7 @@ get_mx_scen <- function(is, y0, y1, scen, mx, nx) {
         mutate(death_change = scalar * value)
 
     ## DTP
+    # Calculate relative risk given coverage and scale deaths accordingly
     dtp_death_change <- NULL
 
     ## BCG
