@@ -88,8 +88,16 @@ vimc_rr <- function(wpp_input, vimc_impact_estimates) {
     return(out_dt)
 }
 
-## Impute VIMC deaths averted for missing locations
-impute_vimc <- function(fit, covariates) {
-    vimc_imputation <- NULL
-    return(vimc_imputation)
+vimc_averted_scen <- function(deaths_obs, coverage, rr) {
+    averted_scen <- deaths_obs * (
+            coverage * (1 - rr) / (1 - coverage * (1 - rr))
+        )
+
+    return(averted_scen)
+}
+
+vimc_deaths_scen <- function(deaths_obs, averted_obs, averted_scen) {
+    deaths_scen <- deaths_obs + sum(averted_obs) - sum(averted_scen)
+
+    return(deaths_scen)
 }

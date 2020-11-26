@@ -42,6 +42,8 @@ rr_dt <- rbind(
     pred_all,
     fill = T
 )
+rr_dt[, averted_scen := vimc_averted_scen(deaths_obs, coverage, rr)]
+
 
 ## Try INLA
 library(INLA)
