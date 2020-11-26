@@ -17,3 +17,16 @@ plot.coverage <- function(x, ...) {
 
     return(gg)
 }
+
+## Scatter against covariates
+scatter_rr <- function(dt, x_var) {
+    for (a in 0:9) {
+        gg <- ggplot(dt[age == a], aes(x = get(x_var), y = rr)) +
+            geom_point(size = 0.1, alpha = 0.2) +
+            facet_wrap(~vaccine_short, scales = "free_y") +
+            theme_bw() +
+            ggtitle(paste(x_var, "vs mortality reduction by vaccine: Age", a)) +
+            xlab(x_var)
+        print(gg)
+    }
+}
