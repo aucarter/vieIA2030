@@ -34,10 +34,11 @@ setnames(gbd_haqi, c("year_id", "val"), c("year", "haqi"))
 
 ## Ignore uncertainty (for now)
 gbd_haqi[, c("upper", "lower") := NULL]
+gbd_haqi[, haqi := haqi / 100]
 
 gbd_cov <- merge(
-    gbd_haqi[, .(location_id, year, haqi)], 
-    gbd_sdi[, .(location_id, year, sdi)], 
+    gbd_haqi[, .(location_id, year, haqi)],
+    gbd_sdi[, .(location_id, year, sdi)],
     by = c("location_id", "year")
 )
 
