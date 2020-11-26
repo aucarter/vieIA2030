@@ -44,16 +44,6 @@ rr_dt <- rbind(
 )
 rr_dt[, averted_scen := vimc_averted_scen(deaths_obs, coverage, rr)]
 
-
-## Try INLA
-library(INLA)
-dt_inla <- inla(rr ~ sdi + haqi, family = "beta",
-   data = dt[vaccine_short == "Measles"],
-   control.family = list(link = "logit"),
-   control.predictor = list(link = 1, compute = TRUE))
-pred_inla <- dt_inla$summary.fitted.values$mean
-dt[vaccine_short == "Measles", pred := pred_inla]
-
 length(which(is.na(dt$rr)))
 
 ## Pull in GBD data
