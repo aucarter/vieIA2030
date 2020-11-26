@@ -3,35 +3,56 @@
 ## Pull in data
 dt <- prep_vimc_rr_data()
 
-## Scatter against covariates
-scatter_rr <- function(x_var) {
-    gg <- ggplot(dt, aes(x = get(x_var), y = rr)) +
-        geom_point(size = 0.1, alpha = 0.2) +
-        facet_wrap(~vaccine_short, scales = "free_y") +
-        theme_bw() +
-        ggtitle(paste(x_var, "vs mortality reduction by vaccine")) +
-        xlab(x_var)
-
-    return(gg)
-}
-
-library(ggplot2)
 pdf("plots/vimc_rr_scatters.pdf")
-lapply(c("haqi", "sdi", "coverage"), scatter_rr)
+lapply(c("haqi", "sdi"), scatter_rr, dt = dt)
 dev.off()
 
 ## Simple model for VIMC imputation
-library(lme4)
-fit_vaccine_rr <- function(vacc) {
-    fit <- lmer(
-        rr ~ 1 + coverage + sdi + haqi + (1 | location_id),
-        data = dt[vaccine_short == vacc]
+library(splines)
+impute_vacc_rr <- function(vacc) {
+    print(vacc)
+    fit <- glm(
+        rr ~ haqi + sdi + year + bs(age, knots = c(2, 5, 10, 25)),
+        data = dt[vaccine_short == vacc],
+        family = "binomial"
     )
-    coefs <- data.table(t(fixef(fit)))
-    coefs[, vaccine_short := vacc]
-    return(coefs)
+    pred_dt <- merge(
+        dt[is.na(rr), .(location_id, year, haqi, sdi)][, idx := .I],
+        CJ(
+            age = seq(
+                min(dt[vaccine_short == vacc]$age),
+                max(dt[vaccine_short == vacc]$age)
+            ),
+            idx = 1:nrow(dt[is.na(rr), .(location_id, year, haqi, sdi)])
+        ),
+        by = "idx"
+    )[, idx := NULL]
+    pred_dt[, pred := predict(fit, pred_dt)]
+    pred_dt[, rr := exp(pred) / (exp(pred) + 1)]
+    pred_dt[, pred := NULL]
+    pred_dt[, vaccine_short := vacc]
+
+    return(pred_dt[, .(location_id, age, year, vaccine_short, rr)])
 }
-fit_dt <- rbindlist(lapply(unique(dt$vaccine_short), fit_vaccine_rr))
+pred_all <- rbindlist(
+    lapply(unique(dt[!is.na(vaccine_short)]$vaccine_short), impute_vacc_rr)
+)
+rr_dt <- rbind(
+    dt[!is.na(rr), .(location_id, age, year, vaccine_short, rr)],
+    pred_all,
+    fill = T
+)
+
+## Try INLA
+library(INLA)
+dt_inla <- inla(rr ~ sdi + haqi, family = "beta",
+   data = dt[vaccine_short == "Measles"],
+   control.family = list(link = "logit"),
+   control.predictor = list(link = 1, compute = TRUE))
+pred_inla <- dt_inla$summary.fitted.values$mean
+dt[vaccine_short == "Measles", pred := pred_inla]
+
+length(which(is.na(dt$rr)))
 
 ## Pull in GBD data
 gbd_dt <- prep_gbd_data()
