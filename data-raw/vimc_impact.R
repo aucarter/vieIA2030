@@ -15,8 +15,8 @@ vimc_impact <- melt_dt[order(
 vimc_impact <- vimc_impact[!is.na(value) & value > 0]
 
 # Convert to vaccine_id and location_id to save space
-vimc_dt <- merge(vimc_impact, vaccine_table)
-vimc_dt[, c("vaccine_long", "vaccine_short") := NULL]
+vimc_dt <- merge(vimc_impact, vaccine_table, by = "vaccine_short")
+vimc_dt[, c("vaccine_long", "vaccine_short", "cause_name") := NULL]
 vimc_dt <- merge(vimc_dt, loc_table)
 vimc_dt[, c("location_name", "location_iso3") := NULL]
 
