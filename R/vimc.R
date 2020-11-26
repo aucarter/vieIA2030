@@ -1,5 +1,3 @@
-
-
 prep_vimc_rr_data <- function() {
     ## Pull in data that isn't already loaded in global environment
     message("Loading data...")
@@ -20,9 +18,9 @@ prep_vimc_rr_data <- function() {
 
     # Merge on covariates and coverage
     message("Merging on covariates and coverage...")
-    dt <- left_join(
+    dt <- right_join(
             rr_dt[year %in% 2000:2019],
-            gbd_cov,
+            gbd_cov[year %in% 2000:2019],
             by = c("location_id",  "year")
         ) %>%
         left_join(
@@ -44,28 +42,27 @@ prep_vimc_rr_data <- function() {
 #' @return A list of tables with population projection results
 vimc_rr <- function(wpp_input, vimc_impact_estimates) {
     # Calculate both-sexes deaths
-    deaths <- get_all_deaths(2000, 2030, wpp_input) %>%
+    deaths <- get_all_deaths(2000, 2019, wpp_input) %>%
         group_by(age, year_id, location_iso3) %>%
         summarise(deaths_obs = sum(deaths)) %>%
         ungroup() %>%
-        rename(year = year_id)
-
-    # Calculate total deaths averted
-    vimc_impact_estimates <- vimc_impact_estimates %>%
-        group_by(age, year, location_iso3) %>%
-        mutate(deaths_averted = sum(value)) %>%
-        ungroup() %>%
+        rename(year = year_id) %>%
         as.data.table()
 
-    # Merge on VIMC impact estimates and calculate mortality reduction
+    # Merge on VIMC impact estimates + coverage and calculate mortality reduction
     dt <- left_join(
-            vimc_impact_estimates,
             deaths,
+            vimc_impact_estimates,
             by = c("age", "year", "location_iso3")
         ) %>%
         rename(vaccine_deaths_averted = value) %>%
-        mutate(rr = (deaths_obs + deaths_averted - vaccine_deaths_averted) /
-            (deaths_obs + deaths_averted))
+        left_join(
+            coverage_inputs[, .(location_id, year, vaccine_id, value)],
+            by = c("location_id", "year", "vaccine_id")
+        ) %>%
+        rename(coverage = value) %>%
+        mutate(rr = (deaths_obs - (vaccine_deaths_averted * (1 - coverage) / coverage)) /
+            (deaths_obs + vaccine_deaths_averted))
 
     # Check for missingness
     if (any(is.na(dt$rr))) {
@@ -80,11 +77,13 @@ vimc_rr <- function(wpp_input, vimc_impact_estimates) {
     # Check for non-sensical numbers
     if (any(range(dt$rr) < 0 | range(dt$rr) > 1)) {
         warning("Over 1 or less than 0 mortality reduction")
+        dt[rr < 0]$rr <- min(dt[rr > 0]$rr)
+        dt[rr > 1]$rr <- max(dt[rr < 1]$rr)
     }
 
     out_dt <- dt %>%
         select(c(location_id, age, year, vaccine_id, deaths_obs,
-                     deaths_averted, rr))
+                 vaccine_deaths_averted, rr))
 
     return(out_dt)
 }
