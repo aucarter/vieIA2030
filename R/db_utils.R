@@ -29,6 +29,9 @@ db_pull <- function(table, iso3_list = NULL) {
             by = "location_id"
         )
     )
+    if ("vaccine_id" %in% names(dt)) {
+        dt <- left_join(dt, vaccine_table, by = "vaccine_id")
+    }
     DBI::dbDisconnect(mydb)
 
     return(dt)
