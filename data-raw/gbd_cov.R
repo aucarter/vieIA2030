@@ -6,6 +6,9 @@ dt <- fread(
     header = T
 )
 
+## Get rid of Georgia the state
+dt <- dt[-which(dt$Location == "Georgia")[2]]
+
 ## Make long
 melt_dt <- melt(
     dt, id.vars = "Location", variable.name = "year"
@@ -27,6 +30,12 @@ dt <- fread(
     system.file("extdata", "gbd19_haqi.csv", package = "vieIA2030"),
     header = T
 )
+
+## Get rid of Georgia the state
+g_idx <- which(dt$location_name == "Georgia")
+state_idx <- g_idx[(length(g_idx) / 2 + 1):length(g_idx)]
+dt <- dt[-state_idx]
+
 
 ## Location mapping
 gbd_haqi <- merge(loc_table, dt, all.x = T, by = "location_name")
