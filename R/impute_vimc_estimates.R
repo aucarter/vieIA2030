@@ -8,7 +8,7 @@ impute_vimc_estimates <- function() {
 ## Pull in VIMC estimates
 mydb <- open_connection()
 vimc_dt <- as.data.table(
-    collect(tbl(mydb, "vimc_impact_estimates"))
+    collect(tbl(mydb, "vimc_impact"))
 )
 setnames(vimc_dt, "value", "deaths_averted")
 

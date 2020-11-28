@@ -1,9 +1,9 @@
 library(shiny)
 library(viridis)
 
-vimc_impact_estimates <- load("inst/shiny/vimc.Rdata")
-locs <- sort(unique(vimc_impact_estimates$location_name))
-vaccs <- sort(unique(vimc_impact_estimates$vaccine_long))
+vimc_impact <- load("inst/shiny/vimc.Rdata")
+locs <- sort(unique(vimc_impact$location_name))
+vaccs <- sort(unique(vimc_impact$vaccine_long))
 # Define UI for application
 ui <- fluidPage(
 
@@ -30,7 +30,7 @@ ui <- fluidPage(
 server <- function(input, output) {
 
     output$plot <- renderPlot({
-        dt <- vimc_impact_estimates[location_name == input$l & vaccine_long == input$v]
+        dt <- vimc_impact[location_name == input$l & vaccine_long == input$v]
         cast_dt <- dcast(dt, age ~ year, value.var = "value")
         cast_dt[, age := NULL]
         mat <- as.matrix(cast_dt)

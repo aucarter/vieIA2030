@@ -44,7 +44,7 @@ get_scen_coverage <- function(is, y0, y1, scen) {
 
 get_vimc_deaths_change <- function(is, y0, y1, default_coverage, scen_coverage,
     mx) {
-    vimc_deaths_change <- vimc_impact_estimates %>%
+    vimc_deaths_change <- vimc_impact %>%
         filter(location_name == is & year %in% y0:y1) %>%
         left_join(default_coverage, by = c("year", "vaccine_id")) %>%
         left_join(scen_coverage, by = c("year", "vaccine_id")) %>%
@@ -56,7 +56,7 @@ get_vimc_deaths_change <- function(is, y0, y1, default_coverage, scen_coverage,
         tidyr::spread(year, deaths_change) %>%
         select(-c(age)) %>%
         as.matrix()
-    # Fill in older age groups TODO: fix this on vimc_impact_estimates side
+    # Fill in older age groups TODO: fix this on vimc_impact side
     vimc_deaths_change <- rbind(
         vimc_deaths_change,
         matrix(
