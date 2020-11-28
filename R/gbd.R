@@ -15,3 +15,30 @@ prep_gbd_data <- function() {
         rename(coverage = value)
     return(dt)
 }
+
+
+forecast_gbd_cov <- function() {
+    for (cov in c("haqi", "sdi")) {
+        dt <- gbd_cov[, c("location_id", "year", cov), with = F]
+        cast_dt <- dcast(dt, location_id ~ year, value.var = cov)
+        mat <- as.matrix(cast_dt[, -1])
+        start_vec <-  mat[, dim(mat)[2] - 5]
+        end_vec <-  mat[, dim(mat)[2]]
+        aroc_5 <- log(end_vec / start_vec) / 5
+        t_mat <- matrix(1:11, byrow = T, ncol = 11, nrow = length(end_vec))
+        pred_mat <- end_vec * exp(aroc_5 * t_mat)
+        colnames(pred_mat) <- 2020:2030
+        if(max(pred_mat >= 1)) {
+            warning("Forecast greater than or equal to 1. Consider forecasting 
+                     in logit space")
+        }
+        out_mat <- cbind(mat, pred_mat)
+        matplot(t(out_mat), type = "l")
+        melt_dt <- melt(
+            data.table(location_id = cast_dt$location_id, out_mat),
+            id.var = "location_id",
+            variable.name = "year",
+            value.name = cov
+        )
+    }
+}
