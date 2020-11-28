@@ -1,7 +1,7 @@
-
 library(shiny)
+library(viridis)
 
-vimc_impact_estimates <- db_pull("vimc_impact_estimates")
+vimc_impact_estimates <- load("inst/shiny/vimc.Rdata")
 locs <- sort(unique(vimc_impact_estimates$location_name))
 vaccs <- sort(unique(vimc_impact_estimates$vaccine_long))
 # Define UI for application
