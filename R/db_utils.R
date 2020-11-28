@@ -61,6 +61,3 @@ db_pull <- function(table, iso3_list = NULL) {
 
     return(dt)
 }
-
-# Run this during `devtools::load_all()`
-gen_db()
