@@ -18,6 +18,7 @@ prep_gbd_data <- function() {
 
 
 forecast_gbd_cov <- function() {
+    fcast_list <- list()
     for (cov in c("haqi", "sdi")) {
         dt <- gbd_cov[, c("location_id", "year", cov), with = F]
         cast_dt <- dcast(dt, location_id ~ year, value.var = cov)
@@ -40,5 +41,9 @@ forecast_gbd_cov <- function() {
             variable.name = "year",
             value.name = cov
         )
+        fcast_list[[cov]] <- melt_dt
     }
+    out_dt <- merge(fcast_list[[1]], fcast_list[[2]])
+    
+    return(out_dt)
 }
