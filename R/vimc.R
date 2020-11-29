@@ -68,7 +68,7 @@ vimc_rr <- function(wpp_input, vimc_impact) {
     if (any(is.na(dt$rr))) {
         missing_locs <- unique(dt[is.na(rr)]$location_name)
         warning(paste(
-            "Missing deaths for",
+            "Missing relative-risk for",
             paste(missing_locs, collapse = ", ")
         ))
         # Save the problem location, vaccine, years and remove NAs
