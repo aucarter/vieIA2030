@@ -41,6 +41,7 @@ forecast_gbd_cov <- function() {
             variable.name = "year",
             value.name = cov
         )
+        melt_dt[, year := as.integer(as.character(year))]
         fcast_list[[cov]] <- melt_dt
     }
     out_dt <- merge(fcast_list[[1]], fcast_list[[2]])

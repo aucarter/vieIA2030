@@ -16,8 +16,9 @@ impute_vacc_rr <- function(vacc) {
         data = dt[vaccine_short == vacc],
         family = "binomial"
     )
+    forecast_cov <- forecast_gbd_cov()
     pred_dt <- merge(
-        dt[is.na(rr), .(location_id, year, haqi, sdi)][, idx := .I],
+        forecast_cov[, idx := .I],
         CJ(
             age = seq(
                 min(dt[vaccine_short == vacc]$age),
@@ -28,23 +29,26 @@ impute_vacc_rr <- function(vacc) {
         by = "idx"
     )[, idx := NULL]
     pred_dt[, pred := predict(fit, pred_dt)]
-    pred_dt[, rr := exp(pred) / (exp(pred) + 1)]
+    pred_dt[, pred_rr := exp(pred) / (exp(pred) + 1)]
     pred_dt[, pred := NULL]
     pred_dt[, vaccine_short := vacc]
+    out_dt <- merge(
+        pred_dt,
+        dt[, .(location_id, age, year, vaccine_id, rr, coverage)],
+        all.x = T
+    )
 
-    return(pred_dt[, .(location_id, age, year, vaccine_short, rr)])
+    return(out_dt)
 }
 pred_all <- rbindlist(
     lapply(unique(dt[!is.na(vaccine_short)]$vaccine_short), impute_vacc_rr)
 )
-rr_dt <- rbind(
-    dt[!is.na(rr), .(location_id, age, year, vaccine_short, rr)],
-    pred_all,
-    fill = T
-)
-rr_dt[, averted_scen := vimc_averted_scen(deaths_obs, coverage, rr)]
 
-length(which(is.na(dt$rr)))
+
+
+
+# rr_dt[, averted_scen := vimc_averted_scen(deaths_obs, coverage, rr)]
+
 
 ## Pull in GBD data
 gbd_dt <- prep_gbd_data()
