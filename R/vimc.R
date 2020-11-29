@@ -51,14 +51,14 @@ vimc_rr <- function(wpp_input, vimc_impact) {
 
     # Merge on VIMC impact estimates + coverage and calculate mortality reduction
     dt <- left_join(
+            vimc_impact[year %in% 2000:2019],
             deaths,
-            vimc_impact,
             by = c("age", "year", "location_iso3")
         ) %>%
         rename(vaccine_deaths_averted = value) %>%
         left_join(
-            coverage_inputs[, .(location_id, year, vaccine_id, value)],
-            by = c("location_id", "year", "vaccine_id")
+            coverage_inputs[, .(location_iso3, year, vaccine_id, value)],
+            by = c("location_iso3", "year", "vaccine_id")
         ) %>%
         rename(coverage = value) %>%
         mutate(rr = (deaths_obs - (vaccine_deaths_averted * (1 - coverage) / coverage)) /
@@ -71,6 +71,10 @@ vimc_rr <- function(wpp_input, vimc_impact) {
             "Missing deaths for",
             paste(missing_locs, collapse = ", ")
         ))
+        # Save the problem location, vaccine, years and remove NAs
+        prob_dt <- unique(dt[is.na(rr) & is.na(coverage), 
+                             .(location_name, year, vaccine_short)])
+        write.csv(prob_dt, "missing_coverage.csv", row.names = F)
         dt <- dt[!is.na(rr)]
     }
 
@@ -84,6 +88,38 @@ vimc_rr <- function(wpp_input, vimc_impact) {
     out_dt <- dt %>%
         select(c(location_id, age, year, vaccine_id, deaths_obs,
                  vaccine_deaths_averted, rr))
+
+    return(out_dt)
+}
+
+vimc_impute_vacc_rr <- function(vacc, dt) {
+    print(vacc)
+    fit <- glm(
+        rr ~ haqi + sdi + year + splines::bs(age, knots = c(2, 5, 10, 25)),
+        data = dt[vaccine_short == vacc],
+        family = "binomial"
+    )
+    forecast_cov <- forecast_gbd_cov()
+    pred_dt <- merge(
+        forecast_cov[, idx := .I],
+        CJ(
+            age = seq(
+                min(dt[vaccine_short == vacc]$age),
+                max(dt[vaccine_short == vacc]$age)
+            ),
+            idx = 1:nrow(dt[is.na(rr), .(location_id, year, haqi, sdi)])
+        ),
+        by = "idx"
+    )[, idx := NULL]
+    pred_dt[, pred := predict(fit, pred_dt)]
+    pred_dt[, pred_rr := exp(pred) / (exp(pred) + 1)]
+    pred_dt[, pred := NULL]
+    pred_dt[, vaccine_short := vacc]
+    out_dt <- merge(
+        pred_dt,
+        dt[, .(location_id, age, year, vaccine_id, rr, coverage)],
+        all.x = T
+    )
 
     return(out_dt)
 }
