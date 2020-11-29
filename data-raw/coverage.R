@@ -85,8 +85,8 @@ prep_hpv_coverage_data <- function() {
 }
 
 wuenic_dt <- prep_wuenic_data()
-hpv_dt <- prep_hpv_coverage_data()
 reported_dt <- prep_reported_coverage_data()
+hpv_dt <- prep_hpv_coverage_data()
 
 coverage <- rbindlist(
     list(wuenic_dt, hpv_dt, reported_dt),
