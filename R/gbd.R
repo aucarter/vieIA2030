@@ -17,7 +17,7 @@ prep_gbd_data <- function() {
 }
 
 
-forecast_gbd_cov <- function() {
+forecast_gbd_cov <- function(plot = F) {
     fcast_list <- list()
     for (cov in c("haqi", "sdi")) {
         dt <- gbd_cov[, c("location_id", "year", cov), with = F]
@@ -34,7 +34,9 @@ forecast_gbd_cov <- function() {
                      in logit space")
         }
         out_mat <- cbind(mat, pred_mat)
-        matplot(t(out_mat), type = "l")
+        if (plot) {
+            matplot(t(out_mat), type = "l")
+        }
         melt_dt <- melt(
             data.table(location_id = cast_dt$location_id, out_mat),
             id.var = "location_id",
