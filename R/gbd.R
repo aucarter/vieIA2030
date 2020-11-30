@@ -19,6 +19,9 @@ prep_gbd_data <- function() {
 
 forecast_gbd_cov <- function(plot = F) {
     fcast_list <- list()
+    if (plot) {
+        par(mfrow = c(2, 1))
+    }
     for (cov in c("haqi", "sdi")) {
         dt <- gbd_cov[, c("location_id", "year", cov), with = F]
         cast_dt <- dcast(dt, location_id ~ year, value.var = cov)
@@ -29,13 +32,16 @@ forecast_gbd_cov <- function(plot = F) {
         t_mat <- matrix(1:11, byrow = T, ncol = 11, nrow = length(end_vec))
         pred_mat <- end_vec * exp(aroc_5 * t_mat)
         colnames(pred_mat) <- 2020:2030
-        if(max(pred_mat >= 1)) {
+        if (max(pred_mat >= 1)) {
             warning("Forecast greater than or equal to 1. Consider forecasting 
                      in logit space")
         }
         out_mat <- cbind(mat, pred_mat)
         if (plot) {
-            matplot(t(out_mat), type = "l")
+            matplot(1990:2030, t(out_mat), type = "l", ylim = c(0, 1),
+                    xlab = "Year", ylab = cov)
+            abline(h = 1, col = "red")
+            abline(v = 2019.5, col = "black")
         }
         melt_dt <- melt(
             data.table(location_id = cast_dt$location_id, out_mat),
@@ -47,6 +53,6 @@ forecast_gbd_cov <- function(plot = F) {
         fcast_list[[cov]] <- melt_dt
     }
     out_dt <- merge(fcast_list[[1]], fcast_list[[2]])
-    
+
     return(out_dt)
 }
