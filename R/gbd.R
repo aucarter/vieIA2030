@@ -16,7 +16,6 @@ prep_gbd_data <- function() {
     return(dt)
 }
 
-
 forecast_gbd_cov <- function(plot = F) {
     fcast_list <- list()
     if (plot) {

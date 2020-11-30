@@ -8,8 +8,19 @@ dt <- prep_vimc_rr_data()
 
 ## Simple model for VIMC imputation
 pred_all <- rbindlist(
-    lapply(unique(dt[!is.na(vaccine_short)]$vaccine_short), vimc_impute_vacc_rr)
+    lapply(
+        unique(dt[!is.na(vaccine_short)]$vaccine_short),
+        vimc_impute_vacc_rr,
+        dt
+    )
 )
+pred_all[, sq_error := (pred_rr - rr)**2]
+pred_all[is.na(rr), rr := pred_rr]
+pred_all[, averted := vimc_averted_scen(deaths_obs, coverage, rr)]
+pred_all[, averted_diff := abs(vaccine_deaths_averted - averted)]
+
+# Note these are all spots where the RR was less than 0
+View(pred_all[!is.na(averted) & averted_diff > 1e-3])
 
 ## Project mortality rates conditional on future coverage and covariates
 prep_mx <- function(coverage, fit, covariates) {
