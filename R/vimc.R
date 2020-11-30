@@ -117,7 +117,8 @@ vimc_impute_vacc_rr <- function(vacc, dt) {
     pred_dt[, vaccine_short := vacc]
     out_dt <- merge(
         pred_dt,
-        dt[, .(location_id, age, year, vaccine_id, rr, coverage)],
+        dt[, .(location_id, age, year, vaccine_id, rr, coverage, deaths_obs,
+               vaccine_deaths_averted)],
         all.x = T
     )
 
