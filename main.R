@@ -16,7 +16,7 @@ pred_all <- rbindlist(
 )
 pred_all[, sq_error := (pred_rr - rr)**2]
 pred_all[is.na(rr), rr := pred_rr]
-pred_all[, averted := vimc_averted_scen(deaths_obs, coverage, rr)]
+pred_all[, averted := get_averted_scen(deaths_obs, coverage, rr)]
 pred_all[, averted_diff := abs(vaccine_deaths_averted - averted)]
 
 # Note these are all spots where the RR was less than 0
