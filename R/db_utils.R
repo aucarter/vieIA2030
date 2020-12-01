@@ -12,7 +12,7 @@ gen_db <- function() {
         message("   - Prepping vaccine coverage...")
         source("data-raw/coverage.R")
 
-        message("   - Prepping WPP inputs...")
+        message("   - Prepping WPP inputs and all-cause deaths...")
         source("data-raw/wpp_input.R")
 
         message("   - Prepping WPP observed...")

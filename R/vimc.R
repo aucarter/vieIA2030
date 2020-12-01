@@ -2,7 +2,7 @@ prep_vimc_rr_data <- function() {
     ## Pull in data that isn't already loaded in global environment
     message("Loading data...")
     data_names <- c(
-        "wpp_input", "vimc_impact", "coverage_inputs"
+        "wpp_input", "vimc_impact", "coverage_inputs", "all_deaths"
     )
     unloaded_data <- setdiff(data_names, ls())
     if (length(unloaded_data) > 0) {
@@ -14,7 +14,7 @@ prep_vimc_rr_data <- function() {
 
     # Calculate relative risk
     message("Calculating relative risk...")
-    rr_dt <- vimc_rr(wpp_input, vimc_impact)
+    rr_dt <- vimc_rr(wpp_input, all_deaths, vimc_impact)
 
     # Merge on covariates and coverage
     message("Merging on covariates and coverage...")
@@ -38,11 +38,12 @@ prep_vimc_rr_data <- function() {
 
 #' Calculate all-cause mortality reduction by vaccine for VIMC 10
 #' @param wpp_input Input WPP data
+#' @param all_deaths All-cause deaths from calibrated pop projection
 #' @param vimc_impact VIMC deaths averted
 #' @return A list of tables with population projection results
-vimc_rr <- function(wpp_input, vimc_impact) {
+vimc_rr <- function(wpp_input, all_deaths, vimc_impact) {
     # Calculate both-sexes deaths
-    deaths <- get_all_deaths(2000, 2019, wpp_input) %>%
+    deaths <- all_deaths %>%
         group_by(age, year_id, location_iso3) %>%
         summarise(deaths_obs = sum(deaths)) %>%
         ungroup() %>%

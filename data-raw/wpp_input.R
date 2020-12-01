@@ -384,6 +384,13 @@ wpp_input <- wpp_input %>%
   select(-c("location_name", "location_iso3")) %>%
   filter(!is.na(nx))
 
+# Calculate both-sexes deaths
+temp_wpp_input <- merge(wpp_input, loc_table)
+deaths <- get_all_deaths(2000, 2030, temp_wpp_input)
+deaths <- merge(deaths, loc_table[, .(location_iso3, location_id)])
+deaths[, c("location_name", "location_iso3") := NULL]
+
 mydb <- open_connection()
 DBI::dbWriteTable(mydb, "wpp_input", wpp_input, overwrite = TRUE)
+DBI::dbWriteTable(mydb, "all_deaths", deaths, overwrite = TRUE)
 DBI::dbDisconnect(mydb)
