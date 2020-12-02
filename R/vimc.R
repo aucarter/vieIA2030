@@ -1,6 +1,6 @@
 prep_vimc_rr_data <- function() {
     ## Pull in data that isn't already loaded in global environment
-    message("Loading data...")
+    message("Loading VIMC data...")
     data_names <- c(
         "vimc_impact", "all_deaths", "coverage_inputs"
     )
@@ -13,7 +13,7 @@ prep_vimc_rr_data <- function() {
     }
 
     # Calculate relative risk
-    message("Calculating relative risk...")
+    message("Calculating VIMC relative risk...")
     rr_dt <- vimc_rr(vimc_impact, all_deaths, coverage_inputs)
 
     # Merge on covariates and coverage

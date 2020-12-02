@@ -1,6 +1,6 @@
 prep_gbd_rr_data <- function() {
     ## Pull in data that isn't already loaded in global environment
-    message("Loading data...")
+    message("Loading GBD data...")
     data_names <- c(
        "all_deaths", "coverage_inputs"
     )
@@ -13,7 +13,7 @@ prep_gbd_rr_data <- function() {
     }
 
     # Calculate relative risk
-    message("Calculating relative risk...")
+    message("Calculating GBD relative risk...")
     rr_dt <- gbd_rr(all_deaths, coverage_inputs)
 
 
