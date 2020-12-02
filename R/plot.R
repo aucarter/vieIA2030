@@ -30,3 +30,40 @@ scatter_rr <- function(dt, x_var) {
         print(gg)
     }
 }
+
+launch_shiny <- function() {
+    wpp_input <<- db_pull("wpp_input")
+    obs_wpp <<- db_pull("obs_wpp")
+    shiny::runApp(system.file("shiny", package = "vieIA2030"))
+}
+
+#' Make a map showing presence or absence of an indicator
+#' 
+#' @param locations A character vector of iso3 codes for locations
+#' @param title A string with the title of the plot
+#' @returns A ggplot object with a world map
+#' @examples 
+#' map_locations(loc_table$location_iso3, "All locations")
+#' @export
+map_locations <- function(locations, title) {
+    ggplot2::theme_set(ggplot2::theme_bw())
+    world <- rnaturalearth::ne_countries(
+        scale = "medium",
+        continent = c(
+            "north america", "africa", "south america",
+            "europe", "asia", "oceania"
+        ),
+        returnclass = "sf"
+    )
+
+    world$present <- ifelse(world$iso_a3 %in% locations, 1, NA)
+    gg <- ggplot2::ggplot(data = world) +
+        ggplot2::geom_sf(ggplot2::aes(fill = as.factor(present))) +
+        ggplot2::ggtitle(
+            title,
+            subtitle = paste0("(", length(locations), " countries)")
+        ) +
+        ggplot2::theme(legend.position = "none") +
+        ggplot2::scale_fill_discrete(na.value = "gray95")
+    return(gg)
+}
