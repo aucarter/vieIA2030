@@ -389,6 +389,7 @@ temp_wpp_input <- merge(wpp_input, loc_table)
 deaths <- get_all_deaths(2000, 2030, temp_wpp_input)
 deaths <- merge(deaths, loc_table[, .(location_iso3, location_id)])
 deaths[, c("location_name", "location_iso3") := NULL]
+setnames(deaths, "year_id", "year")
 
 mydb <- open_connection()
 DBI::dbWriteTable(mydb, "wpp_input", wpp_input, overwrite = TRUE)
