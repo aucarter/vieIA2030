@@ -2,7 +2,7 @@ impute_vacc_rr <- function(vacc, dt) {
     print(vacc)
     fit <- glm(
         rr ~ haqi + sdi + year + splines::bs(age, knots = c(2, 5, 10, 25)),
-        data = dt[vaccine_short == vacc],
+        data = dt[vaccine_short == vacc & rr < 1 & rr > 0],
         family = "binomial"
     )
     forecast_cov <- forecast_gbd_cov()
@@ -31,12 +31,12 @@ impute_vacc_rr <- function(vacc, dt) {
     return(out_dt)
 }
 
-impute_rr <- function() {
+impute_rr <- function(alpha, beta) {
     ## Pull in VIMC data
-    vimc_dt <- prep_vimc_rr_data()
+    vimc_dt <- prep_vimc_rr_data(alpha)
 
     ## Pull in GBD data
-    gbd_dt <- prep_gbd_rr_data()
+    gbd_dt <- prep_gbd_rr_data(alpha, beta)
 
     dt <- rbind(vimc_dt, gbd_dt, fill = T)
 
