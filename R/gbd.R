@@ -95,10 +95,16 @@ gbd_rr <- function(all_deaths, coverage_inputs, alpha = 1, beta = 1) {
     # Merge on VIMC impact estimates + coverage and calculate mortality reduction
     dt <- left_join(
             convert_single_year(gbd_estimates[year %in% 2000:2019]),
-            all_deaths,
-            by = c("age", "year", "location_id")
+            data.table(sex_name = c("Male", "Female"), sex_id = 1:2),
+            by = "sex_id"
         ) %>%
-        rename(vaccine_deaths = value, deaths_obs = deaths) %>%
+        left_join(
+            all_deaths,
+            by = c("age", "year", "location_id", "sex_name")
+        )
+    dt <- dt[, .(vaccine_deaths = sum(value), deaths_obs = sum(deaths)),
+        by = .(location_iso3, year, age, vaccine_id)]
+    dt <- dt %>%
         left_join(
             coverage_inputs[, .(location_iso3, year, vaccine_id, value)],
             by = c("location_iso3", "year", "vaccine_id")
@@ -113,8 +119,7 @@ gbd_rr <- function(all_deaths, coverage_inputs, alpha = 1, beta = 1) {
         mutate(deaths_no = vaccine_deaths / (1 - beta * efficacy * coverage ^ alpha)) %>%
         mutate(rr = (deaths_obs - vaccine_deaths + (1 - beta * efficacy) * deaths_no) /
             (deaths_obs - vaccine_deaths + deaths_no))
-
-
+    dt <- merge(dt, loc_table[, .(location_id, location_iso3)])
 
     # Check for missingness
     if (any(is.na(dt$rr))) {

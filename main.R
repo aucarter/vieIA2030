@@ -4,9 +4,18 @@
 gen_db()
 
 ## Predict all and investigate results
+b <- 0.8
 alpha_vals <- seq(0.1, 1, 0.1)
+plot_alpha <- function(alpha_vals) {
+    dt <- data.table(expand.grid(x = seq(0, 1, 0.01), alpha = alpha_vals))
+    dt[, y := x ** alpha]
+    gg <- ggplot(dt, aes(x = x, y = y, color = as.factor(alpha))) + 
+        geom_line() + theme_bw() + coord_equal()
+    print(gg)
+}
+plot_alpha(alpha_vals)
 diag_list <- lapply(alpha_vals, function(a) {
-    pred_all <- impute_rr(alpha = a)
+    pred_all <- impute_rr(alpha = a, beta = b)
     pred_all[, sq_error := (pred_rr - rr)**2]
     mse <- mean(pred_all$sq_error, na.rm = T)
     # pred_all[is.na(rr), rr := pred_rr]
@@ -17,7 +26,8 @@ diag_list <- lapply(alpha_vals, function(a) {
     return(list(mse, tot_averted_error))
 })
 plot(alpha_vals, unlist(lapply(diag_list, `[[`, 1)))
-plot(alpha_vals, unlist(lapply(diag_list, `[[`, 2)))
+plot(alpha_vals, unlist(lapply(diag_list, `[[`, 2)), type = "l", 
+    xlab = "alpha", ylab = "Total error")
 
 a <- 0.5
 pred_all <- impute_rr(alpha = a, beta = 0.8)
@@ -29,16 +39,37 @@ pred_all[, averted := get_averted_scen(deaths_obs, coverage, pred_rr, a)]
 pred_all[, averted_diff := abs(vaccine_deaths_averted - averted)]
 tot_averted_error <- sum(pred_all$averted_diff, na.rm = T)
 
+## Add future coverage
+vimc_dt <- prep_vimc_rr_data(alpha)
+gbd_dt <- prep_gbd_rr_data(alpha, beta)
+dt <- rbind(vimc_dt, gbd_dt, fill = T)
+dt <- merge(dt, vaccine_table[, .(vaccine_id, vaccine_short)])
+last_dt <- dt[year == max(year), .(age, location_id, vaccine_short, coverage)]
+future_dt <- rbindlist(lapply(2020:2030, function(y) {
+    dt <- copy(last_dt)
+    dt[, year := y]
+}))
+setnames(future_dt, "coverage", "scen_coverage")
+scen_dt <- merge(pred_all, future_dt, 
+    by = c("year", "age", "location_id", "vaccine_short"), all.x = T)
+scen_dt[!is.na(scen_coverage), coverage := scen_coverage]
+scen_dt <- merge(scen_dt, loc_table[, .(location_id, location_iso3)], "location_id")
+future_deaths <- all_deaths[year > 2019, .(deaths_obs_future = sum(deaths)),
+                         by = .(age, year, location_iso3)]
+scen_dt <- merge(scen_dt, future_deaths, 
+    by = c("year", "age", "location_iso3"), all.x = T)
+scen_dt[!is.na(deaths_obs_future), deaths_obs := deaths_obs_future]
+scen_dt[, averted := get_averted_scen(deaths_obs, coverage, pred_rr, a)]
+
 
 ## Plot total deaths averted by vaccine over time
-vacc_year_dt <- pred_all[, .(averted = sum(averted, na.rm = T)), by = .(vaccine_short, year)] 
+vacc_year_dt <- scen_dt[, .(averted = sum(averted, na.rm = T)), by = .(vaccine_short, year)] 
 my_colors <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue"))
-gg <- ggplot(vacc_year_dt[year %in% 2000:2019], aes(x = year, y = averted, fill = vaccine_short)) +
+gg <- ggplot(vacc_year_dt[year %in% 2000:2030], aes(x = year, y = averted, fill = vaccine_short)) +
     geom_area(color = "white", alpha = 0.8) +
     scale_fill_manual(values = my_colors) +
     theme_bw()
 gg
 
-# Note these are all spots where the RR was less than 0
-View(pred_all[!is.na(averted) & averted_diff > 1e-3])
-
+## VIMC locations map
+map_locations(unique(vimc_impact$location_iso3), "VIMC Locations")
