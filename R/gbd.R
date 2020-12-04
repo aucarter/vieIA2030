@@ -1,4 +1,4 @@
-prep_gbd_rr_data <- function() {
+prep_gbd_rr_data <- function(alpha, beta) {
     ## Pull in data that isn't already loaded in global environment
     message("Loading GBD data...")
     data_names <- c(
@@ -14,11 +14,11 @@ prep_gbd_rr_data <- function() {
 
     # Calculate relative risk
     message("Calculating GBD relative risk...")
-    rr_dt <- gbd_rr(all_deaths, coverage_inputs)
+    rr_dt <- gbd_rr(all_deaths, coverage_inputs, alpha, beta)
 
 
-    # Merge on covariates and coverage
-    message("Merging on covariates and coverage...")
+    # Merge on covariates
+    message("Merging on covariates...")
     dt <- right_join(
             rr_dt[year %in% 2000:2019],
             gbd_cov[year %in% 2000:2019],
@@ -27,12 +27,7 @@ prep_gbd_rr_data <- function() {
         left_join(
             vaccine_table[, .(vaccine_id, vaccine_short)],
             by = "vaccine_id"
-        ) %>%
-        left_join(
-            coverage_inputs[, .(location_id, year, vaccine_id, value)],
-            by = c("location_id", "year", "vaccine_id")
-        ) %>%
-        rename(coverage = value)
+        )
     return(dt)
 }
 
@@ -93,8 +88,10 @@ convert_single_year <- function(gbd_dt) {
 #' Calculate all-cause mortality reduction by vaccine for VIMC 10
 #' @param all_deaths All-cause deaths from calibrated pop projection
 #' @param coverage_inputs Observed coverage
+#' @param alpha
+#' @param beta
 #' @return A table with GBD relative-risk
-gbd_rr <- function(all_deaths, coverage_inputs) {
+gbd_rr <- function(all_deaths, coverage_inputs, alpha = 1, beta = 1) {
     # Merge on VIMC impact estimates + coverage and calculate mortality reduction
     dt <- left_join(
             convert_single_year(gbd_estimates[year %in% 2000:2019]),
@@ -108,10 +105,16 @@ gbd_rr <- function(all_deaths, coverage_inputs) {
         ) %>%
         left_join(efficacy[, .(mean, vaccine_id)], by = "vaccine_id") %>%
         rename(efficacy = mean) %>%
-        rename(coverage = value) %>%
-        mutate(deaths_no = vaccine_deaths / (1 - efficacy * coverage)) %>%
-        mutate(rr = (deaths_obs - vaccine_deaths + (1 - efficacy) * deaths_no) /
+        rename(coverage = value)
+    # Set a cap on BCG effect at age 15
+    dt[vaccine_id == 14 & age >= 15, coverage := 0]
+    # Calcualte RR
+    dt <- dt %>%
+        mutate(deaths_no = vaccine_deaths / (1 - beta * efficacy * coverage ^ alpha)) %>%
+        mutate(rr = (deaths_obs - vaccine_deaths + (1 - beta * efficacy) * deaths_no) /
             (deaths_obs - vaccine_deaths + deaths_no))
+
+
 
     # Check for missingness
     if (any(is.na(dt$rr))) {
@@ -132,7 +135,7 @@ gbd_rr <- function(all_deaths, coverage_inputs) {
 
     out_dt <- dt %>%
         select(c(location_id, age, year, vaccine_id, deaths_obs,
-                 vaccine_deaths, rr))
+                 vaccine_deaths, coverage, rr))
 
     return(out_dt)
 }

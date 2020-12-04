@@ -4,12 +4,31 @@
 gen_db()
 
 ## Predict all and investigate results
-pred_all <- impute_rr()
+alpha_vals <- seq(0.1, 1, 0.1)
+diag_list <- lapply(alpha_vals, function(a) {
+    pred_all <- impute_rr(alpha = a)
+    pred_all[, sq_error := (pred_rr - rr)**2]
+    mse <- mean(pred_all$sq_error, na.rm = T)
+    # pred_all[is.na(rr), rr := pred_rr]
+    pred_all[, averted := get_averted_scen(deaths_obs, coverage, pred_rr, a)]
+    # pred_all[!is.na(vaccine_deaths_averted), averted := vaccine_deaths_averted]
+    pred_all[, averted_diff := abs(vaccine_deaths_averted - averted)]
+    tot_averted_error <- sum(pred_all$averted_diff, na.rm = T)
+    return(list(mse, tot_averted_error))
+})
+plot(alpha_vals, unlist(lapply(diag_list, `[[`, 1)))
+plot(alpha_vals, unlist(lapply(diag_list, `[[`, 2)))
+
+a <- 0.5
+pred_all <- impute_rr(alpha = a, beta = 0.8)
 pred_all[, sq_error := (pred_rr - rr)**2]
-pred_all[is.na(rr), rr := pred_rr]
-pred_all[, averted := get_averted_scen(deaths_obs, coverage, rr)]
-pred_all[!is.na(vaccine_deaths_averted), averted := vaccine_deaths_averted]
+mse <- mean(pred_all$sq_error, na.rm = T)
+# pred_all[is.na(rr), rr := pred_rr]
+pred_all[, averted := get_averted_scen(deaths_obs, coverage, pred_rr, a)]
+# pred_all[!is.na(vaccine_deaths_averted), averted := vaccine_deaths_averted]
 pred_all[, averted_diff := abs(vaccine_deaths_averted - averted)]
+tot_averted_error <- sum(pred_all$averted_diff, na.rm = T)
+
 
 ## Plot total deaths averted by vaccine over time
 vacc_year_dt <- pred_all[, .(averted = sum(averted, na.rm = T)), by = .(vaccine_short, year)] 
