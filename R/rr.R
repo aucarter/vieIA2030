@@ -127,14 +127,32 @@ impute_vacc_rr <- function(vacc, dt) {
         ),
         by = "idx"
     )[, idx := NULL]
+    # Merge on coverage
+    pred_dt <- merge(
+        pred_dt, 
+        coverage_inputs[
+            vaccine_id == vaccine_table[vaccine_short == vacc]$vaccine_id,
+            .(year, location_id, value)
+        ],
+        by = c("year", "location_id"), all.x = T
+    )
+    setnames(pred_dt, "value", "coverage")
+    # Merge on deaths
+    deaths <- all_deaths[, .(deaths_obs = sum(deaths)),
+                    by = .(age, year, location_id)]
+    pred_dt <- merge(pred_dt, deaths, by = c("age", "year", "location_id"))
+    # Set a cap on BCG effect at age 15
+    if(vacc == "BCG") {
+        pred_dt[age >= 15, coverage := 0]
+    }
     pred_dt[, pred := predict(fit, pred_dt)]
     pred_dt[, pred_rr := exp(pred) / (exp(pred) + 1)]
     pred_dt[, pred := NULL]
     pred_dt[, vaccine_short := vacc]
     out_dt <- merge(
         pred_dt,
-        dt[, .(location_id, age, year, vaccine_short, rr, coverage, deaths_obs,
-               vaccine_deaths_averted)],
+        dt[, .(location_id, age, year, vaccine_short, rr, vaccine_deaths_averted)],
+        by = c("location_id", "year", "age", "vaccine_short"),
         all.x = T
     )
 
