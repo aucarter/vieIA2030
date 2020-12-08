@@ -67,3 +67,24 @@ map_locations <- function(locations, title) {
         ggplot2::scale_fill_discrete(na.value = "gray95")
     return(gg)
 }
+
+plot_age_year <- function(dt, log_transform = F, value_name = "") {
+    dt <- unique(dt[, .(year, age, value)])
+    cast_dt <- dcast(dt, age ~ year, value.var = "value")
+    cast_dt[, age := NULL]
+    mat <- as.matrix(cast_dt)
+    image(t(mat), xlab = "Year", ylab = "Age")
+    axis(1, at = seq(min(dt$year), max(dt$year), by = 5))
+    
+    gg <- ggplot(dt, aes(x = year, y = age, fill = value)) + 
+        geom_tile() +
+        xlab("Year") + ylab("Age") + labs(fill = value_name) +
+        viridis::scale_fill_viridis(
+            option = "viridis", 
+            direction = -1, 
+            trans = ifelse(log_transform, "log10", "identity")) + 
+        theme_minimal() +
+        coord_fixed() +
+        theme(text = element_text(size = 20))
+    print(gg)
+}
