@@ -19,27 +19,13 @@ check_rr <- function(dt) {
     }
 }
 
-prep_vimc_rr <- function(alpha) {
-    ## Pull in data that isn't already loaded in global environment
-    message("Loading VIMC data...")
-    data_names <- c(
-        "vimc_impact", "all_deaths", "coverage_inputs"
-    )
-    unloaded_data <- setdiff(data_names, ls())
-    if (length(unloaded_data) > 0) {
-        temp <- lapply(unloaded_data, function(table) {
-            dt <- db_pull(table)
-            assign(table, dt, envir = .GlobalEnv)
-        })
-    }
-
-    ## Calculate relative risk
-    message("Calculating VIMC relative risk...")
+vimc_rr <- function(alpha) {
+    # Load data
+    load_table_list(c("vimc_impact", "all_deaths", "coverage_inputs"))
     # Calculate both-sexes deaths
     deaths <- all_deaths[, .(deaths_obs = sum(deaths)),
                          by = .(age, year, location_id)]
-
-    # Merge on VIMC impact estimates + coverage and calculate mortality reduction
+    # Merge on VIMC impact estimates + coverage and calculate relative-risk
     dt <- left_join(
             vimc_impact[year %in% 2000:2019],
             deaths,
@@ -70,22 +56,9 @@ prep_vimc_rr <- function(alpha) {
     return(out_dt)
 }
 
-prep_gbd_rr <- function(alpha, beta) {
-    ## Pull in data that isn't already loaded in global environment
-    message("Loading GBD data...")
-    data_names <- c(
-       "all_deaths", "coverage_inputs", "gbd_vaccine_deaths"
-    )
-    unloaded_data <- setdiff(data_names, ls())
-    if (length(unloaded_data) > 0) {
-        temp <- lapply(unloaded_data, function(table) {
-            dt <- db_pull(table)
-            assign(table, dt, envir = .GlobalEnv)
-        })
-    }
-
-    ## Calculate relative risk
-    message("Calculating GBD relative risk...")
+gbd_rr <- function(alpha, beta) {
+    # Load data
+    load_table_list(c("all_deaths", "coverage_inputs", "gbd_vaccine_deaths"))
     # Merge on VIMC impact estimates + coverage and calculate mortality reduction
     dt <- left_join(
         gbd_vaccine_deaths,
@@ -123,8 +96,6 @@ prep_gbd_rr <- function(alpha, beta) {
 }
 
 merge_rr_covariates <- function(dt) {
-        # Merge on covariates
-    message("Merging on covariates...")
     dt <- right_join(
             dt,
             gbd_cov,
@@ -140,7 +111,8 @@ merge_rr_covariates <- function(dt) {
 impute_vacc_rr <- function(vacc, dt) {
     print(vacc)
     fit <- glm(
-        rr ~ haqi + sdi + year + splines::bs(age, knots = c(2, 5, 10, 25)),
+        rr ~ haqi + sdi + year + 
+             splines::bs(age, knots = c(2, 5, 10, 25)),
         data = dt[vaccine_short == vacc & rr < 1 & rr > 0],
         family = "binomial"
     )
@@ -170,8 +142,8 @@ impute_vacc_rr <- function(vacc, dt) {
 }
 
 impute_rr <- function(alpha, beta) {
-    vimc_dt <- prep_vimc_rr(alpha)
-    gbd_dt <- prep_gbd_rr(alpha, beta)
+    vimc_dt <- vimc_rr(alpha)
+    gbd_dt <- gbd_rr(alpha, beta)
     dt <- rbind(vimc_dt, gbd_dt, fill = T)
     dt <- merge_rr_covariates(dt)
 
