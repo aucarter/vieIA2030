@@ -84,33 +84,91 @@ prep_hpv_coverage_data <- function() {
     return(dt)
 }
 
+prep_vimc_coverage_data <- function() {
+    dt <- fread(
+        system.file("extdata", "vimc_coverage.csv", package = "vieIA2030")
+    )
+    setnames(
+        dt, 
+        c("country", "vaccine"), 
+        c("location_iso3", "vaccine_short")
+    )
+    dt[, value := fvps_adjusted / cohort_size]
+    v <- "MenA"
+    c <- "KEN"
+    plot_dt <- dt[vaccine_short == v & location_iso3 == c]
+    scen_dt <- plot_dt[scenario_description != unique(plot_dt$scenario_description)[1]]
+    plot_age_year(plot_dt)
+    ## Create full matrix with coverage carried on throughout cohort
+    full_dt <- CJ(age = 0:100, year = 2000:2039)
+    merge_dt <- merge(
+        full_dt, 
+        scen_dt[, .(age, year, value)], 
+        by = c("age", "year"), all.x = T
+    )
+    cast_mat <- as.matrix(dcast(merge_dt, age ~ year))
+    rownames(cast_mat) <- cast_mat[, 1]
+    mat <- cast_mat[, -1]
+    mat[is.na(mat)] <- 0
+    nrow <- dim(mat)[1]
+    ncol <- dim(mat)[2]
+    for(i in (ncol - 1):1) {
+        vec <- mat[, i]
+        for(j in (i + 1):min(nrow, ncol)) {
+            mat[(j - i + 1):nrow, j] <- mat[(j - i + 1):nrow, j] + vec[1:(nrow - j + i)]
+        }
+    }
+    cohort_dt <- melt(as.data.table(cbind(age = cast_mat[, 1], mat)), id.vars = "age", variable.name = "year")
+    cohort_dt[, year := as.integer(as.character(year))]
+    plot_age_year(cohort_dt)
+
+    
+    
+    ## Look at coverage observations by 
+    year_age_coverage <- lapply(unique(dt$vaccine_short), function(v) {
+        table(dt[vaccine_short == v, .(year, age)])
+    })
+    names(year_age_coverage) <- unique(dt$vaccine_short)
+    return(dt[, .(location_iso3, vaccine_short, age, year,)])
+}
+
 wuenic_dt <- prep_wuenic_data()
 reported_dt <- prep_reported_coverage_data()
 hpv_dt <- prep_hpv_coverage_data()
-
-coverage <- rbindlist(
-    list(wuenic_dt, hpv_dt, reported_dt),
-    use.names = T
-)
-coverage[is.na(value), value := 0]
-coverage[, value := value / 100]
-
-## Merge on location_id
-coverage <- merge(coverage, loc_table[, .(location_iso3, location_id)])
-coverage[, c("location_iso3", "location_name") := NULL]
+vimc_dt <- prep_vimc_coverage_data()
 
 ## Use DTP for D, T, and P
-dtp_dt <- coverage[vaccine_short == "DTP"]
+dtp_dt <- wuenic_dt[vaccine_short == "DTP"]
 dtp_add <- rbindlist(
     lapply(c("D", "T", "P"), function(v) {
         copy(dtp_dt)[, vaccine_short := v]
     })
 )
-coverage <- rbind(coverage[vaccine_short != "DTP"], dtp_add)
+wuenic_dt <- rbind(wuenic_dt[vaccine_short != "DTP"], dtp_add)
+
+wuenic_coverage <- rbindlist(
+    list(wuenic_dt, hpv_dt, reported_dt),
+    use.names = T
+)
+wuenic_coverage[is.na(value), value := 0]
+wuenic_coverage[, value := value / 100]
+
+## Merge on location_id
+wuenic_coverage <- merge(
+    wuenic_coverage, loc_table[, .(location_iso3, location_id)]
+)
+wuenic_coverage[, c("location_iso3", "location_name") := NULL]
 
 ## Merge on vaccine_id
-coverage <- merge(coverage, vaccine_table[, .(vaccine_short, vaccine_id)])
-coverage[, vaccine_short := NULL]
+wuenic_coverage <- merge(
+    wuenic_coverage, vaccine_table[, .(vaccine_short, vaccine_id)]
+)
+wuenic_coverage[, vaccine_short := NULL]
+
+vimc_coverage <- rbind(
+    vimc_dt, wuenic_dt [vaccine_short %in% c("D", "T", "P", "BCG")]
+)
+
 
 mydb <- open_connection()
 DBI::dbWriteTable(mydb, "coverage_inputs", coverage, overwrite = TRUE)
