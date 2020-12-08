@@ -36,6 +36,20 @@ gg <- ggplot(vacc_year_dt[year %in% 2000:2030], aes(x = year, y = averted / 1e6,
     theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") 
 gg
 
+## Plot with VIMC, non-VIMC, and GBD
+scen_dt[, vimc := ifelse(location_id %in% unique(vimc_impact$location_id), 1, 0)]
+scen_dt[, gbd := ifelse(vaccine_short %in% c("D", "T", "P", "BCG"), 1, 0)]
+scen_dt[vimc == 1 & gbd == 0, label := "VIMC10 (VIMC locations)"]
+scen_dt[vimc == 0 & gbd == 0, label := "Imputed VIMC10 (non-VIMC locations)"]
+scen_dt[gbd == 1, label := "GBD4 (All locations)"]
+label_year_dt <- scen_dt[, .(averted = sum(averted, na.rm = T)), by = .(label, year)] 
+my_colors <- rev(RColorBrewer::brewer.pal(name = "Paired", n = 3))
+gg <- ggplot(label_year_dt[year %in% 2000:2030], aes(x = year, y = averted / 1e6, fill = label)) +
+    geom_area(color = "white", alpha = 0.8) +
+    scale_fill_manual(values = my_colors, name = "") +
+    theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") 
+gg
+
 ## VIMC locations map
 map_locations(unique(vimc_impact$location_iso3), "VIMC Locations")
 
