@@ -93,34 +93,69 @@ prep_vimc_coverage_data <- function() {
         c("country", "vaccine"), 
         c("location_iso3", "vaccine_short")
     )
+    dt <- dt[, lapply(.SD, sum), by = .(location_iso3, year, age, disease),
+                .SDcols = c("fvps_adjusted", "cohort_size")]
     dt[, value := fvps_adjusted / cohort_size]
-    v <- "MenA"
-    c <- "KEN"
-    plot_dt <- dt[vaccine_short == v & location_iso3 == c]
-    scen_dt <- plot_dt[scenario_description != unique(plot_dt$scenario_description)[1]]
-    plot_age_year(plot_dt)
-    ## Create full matrix with coverage carried on throughout cohort
     full_dt <- CJ(age = 0:100, year = 2000:2039)
-    merge_dt <- merge(
-        full_dt, 
-        scen_dt[, .(age, year, value)], 
-        by = c("age", "year"), all.x = T
-    )
-    cast_mat <- as.matrix(dcast(merge_dt, age ~ year))
-    rownames(cast_mat) <- cast_mat[, 1]
-    mat <- cast_mat[, -1]
-    mat[is.na(mat)] <- 0
-    nrow <- dim(mat)[1]
-    ncol <- dim(mat)[2]
-    for(i in (ncol - 1):1) {
-        vec <- mat[, i]
-        for(j in (i + 1):min(nrow, ncol)) {
-            mat[(j - i + 1):nrow, j] <- mat[(j - i + 1):nrow, j] + vec[1:(nrow - j + i)]
+    cov_dt <- rbindlist(lapply(unique(dt$location_iso3), function(c) {
+        loc_dt <- dt[location_iso3 == c]
+        cohort_loc <- rbindlist(lapply(unique(loc_dt$disease), function(d) {
+            vacc_dt <- unique(loc_dt[disease == d , .(age, year, value)])
+            vacc_dt <- vacc_dt[, .(value = sum(value)), by = .(age, year)]
+            merge_dt <- merge(
+                full_dt, 
+                vacc_dt, 
+                by = c("age", "year"), all.x = T
+            )
+            cast_mat <- as.matrix(dcast(merge_dt, age ~ year))
+            rownames(cast_mat) <- cast_mat[, 1]
+            mat <- cast_mat[, -1]
+            mat[is.na(mat)] <- 0
+            nrow <- dim(mat)[1]
+            ncol <- dim(mat)[2]
+            for(i in (ncol - 1):1) {
+                vec <- mat[, i]
+                for(j in (i + 1):min(nrow, ncol)) {
+                    if(d == "HepB") {
+                        mat[(j - i + 1):nrow, j] <- max(
+                            mat[(j - i + 1):nrow, j],
+                            vec[1:(nrow - j + i)]
+                        )
+                    } else {
+                        mat[(j - i + 1):nrow, j] <- 1 - 
+                            (1 - mat[(j - i + 1):nrow, j]) *
+                            (1 - vec[1:(nrow - j + i)]) 
+                    }
+                    
+                }
+            }
+            cohort_dt <- melt(as.data.table(cbind(age = cast_mat[, 1], mat)), id.vars = "age", variable.name = "year")
+            cohort_dt[, year := as.integer(as.character(year))]
+            cohort_dt[, disease := d]
+        }))
+        cohort_loc[, location_iso3 := c]
+    }))
+
+        pdf("plots/imputed_coverage.pdf", width = 8, height = 8)
+        for(c in sort(unique(cov_dt$location_iso3))) {
+            loc_dt <- cov_dt[location_iso3 == c]
+            gg <- ggplot(loc_dt, aes(x = year, y = age, fill = value)) + 
+                geom_tile() +
+                xlab("Year") + ylab("Age") + labs(fill = "Coverage") +
+                viridis::scale_fill_viridis(
+                    option = "viridis", 
+                    direction = -1,
+                    limits = c(0, 1)) + 
+                theme_minimal() +
+                theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+                coord_fixed() +
+                facet_wrap(~disease, nrow = 2) +
+                ggtitle(c)
+            print(gg)
         }
-    }
-    cohort_dt <- melt(as.data.table(cbind(age = cast_mat[, 1], mat)), id.vars = "age", variable.name = "year")
-    cohort_dt[, year := as.integer(as.character(year))]
-    plot_age_year(cohort_dt)
+        dev.off()
+        saveRDS(cov_dt, "outputs/imputed_coverage.rds")
+    
 
     
     
