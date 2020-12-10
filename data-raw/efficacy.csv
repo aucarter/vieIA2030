@@ -1,0 +1,5 @@
+vaccine_short,mean,lower,upper,source
+D,0.969,0.943,0.984,https://apps.who.int/iris/bitstream/handle/10665/258681/WER9231.pdf?sequence=1
+T,0.99,0.8,1,https://apps.who.int/iris/bitstream/handle/10665/233093/WER8120_198-208.PDF
+P,0.8,0.71,0.86,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5088088/
+BCG,0.66,0.08,0.88,https://bmcmedicine.biomedcentral.com/articles/10.1186/s12916-016-0685-4

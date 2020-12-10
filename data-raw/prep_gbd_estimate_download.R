@@ -10,7 +10,7 @@ dt <- rbindlist(
 dt <- dt[age_name != "25 plus"]
 ## Ignore uncertainty (for now)
 dt <- dt[, .(location_name, sex_id, age_name, cause_name, metric_id, year, val)]
-dt[metric_id == 3, val := val / 1e5]
+dt[metric_id == 1, val := val]
 
 dt[cause_name == "pertussis", cause_name := "Pertussis"]
 

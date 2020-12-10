@@ -1,9 +1,34 @@
 open_connection <- function() {
-    db_path <- system.file("vieIA2030.db", package = "vieIA2030")
-    my_db <- DBI::dbConnect(RSQLite::SQLite(), db_path)
+    my_db <- DBI::dbConnect(RSQLite::SQLite(), dbname = "vieIA2030.db")
 
     return(my_db)
 }
+
+#' Generates the SQLite database with input data
+gen_db <- function() {
+    if (!file.exists("vieIA2030.db")) {
+        message("No database found -- building now")
+
+        message("   - Prepping vaccine coverage...")
+        source("data-raw/coverage.R")
+
+        message("   - Prepping WPP inputs and all-cause deaths...")
+        source("data-raw/wpp_input.R")
+
+        message("   - Prepping WPP observed...")
+        source("data-raw/obs_wpp.R")
+
+        if (file.exists("inst/extdata/vimc_estimates.csv")) {
+            message("   - Prepping VIMC impact estimates...")
+            source("data-raw/vimc_impact.R")
+        } else {
+            warning("Add VIMC estimates to inst/extdata")
+        }
+
+        message("Done!")
+    }
+}
+
 
 list_db_tables <- function() {
     mydb <- open_connection()
@@ -13,7 +38,7 @@ list_db_tables <- function() {
     return(tables)
 }
 
-db_pull <- function(table, iso3_list = NULL) {
+db_pull <- function(table, iso3_list = NULL, append_names = F) {
     if (!is.null(iso3_list)) {
         loc_ids <- loc_table[location_iso3 %in% iso3_list]$location_id
     } else {
@@ -23,13 +48,35 @@ db_pull <- function(table, iso3_list = NULL) {
     dt <- as.data.table(
         tbl(mydb, table) %>%
         filter(location_id %in% loc_ids) %>%
-        collect() %>%
-        left_join(
-            loc_table[, .(location_id, location_iso3, location_name)],
-            by = "location_id"
-        )
+        collect()
     )
     DBI::dbDisconnect(mydb)
+    if(append_names) {
+        if("location_id" %in% names(dt)) {
+                        left_join(
+                dt,
+                loc_table[, .(location_id, location_iso3)],
+                by = "location_id"
+            )
+        }
+        if ("vaccine_id" %in% names(dt)) {
+            dt <- left_join(
+                dt, 
+                vaccine_table[, .(vaccine_id, vaccine_short)], 
+                by = "vaccine_id"
+            )
+        }
+    }
 
     return(dt)
+}
+
+load_table_list <- function(table_list) {
+    unloaded_data <- setdiff(table_list, ls())
+    if (length(unloaded_data) > 0) {
+        temp <- lapply(unloaded_data, function(table) {
+            dt <- db_pull(table)
+            assign(table, dt, envir = .GlobalEnv)
+        })
+    }
 }

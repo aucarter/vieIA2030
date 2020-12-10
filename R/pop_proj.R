@@ -108,8 +108,9 @@ lt_est <- function(y) {
 #' @param y0 Start year of projection
 #' @param y1 End year of projection
 #' @param wpp_input Input WPP data
+#' @param scen Name of the scenario being run
 #' @return A list of tables with population projection results
-project_pop <- function(is, y0, y1, wpp_input) {
+project_pop <- function(is, y0, y1, wpp_input, scen = "Default") {
   n <- y1 - y0 + 1
   wpp_ina <- wpp_input  %>%
     filter(location_name == is & year_id %in% (y0 - 1):y1) %>%
@@ -139,7 +140,11 @@ project_pop <- function(is, y0, y1, wpp_input) {
     tidyr::spread(year_id, mx) %>%
     select(-c(sex_name, age)) %>%
     as.matrix()
-  mx[mx == 0] <- 1e-09
+    mx[mx == 0] <- 1e-09
+  if (scen != "Default") {
+    mx <- get_mx_scen(is, y0, y1, scen, mx, nx[, 2:n])
+  }
+
   sx <- exp(-mx)
   
   ccpm_res <- get_ccpm(nx, sx, fx, mig)
@@ -216,39 +221,39 @@ get_all_deaths <- function(y0, y1, wpp_input) {
     filter(location_name %in% unique(wpp_input$location_name)) %>%
     select(location_iso3, location_name) %>%
     arrange(location_iso3)
-
-  isc <- locsall$location_name
+  
+  isc  <- locsall$location_name
   isco <- locsall$location_iso3
-  isn <- length(isc)
-
-  all_deaths <- rbindlist(
-    parallel::mclapply(1:isn, function(c) {
-      is   <- isc[c]
-      iso  <- isco[c]
-
-      out  <- project_pop(is, y0, y1, wpp_input)$deaths %>%
-        as.data.table()
-      n    <- y1 - y0 + 1
-
-      yrv  <- paste0(y0:y1)
-      sxv  <- rep(c("Female", "Male"), each = 96)
-      agv  <- c(0:95, 0:95)
-
-      colnames(out) <- yrv
-
-      out <- out %>%
-        mutate(age = agv, sex_name = sxv) %>%
-        tidyr::gather(year_id, deaths, -age, -sex_name) %>%
-        mutate(
-          year_id = as.numeric(year_id),
-          location_name = is,
-          location_iso3 = iso
-        ) %>%
-        arrange(sex_name, age, year_id)
-
-      return(out)
-    }, mc.cores = parallel::detectCores())
-  )
-
-  return(all_deaths)
+  isn  <- length(isc)
+  all_deaths <- list(isn)
+  
+  for (c in 1:isn) {
+    is   <- isc[c]
+    iso  <- isco[c]
+    
+    out  <- project_pop(is, y0, y1, wpp_input)$deaths %>%
+      as.data.table()
+    n    <- y1 - y0 + 1
+    
+    yrv  <- paste0(y0:y1)
+    sxv  <- rep(c("Female", "Male"), each = 96)
+    agv  <- c(0:95, 0:95)
+    
+    colnames(out) <- yrv
+    
+    out <- out %>%
+      mutate(age = agv, sex_name = sxv) %>%
+      tidyr::gather(year_id, deaths, -age, -sex_name) %>%
+      mutate(
+        year_id = as.numeric(year_id),
+        location_name = is,
+        location_iso3 = iso
+      ) %>%
+      arrange(sex_name, age, year_id) %>% 
+      data.table()
+    
+    all_deaths[[c]] <- out
+  }
+  
+  return(rbindlist(all_deaths))
 }

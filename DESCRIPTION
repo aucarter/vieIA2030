@@ -30,7 +30,7 @@ Imports:
     rnaturalearthdata,
     rgeos,
     utils,
-    parallel
+    viridis
 Suggests: 
     knitr,
     rmarkdown,
