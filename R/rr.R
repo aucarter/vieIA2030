@@ -37,8 +37,7 @@ vimc_rr <- function(alpha) {
             by = c("location_id", "year", "vaccine_id")
         ) %>%
         rename(coverage = value) %>%
-        mutate(rr = (deaths_obs - (vaccine_deaths_averted *
-            (1 - coverage ^ alpha) / coverage ^ alpha)) /
+        mutate(rr = (deaths_obs) /
             (deaths_obs + vaccine_deaths_averted))
 
     if(nrow(dt[coverage == 0 & vaccine_deaths_averted > 0]) > 0) {
@@ -111,7 +110,7 @@ merge_rr_covariates <- function(dt) {
 impute_vacc_rr <- function(vacc, dt) {
     print(vacc)
     fit <- glm(
-        rr ~ haqi + sdi + year + 
+        rr ~ haqi + sdi + year + coverage +
              splines::bs(age, knots = c(2, 5, 10, 25)),
         data = dt[vaccine_short == vacc & rr < 1 & rr > 0],
         family = "binomial"

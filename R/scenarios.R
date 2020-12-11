@@ -74,9 +74,7 @@ get_vimc_deaths_change <- function(is, y0, y1, default_coverage, scen_coverage,
 }
 
 get_averted_scen <- function(deaths_obs, coverage, rr, alpha) {
-    averted_scen <- deaths_obs * (
-            coverage ^ alpha * (1 - rr) / (1 - coverage ^ alpha * (1 - rr))
-        )
+    averted_scen <- deaths_obs * (rr^-1 - 1)
 
     return(averted_scen)
 }
