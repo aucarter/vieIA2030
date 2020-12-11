@@ -5,9 +5,14 @@ devtools::load_all()
 gen_db()
 
 ## Predict all and investigate results
-b <- 0.8
+b <- 1
 a <- 0.5
 pred_all <- impute_rr(alpha = a, beta = b)
+pred_all[, averted := get_averted_scen(deaths_obs, coverage, pred_rr, a)]
+pred_all[, averted_diff := abs(vaccine_deaths_averted - averted)]
+tot_averted_error <- sum(pred_all$averted_diff, na.rm = T)
+mse <- mean(pred_all$averted_diff**2, na.rm = T)
+n <- nrow(pred_all[!is.na(averted_diff)])
 
 ## Add future coverage by fixing at 2019 levels
 last_dt <- copy(pred_all[year == 2019,
@@ -31,6 +36,18 @@ scen_dt[, gbd := ifelse(vaccine_short %in% c("D", "T", "P", "BCG"), 1, 0)]
 scen_dt[vimc == 1 & gbd == 0, label := "VIMC10 (VIMC locations)"]
 scen_dt[vimc == 0 & gbd == 0, label := "Imputed VIMC10 (non-VIMC locations)"]
 scen_dt[gbd == 1, label := "GBD4 (All locations)"]
+
+## Save for sharing
+out_dt <- merge(
+    scen_dt[, .(location_id, year, age, vaccine_short, label, averted)],
+    loc_table[, .(location_id, location_name, location_iso3)],
+    by = "location_id"
+)
+out_dt <- merge(out_dt, vaccine_table[, .(vaccine_short, vaccine_long)], by = "vaccine_short")
+out_dt <- out_dt[order(location_name, year, age, vaccine_long),
+    .(location_name, location_iso3, location_id, year, age, vaccine_long, vaccine_short, averted)]
+out_dt <- out_dt[!is.na(averted)]
+write.csv(out_dt, "outputs/v01_reference_results.csv", row.names = F)
 
 ## Plot total deaths averted by vaccine over time
 vacc_year_dt <- scen_dt[, .(averted = sum(averted, na.rm = T)), by = .(vaccine_short, year)] 
