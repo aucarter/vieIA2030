@@ -70,11 +70,6 @@ map_locations <- function(locations, title) {
 
 plot_age_year <- function(dt, log_transform = F, value_name = "") {
     dt <- unique(dt[, .(year, age, value)])
-    cast_dt <- dcast(dt, age ~ year, value.var = "value")
-    cast_dt[, age := NULL]
-    mat <- as.matrix(cast_dt)
-    image(t(mat), xlab = "Year", ylab = "Age")
-    axis(1, at = seq(min(dt$year), max(dt$year), by = 5))
     
     gg <- ggplot(dt, aes(x = year, y = age, fill = value)) + 
         geom_tile() +
