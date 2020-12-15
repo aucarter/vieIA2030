@@ -5,8 +5,8 @@ devtools::load_all()
 gen_db()
 
 ## Predict all and investigate results
-b <- 1
-a <- 0.5
+b <- 0.8
+a <- 0.4
 pred_all <- impute_rr(alpha = a, beta = b)
 pred_all[, averted := get_averted_scen(deaths_obs, coverage, pred_rr, a)]
 pred_all[, averted_diff := abs(vaccine_deaths_averted - averted)]
@@ -27,7 +27,7 @@ scen_dt <- merge(pred_all, future_dt,
 scen_dt[!is.na(scen_coverage), coverage := scen_coverage]
 future_deaths <- all_deaths[year > 2019, .(deaths_obs_future = sum(deaths)),
                          by = .(age, year, location_id)]
-scen_dt <- merge(scen_dt, future_deaths, 
+scen_dt <- merge(scen_dt, future_deaths,
     by = c("year", "age", "location_id"), all.x = T)
 scen_dt[!is.na(deaths_obs_future), deaths_obs := deaths_obs_future]
 scen_dt[, averted := get_averted_scen(deaths_obs, coverage, pred_rr, a)]
@@ -47,7 +47,7 @@ out_dt <- merge(out_dt, vaccine_table[, .(vaccine_short, vaccine_long)], by = "v
 out_dt <- out_dt[order(location_name, year, age, vaccine_long),
     .(location_name, location_iso3, location_id, year, age, vaccine_long, vaccine_short, averted)]
 out_dt <- out_dt[!is.na(averted)]
-write.csv(out_dt, "outputs/v01_reference_results.csv", row.names = F)
+# write.csv(out_dt, "outputs/v01_reference_results.csv", row.names = F)
 
 ## Plot total deaths averted by vaccine over time
 vacc_year_dt <- scen_dt[, .(averted = sum(averted, na.rm = T)), by = .(vaccine_short, year)] 
@@ -102,7 +102,7 @@ alpha_vals <- seq(0.1, 1, 0.1)
 plot_alpha <- function(alpha_vals) {
     dt <- data.table(expand.grid(x = seq(0, 1, 0.01), alpha = alpha_vals))
     dt[, y := x ** alpha]
-    gg <- ggplot(dt, aes(x = x, y = y, color = as.factor(alpha))) + 
+    gg <- ggplot(dt, aes(x = x, y = y, color = as.factor(alpha))) +
         geom_line() + theme_bw() + coord_equal()
     print(gg)
 }
