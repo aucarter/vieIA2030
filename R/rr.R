@@ -33,8 +33,8 @@ vimc_rr <- function(alpha) {
         ) %>%
         rename(vaccine_deaths_averted = value) %>%
         left_join(
-            coverage_inputs[, .(location_id, year, vaccine_id, value)],
-            by = c("location_id", "year", "vaccine_id")
+            coverage_inputs,
+            by = c("location_id", "year", "vaccine_id", "age")
         ) %>%
         rename(coverage = value) %>%
         mutate(rr = (deaths_obs - (vaccine_deaths_averted *
@@ -71,14 +71,12 @@ gbd_rr <- function(alpha, beta) {
     # Merge observed coverage and efficiency
     dt <- dt %>%
         left_join(
-            coverage_inputs[, .(location_id, year, vaccine_id, value)],
-            by = c("location_id", "year", "vaccine_id")
+            coverage_inputs,
+            by = c("location_id", "year", "vaccine_id", "age")
         ) %>%
         left_join(efficacy[, .(mean, vaccine_id)], by = "vaccine_id") %>%
         rename(efficacy = mean) %>%
         rename(coverage = value)
-    # Set a cap on BCG effect at age 15
-    dt[vaccine_id == 14 & age >= 15, coverage := 0]
 
     # Calcualte RR
     dt <- dt %>%
@@ -111,7 +109,7 @@ merge_rr_covariates <- function(dt) {
 impute_vacc_rr <- function(vacc, dt) {
     print(vacc)
     fit <- glm(
-        rr ~ haqi + sdi + year + 
+        rr ~ haqi + sdi + year +
              splines::bs(age, knots = c(2, 5, 10, 25)),
         data = dt[vaccine_short == vacc & rr < 1 & rr > 0],
         family = "binomial"
@@ -132,19 +130,15 @@ impute_vacc_rr <- function(vacc, dt) {
         pred_dt, 
         coverage_inputs[
             vaccine_id == vaccine_table[vaccine_short == vacc]$vaccine_id,
-            .(year, location_id, value)
+            .(year, location_id, value, age)
         ],
-        by = c("year", "location_id"), all.x = T
+        by = c("year", "location_id", "age"), all.x = T
     )
     setnames(pred_dt, "value", "coverage")
     # Merge on deaths
     deaths <- all_deaths[, .(deaths_obs = sum(deaths)),
                     by = .(age, year, location_id)]
     pred_dt <- merge(pred_dt, deaths, by = c("age", "year", "location_id"))
-    # Set a cap on BCG effect at age 15
-    if(vacc == "BCG") {
-        pred_dt[age >= 15, coverage := 0]
-    }
     pred_dt[, pred := predict(fit, pred_dt)]
     pred_dt[, pred_rr := exp(pred) / (exp(pred) + 1)]
     pred_dt[, pred := NULL]
