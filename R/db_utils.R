@@ -72,7 +72,7 @@ db_pull <- function(table, iso3_list = NULL, append_names = F) {
 }
 
 load_table_list <- function(table_list) {
-    unloaded_data <- setdiff(table_list, ls())
+    unloaded_data <- setdiff(table_list, ls(envir = .GlobalEnv))
     if (length(unloaded_data) > 0) {
         temp <- lapply(unloaded_data, function(table) {
             dt <- db_pull(table)
