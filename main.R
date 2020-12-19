@@ -6,13 +6,71 @@ gen_db()
 
 ## Predict all and investigate results
 b <- 0.8
-a <- 0.4
+a <- 0.8
 pred_all <- impute_rr(alpha = a, beta = b)
 pred_all[, averted := get_averted_scen(deaths_obs, coverage, pred_rr, a)]
-pred_all[, averted_diff := abs(vaccine_deaths_averted - averted)]
-tot_averted_error <- sum(pred_all$averted_diff, na.rm = T)
-mse <- mean(pred_all$averted_diff**2, na.rm = T)
-n <- nrow(pred_all[!is.na(averted_diff)])
+pred_all[, error := vaccine_deaths_averted - averted]
+
+loc_dt <- pred_all[location_id == 126 &
+    !(vaccine_short %in% c("D", "T", "P", "BCG"))
+]
+loc_dt[, vaccine_deaths_averted := as.numeric(vaccine_deaths_averted)]
+melt_dt <- melt(
+    loc_dt[, .(year, age, vaccine_short, coverage, vaccine_deaths_averted, averted)],
+    id.vars = c("year", "age", "vaccine_short", "coverage")
+)
+gg <- ggplot(melt_dt, aes(x = coverage, color = variable, y = value)) +
+    geom_point(size = 0.1) +
+    facet_wrap(~vaccine_short, scales = "free_y")
+gg
+
+gg <- ggplot(loc_dt, aes(x = vaccine_deaths_averted, y = averted, color = age + 1)) +
+    geom_point() + facet_wrap(~vaccine_short, scales = "free") +
+            viridis::scale_color_viridis(
+            option = "viridis", 
+            direction = -1, 
+            trans = "log10") +
+    geom_abline(slope = 1) + expand_limits(x = 0)
+gg
+pdf("plots/vacc_fit.pdf")
+for(v in unique(pred_all[!(vaccine_short %in% c("D", "T", "P", "BCG"))]$vaccine_short)) {
+    print(v)
+    plot_dt <- pred_all[vaccine_short == v & vaccine_deaths_averted > 0 & averted > 0]
+    min_val <- min(c(plot_dt$vaccine_deaths_averted, plot_dt$averted))
+    gg <- ggplot(plot_dt, aes(x = vaccine_deaths_averted, y = averted, color = age + 1)) +
+        geom_point() +
+                viridis::scale_color_viridis(
+                option = "viridis",
+                direction = -1,
+                trans = "log10") +
+        geom_abline(slope = 1) + expand_limits(x = min_val, y = min_val) +
+        scale_x_continuous(trans='log10') +
+        scale_y_continuous(trans='log10') + 
+        coord_fixed() + ggtitle(v) + theme_bw() +
+        xlab("Observed") + ylab("Predicted")
+    print(gg)
+}
+dev.off()
+
+pred_all[, value := vaccine_deaths_averted / mx]
+dt <- merge(pred_all, loc_table[, .(location_id, region)], by = "location_id")
+gg <- ggplot(dt[age == 1 & !(vaccine_short %in% c("D", "T", "P", "BCG"))], aes(x = coverage, y = value, color = region)) +
+    geom_point(size = 0.1, alpha = 0.5) +
+    facet_wrap(~vaccine_short, scales = "free_y") + 
+    theme_bw()
+gg
+
+
+
+calc_mse <- function(dt) {
+    dt[, averted := get_averted_scen(deaths_obs, coverage, pred_rr, a)]
+    dt[, error := vaccine_deaths_averted - averted]
+    mse <- mean(dt$error^2, na.rm = T)
+
+    return(mse)
+}
+mse <- calc_mse(pred_all)
+
 
 ## Add future coverage by fixing at 2019 levels
 last_dt <- copy(pred_all[year == 2019,
@@ -94,9 +152,6 @@ for(loc in sort(unique(loc_vacc_year_dt$location_name))) {
 }
 dev.off()
 
-## VIMC locations map
-map_locations(unique(vimc_impact$location_iso3), "VIMC Locations")
-
 ## Optimal alpha investigation
 alpha_vals <- seq(0.1, 1, 0.1)
 plot_alpha <- function(alpha_vals) {
@@ -109,15 +164,12 @@ plot_alpha <- function(alpha_vals) {
 plot_alpha(alpha_vals)
 diag_list <- lapply(alpha_vals, function(a) {
     pred_all <- impute_rr(alpha = a, beta = b)
-    pred_all[, sq_error := (pred_rr - rr)**2]
-    mse <- mean(pred_all$sq_error, na.rm = T)
-    # pred_all[is.na(rr), rr := pred_rr]
-    pred_all[, averted := get_averted_scen(deaths_obs, coverage, pred_rr, a)]
-    # pred_all[!is.na(vaccine_deaths_averted), averted := vaccine_deaths_averted]
-    pred_all[, averted_diff := abs(vaccine_deaths_averted - averted)]
-    tot_averted_error <- sum(pred_all$averted_diff, na.rm = T)
-    return(list(mse, tot_averted_error))
+    mse <- lapply(split(pred_all, pred_all$vaccine_short), calc_mse)
+    return(mse)
 })
-plot(alpha_vals, unlist(lapply(diag_list, `[[`, 1)))
-plot(alpha_vals, unlist(lapply(diag_list, `[[`, 2)), type = "l", 
-    xlab = "alpha", ylab = "Total error")
+dt <- data.table(alpha = alpha_vals, rbindlist(diag_list))
+melt_dt <- melt(dt, id.vars = "alpha")[!is.na(value)]
+gg <- ggplot(melt_dt, aes(x = alpha, y = value)) + geom_line() + facet_wrap(~variable, scales = "free_y")
+gg
+plot(alpha_vals, diag_list, type = "l", xlab = "alpha",
+    ylab = "Mean squared error")
