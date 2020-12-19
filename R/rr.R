@@ -94,6 +94,9 @@ gbd_rr <- function(alpha, beta) {
 }
 
 merge_rr_covariates <- function(dt) {
+    load_table_list("wpp_input")
+    mx_dt <- wpp_input[, .(mx = mean(mx)), by = .(location_id, year_id, age)]
+    setnames(mx_dt, "year_id", "year")
     dt <- right_join(
             dt,
             gbd_cov,
@@ -102,6 +105,10 @@ merge_rr_covariates <- function(dt) {
         left_join(
             vaccine_table[, .(vaccine_id, vaccine_short)],
             by = "vaccine_id"
+        ) %>%
+        left_join(
+            mx_dt,
+            by = c("location_id", "year", "age")
         )
     return(dt)
 }
@@ -109,7 +116,7 @@ merge_rr_covariates <- function(dt) {
 impute_vacc_rr <- function(vacc, dt) {
     print(vacc)
     fit <- glm(
-        rr ~ haqi + sdi + year +
+        rr ~ haqi + sdi + year + mx +
              splines::bs(age, knots = c(2, 5, 10, 25)),
         data = dt[vaccine_short == vacc & rr < 1 & rr > 0],
         family = "binomial"
@@ -125,6 +132,15 @@ impute_vacc_rr <- function(vacc, dt) {
         ),
         by = "idx"
     )[, idx := NULL]
+    # Merge on mx
+    load_table_list("wpp_input")
+    mx_dt <- wpp_input[, .(mx = mean(mx)), by = .(location_id, year_id, age)]
+    setnames(mx_dt, "year_id", "year")
+    pred_dt <- left_join(
+            pred_dt,
+            mx_dt,
+            by = c("location_id", "year", "age")
+        )
     # Merge on coverage
     pred_dt <- merge(
         pred_dt, 
