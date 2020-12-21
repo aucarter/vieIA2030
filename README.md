@@ -2,6 +2,7 @@
 [![R build status](https://github.com/aucarter/vieIA2030/workflows/R-CMD-check/badge.svg)](https://github.com/aucarter/vieIA2030/actions)
 <!-- badges: end -->
 
+![Flowchart](flowchart.png)
 # Vaccine Impact Estimates for IA2030
 
 This package includes the tools used to generate vaccine impact estimates for IA2030

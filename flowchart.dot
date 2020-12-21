@@ -1,0 +1,38 @@
+digraph flowchart {
+  graph [fontsize = 14, fontname = Helvetica]
+  node [style = filled, fontsize = 10, fontname = Helvetica]
+  
+  # Legend
+  subgraph cluster_legend {
+    label = "Legend";
+    shape = rectangle;
+    fillcolor = lightgray;
+    ranksep = 0.05;
+    Input [shape = cylinder, fillcolor = aquamarine3, pos = "34, 34!"];
+    Process [shape = rectangle, fillcolor = coral];
+    Output [shape = parallelogram, fillcolor = burlywood3];
+    Input -> Process -> Output [style = invis];
+  }
+
+  # Inputs
+  node [shape = cylinder, fillcolor = aquamarine3]
+  "WPP demography"; "WUENIC coverage"; "VIMC coverage"; "VIMC impact"; "GBD cause-specific\nmortality"; "GBD SDI + HAQ Index"; "Future coverage scenarios"
+
+  # Processes
+  node [shape = rectangle, fillcolor = coral]
+  "PP1" [label = "Project population"]; "Distribute coverage"; "Calculate relative-risks"; "Model relative-risks"; "Calculate scenario mortality"; "PP2" [label = "Project population"]
+
+  # Outputs
+  node [shape = parallelogram, fillcolor = burlywood3]
+  "Calibrated demography"; "Total coverage"; "Relative-risks"; "Imputed relative-risks"; "Scenario mortality"; "Scenario impact"
+
+  # several "edge" statements
+  "WPP demography"->"PP1" "PP1"->"Calibrated demography"
+  "WUENIC coverage"->"Distribute coverage" "VIMC coverage"->"Distribute coverage" "Distribute coverage"->"Total coverage"
+  "VIMC impact"->"Calculate relative-risks" "GBD cause-specific\nmortality"->"Calculate relative-risks" "Total coverage"->"Calculate relative-risks" "Calibrated demography"->"Calculate relative-risks" "Calculate relative-risks"->"Relative-risks"
+  "GBD SDI + HAQ Index"->"Model relative-risks" "Relative-risks"->"Model relative-risks" "Calibrated demography"->"Model relative-risks" "Model relative-risks"->"Imputed relative-risks"
+  "Imputed relative-risks"->"Calculate scenario mortality" "Future coverage scenarios"->"Calculate scenario mortality" "Calculate scenario mortality"->"Scenario mortality"
+  "Scenario mortality"->"PP2" "Calibrated demography"->"PP2" "PP2"->"Scenario impact"
+  
+
+}
