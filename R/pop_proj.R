@@ -115,30 +115,30 @@ project_pop <- function(is, y0, y1, wpp_input, scen = "Default") {
   wpp_ina <- wpp_input  %>%
     filter(location_name == is & year %in% (y0 - 1):y1) %>%
     select(-c(location_name)) %>%
-    arrange(sex_name, age, year)
+    arrange(sex_id, age, year)
   nx <- wpp_ina %>%
-    select(sex_name, age, year, nx) %>%
+    select(sex_id, age, year, nx) %>%
     tidyr::spread(year, nx) %>%
-    select(-c(sex_name, age)) %>%
+    select(-c(sex_id, age)) %>%
     as.matrix()
   nx[nx == 0]   <- 1e-09
 
   wpp_ina <- wpp_ina %>%
     filter(year %in% y0:y1)
   fx <- wpp_ina %>%
-    select(sex_name, age, year, fx) %>%
+    select(sex_id, age, year, fx) %>%
     tidyr::spread(year, fx) %>%
-    select(-c(sex_name, age)) %>%
+    select(-c(sex_id, age)) %>%
     as.matrix()
   mig <- wpp_ina %>%
-    select(sex_name, age, year, mig) %>%
+    select(sex_id, age, year, mig) %>%
     tidyr::spread(year, mig) %>%
-    select(-c(sex_name, age)) %>%
+    select(-c(sex_id, age)) %>%
     as.matrix()
   mx <- wpp_ina %>%
-    select(sex_name, age, year, mx) %>%
+    select(sex_id, age, year, mx) %>%
     tidyr::spread(year, mx) %>%
-    select(-c(sex_name, age)) %>%
+    select(-c(sex_id, age)) %>%
     as.matrix()
     mx[mx == 0] <- 1e-09
   if (scen != "Default") {
@@ -236,20 +236,20 @@ get_all_deaths <- function(y0, y1, wpp_input) {
     n    <- y1 - y0 + 1
     
     yrv  <- paste0(y0:y1)
-    sxv  <- rep(c("Female", "Male"), each = 96)
+    sxv  <- rep(1:2, each = 96)
     agv  <- c(0:95, 0:95)
     
     colnames(out) <- yrv
     
     out <- out %>%
-      mutate(age = agv, sex_name = sxv) %>%
-      tidyr::gather(year, deaths, -age, -sex_name) %>%
+      mutate(age = agv, sex_id = sxv) %>%
+      tidyr::gather(year, deaths, -age, -sex_id) %>%
       mutate(
         year = as.numeric(year),
         location_name = is,
         location_iso3 = iso
       ) %>%
-      arrange(sex_name, age, year) %>% 
+      arrange(sex_id, age, year) %>% 
       data.table()
     
     all_deaths[[c]] <- out
