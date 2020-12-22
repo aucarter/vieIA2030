@@ -95,8 +95,7 @@ gbd_rr <- function(alpha, beta) {
 
 merge_rr_covariates <- function(dt) {
     load_table_list("wpp_input")
-    mx_dt <- wpp_input[, .(mx = mean(mx)), by = .(location_id, year_id, age)]
-    setnames(mx_dt, "year_id", "year")
+    mx_dt <- wpp_input[, .(mx = mean(mx)), by = .(location_id, year, age)]
     dt <- right_join(
             dt,
             gbd_cov,
@@ -134,8 +133,7 @@ impute_vacc_rr <- function(vacc, dt) {
     )[, idx := NULL]
     # Merge on mx
     load_table_list("wpp_input")
-    mx_dt <- wpp_input[, .(mx = mean(mx)), by = .(location_id, year_id, age)]
-    setnames(mx_dt, "year_id", "year")
+    mx_dt <- wpp_input[, .(mx = mean(mx)), by = .(location_id, year, age)]
     pred_dt <- left_join(
             pred_dt,
             mx_dt,

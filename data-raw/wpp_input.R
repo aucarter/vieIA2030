@@ -383,6 +383,13 @@ wpp_input <- wpp_input %>%
   ) %>%
   select(-c("location_name", "location_iso3")) %>%
   filter(!is.na(nx))
+wpp_input <- merge(
+  wpp_input, 
+  data.table("sex_name" = c("Male", "Female"), sex_id = 1:2),
+  by = "sex_name"
+)
+wpp_input[, sex_name := NULL]
+setnames(wpp_input, "year_id", "year")
 
 # Calculate both-sexes deaths
 temp_wpp_input <- merge(wpp_input, loc_table)
@@ -390,14 +397,21 @@ deaths <- get_all_deaths(2000, 2030, temp_wpp_input)
 deaths <- merge(deaths, loc_table[, .(location_iso3, location_id)])
 deaths[, c("location_name", "location_iso3") := NULL]
 setnames(deaths, "year_id", "year")
-deaths <- merge(
-  deaths, 
-  data.table("sex_name" = c("Male", "Female"), sex_id = 1:2),
-  by = "sex_name"
-)
 deaths[, sex_name := NULL]
 
 mydb <- open_connection()
-DBI::dbWriteTable(mydb, "wpp_input", wpp_input, overwrite = TRUE)
-DBI::dbWriteTable(mydb, "all_deaths", deaths, overwrite = TRUE)
+DBI::dbWriteTable(
+    conn = mydb,
+    name = "wpp_input",
+    value = wpp_input,
+    fields = bigrquery::as_bq_fields(wpp_input),
+    overwrite = TRUE
+)
+DBI::dbWriteTable(
+    conn = mydb,
+    name = "all_deaths",
+    value = deaths,
+    fields = bigrquery::as_bq_fields(deaths),
+    overwrite = TRUE
+)
 DBI::dbDisconnect(mydb)

@@ -28,8 +28,7 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
    
    values$dem_out        <- Projection %>%
                             add_lt(., is, y0, y2) %>%
-                            add_obs(., obs_wpp, is, y0, y2) %>%
-                            rename(year_id = year)
+                            add_obs(., obs_wpp, is, y0, y2)
    values$pop_out        <- Projection$population
    values$country        <- is
    values$year0          <- y0
@@ -48,7 +47,7 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
     y %>% 
       hchart(., 
              type = "spline", 
-             hcaes(x = year_id, 
+             hcaes(x = year, 
                    y = deaths_both,
                    group = group)) %>%
       hc_title(text = paste(loc," total deaths")) %>% 
@@ -67,7 +66,7 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
     y %>% 
       hchart(., 
              type = "spline", 
-             hcaes(x = year_id, 
+             hcaes(x = year, 
                    y = births,
                    group = group)) %>%
       hc_title(text = paste(loc," total births")) %>% 
@@ -86,7 +85,7 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
     y %>% 
       hchart(., 
              type = "spline", 
-             hcaes(x = year_id, 
+             hcaes(x = year, 
                    y = e0,
                    group = group)) %>%
       hc_title(text = paste(loc," life-expectancy at birth")) %>% 
@@ -105,7 +104,7 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
     y %>% 
       hchart(., 
              type = "spline", 
-             hcaes(x = year_id, 
+             hcaes(x = year, 
                    y = e0,
                    group = group)) %>%
       hc_title(text = paste(loc," infant mortality rate")) %>% 
@@ -124,7 +123,7 @@ values <- reactiveValues(dem_out=NULL, country=NULL, pop_out=NULL, year0 = NULL,
     y %>% 
       hchart(., 
              type = "spline", 
-             hcaes(x = year_id, 
+             hcaes(x = year, 
                    y = u5mr,
                    group = group)) %>%
       hc_title(text = paste(loc," under-5 mortality rate")) %>% 
