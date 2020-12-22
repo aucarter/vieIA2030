@@ -390,14 +390,15 @@ wpp_input <- merge(
 )
 wpp_input[, sex_name := NULL]
 setnames(wpp_input, "year_id", "year")
+wpp_input[, age := as.integer(age)]
+wpp_input[, year := as.integer(year)]
 
 # Calculate both-sexes deaths
 temp_wpp_input <- merge(wpp_input, loc_table)
 deaths <- get_all_deaths(2000, 2030, temp_wpp_input)
 deaths <- merge(deaths, loc_table[, .(location_iso3, location_id)])
 deaths[, c("location_name", "location_iso3") := NULL]
-setnames(deaths, "year_id", "year")
-deaths[, sex_name := NULL]
+deaths[, year := as.integer(year)]
 
 mydb <- open_connection()
 DBI::dbWriteTable(

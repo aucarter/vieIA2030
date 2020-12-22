@@ -20,5 +20,11 @@ convert_single_year <- function(gbd_dt) {
 gbd_estimates <- convert_single_year(gbd_estimates)
 
 mydb <- open_connection()
-DBI::dbWriteTable(mydb, "gbd_vaccine_deaths", gbd_estimates, overwrite = TRUE)
+DBI::dbWriteTable(
+    conn = mydb,
+    name = "gbd_vaccine_deaths",
+    value = gbd_estimates,
+    fields = bigrquery::as_bq_fields(gbd_estimates),
+    overwrite = TRUE
+)
 DBI::dbDisconnect(mydb)

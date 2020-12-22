@@ -26,5 +26,11 @@ vimc_dt[, c("location_name", "location_iso3") := NULL]
 
 
 mydb <- open_connection()
-DBI::dbWriteTable(mydb, "vimc_impact", vimc_dt, overwrite = TRUE)
+DBI::dbWriteTable(
+    conn = mydb,
+    name = "vimc_impact",
+    value = vimc_dt,
+    fields = bigrquery::as_bq_fields(vimc_dt),
+    overwrite = TRUE
+)
 DBI::dbDisconnect(mydb)

@@ -216,5 +216,11 @@ coverage <- merge(
 coverage[, vaccine_short := NULL]
 
 mydb <- open_connection()
-DBI::dbWriteTable(mydb, "coverage_inputs", coverage, overwrite = TRUE)
+DBI::dbWriteTable(
+    conn = mydb,
+    name = "coverage_inputs",
+    value = coverage,
+    fields = bigrquery::as_bq_fields(coverage),
+    overwrite = TRUE
+)
 DBI::dbDisconnect(mydb)

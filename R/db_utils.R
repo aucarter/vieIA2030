@@ -1,5 +1,9 @@
 open_connection <- function() {
-    my_db <- DBI::dbConnect(RSQLite::SQLite(), dbname = "vieIA2030.db")
+    my_db <- DBI::dbConnect(
+        bigrquery::bigquery(),
+        project = "vaccine-impact",
+        dataset = "data"
+    )
 
     return(my_db)
 }
