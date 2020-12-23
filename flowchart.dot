@@ -26,13 +26,11 @@ digraph flowchart {
   node [shape = parallelogram, fillcolor = burlywood3]
   "Calibrated demography"; "Total coverage"; "Relative-risks"; "Imputed relative-risks"; "Scenario mortality"; "Scenario impact"
 
-  # several "edge" statements
+  # Edges
   "WPP demography"->"PP1" "PP1"->"Calibrated demography"
   "WUENIC coverage"->"Distribute coverage" "VIMC coverage"->"Distribute coverage" "Distribute coverage"->"Total coverage"
   "VIMC impact"->"Calculate relative-risks" "GBD cause-specific\nmortality"->"Calculate relative-risks" "Total coverage"->"Calculate relative-risks" "Calibrated demography"->"Calculate relative-risks" "Calculate relative-risks"->"Relative-risks"
   "GBD SDI + HAQ Index"->"Model relative-risks" "Relative-risks"->"Model relative-risks" "Calibrated demography"->"Model relative-risks" "Model relative-risks"->"Imputed relative-risks"
   "Imputed relative-risks"->"Calculate scenario mortality" "Future coverage scenarios"->"Calculate scenario mortality" "Calculate scenario mortality"->"Scenario mortality"
   "Scenario mortality"->"PP2" "Calibrated demography"->"PP2" "PP2"->"Scenario impact"
-  
-
 }
