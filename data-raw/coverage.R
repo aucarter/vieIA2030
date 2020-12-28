@@ -214,13 +214,9 @@ coverage <- merge(
     coverage, vaccine_table[, .(vaccine_short, vaccine_id)]
 )
 coverage[, vaccine_short := NULL]
+coverage[, age := as.integer(age)]
+coverage[, sex_id := as.integer(sex_id)]
+coverage <- coverage[order(location_id, vaccine_id, year, age, sex_id),
+                 .(location_id, vaccine_id, year, age, sex_id, value)]
 
-mydb <- open_connection()
-DBI::dbWriteTable(
-    conn = mydb,
-    name = "coverage_inputs",
-    value = coverage,
-    fields = bigrquery::as_bq_fields(coverage),
-    overwrite = TRUE
-)
-DBI::dbDisconnect(mydb)
+upload_object(coverage, "coverage_inputs")

@@ -19,12 +19,8 @@ convert_single_year <- function(gbd_dt) {
 
 gbd_estimates <- convert_single_year(gbd_estimates)
 
-mydb <- open_connection()
-DBI::dbWriteTable(
-    conn = mydb,
-    name = "gbd_vaccine_deaths",
-    value = gbd_estimates,
-    fields = bigrquery::as_bq_fields(gbd_estimates),
-    overwrite = TRUE
-)
-DBI::dbDisconnect(mydb)
+gbd_estimates <- gbd_estimates[order(location_id, vaccine_id, sex_id, age, year),
+                               .(location_id, vaccine_id, sex_id, age, year, value)]
+
+
+upload_object(gbd_estimates, "gbd_vaccine_deaths")
