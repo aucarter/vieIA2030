@@ -33,7 +33,6 @@ gen_db <- function() {
     }
 }
 
-
 list_db_tables <- function() {
     mydb <- open_connection()
     tables <- DBI::dbListTables(mydb)
@@ -83,4 +82,12 @@ load_table_list <- function(table_list) {
             assign(table, dt, envir = .GlobalEnv)
         })
     }
+}
+
+upload_object <- function(object, name) {
+    file <- paste0(name, ".csv")
+    func_path <- system.file("upload_file.py", package = "vieIA2030")
+    write.csv(object, file, row.names = F)
+    system(paste("python3", func_path, file, name))
+    file.remove(file)
 }
