@@ -27,7 +27,7 @@ update_pop <- function(p_in, sx, fx, mig, z, srb) {
   p_out <- vector()
   bx_out <- 0
   for (sex in c("female", "male")) {
-    if (sex == "female") {
+    if (sex == "male") {
       first_idx <- 1
       mid_idx <- 2:(z - 1)
       final_idx <- z
@@ -54,7 +54,7 @@ update_pop <- function(p_in, sx, fx, mig, z, srb) {
       )
     
     # First age group
-    bx <- calc_births(srb, fx, sx, p_in, mig, sex)
+    bx <- calc_births(srb, fx, sx, p_in, mig, z, sex)
     bx_out <- bx_out + bx
     p_out[first_idx] <- bx * (sx[first_idx] * (1 + .5 * mig[first_idx]) +
       .5 * mig[first_idx])
@@ -64,11 +64,11 @@ update_pop <- function(p_in, sx, fx, mig, z, srb) {
   return(list(p_out, bx_out))
 }
 
-calc_births <- function(srb, fx, sx, p_in, mig, sex = "female") {
+calc_births <- function(srb, fx, sx, p_in, mig, z, sex = "female") {
   # Calculate births
   fxb <- ((1 + srb) ^ (-1) * (
-      fx[10:54] +
-      fx[11:55] * sx[11:55]
+      fx[z + 10:54] +
+      fx[z + 11:55] * sx[z + 11:55]
     ) * 0.5)
 
   if (sex == "male") {
@@ -76,7 +76,7 @@ calc_births <- function(srb, fx, sx, p_in, mig, sex = "female") {
   }
 
   bx <- sum(
-      fxb * p_in[10:54] * (1 + .5 * mig[10:54])
+      fxb * p_in[z + 10:54] * (1 + .5 * mig[z + 10:54])
     )
 
   return(bx)
