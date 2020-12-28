@@ -1,8 +1,5 @@
 ### Fit a model for VIMC mortality reduction
-
 devtools::load_all()
-## Build database if necessary
-gen_db()
 
 ## Predict all and investigate results
 b <- 0.8
@@ -56,7 +53,7 @@ pred_all[, value := vaccine_deaths_averted / mx]
 dt <- merge(pred_all, loc_table[, .(location_id, region)], by = "location_id")
 gg <- ggplot(dt[age == 1 & !(vaccine_short %in% c("D", "T", "P", "BCG"))], aes(x = coverage, y = value, color = region)) +
     geom_point(size = 0.1, alpha = 0.5) +
-    facet_wrap(~vaccine_short, scales = "free_y") + 
+    facet_wrap(~vaccine_short, scales = "free_y") +
     theme_bw()
 gg
 
