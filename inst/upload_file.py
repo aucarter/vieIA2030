@@ -1,4 +1,4 @@
-def upload_file(file, table_name):
+def upload_file(file, table_name, overwrite=True):
     from google.cloud import storage
     from google.cloud import bigquery
 
@@ -19,6 +19,8 @@ def upload_file(file, table_name):
         # The source format defaults to CSV, so the line below is optional.
         source_format=bigquery.SourceFormat.CSV,
     )
+    if overwrite:
+        job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
     load_job = client.load_table_from_uri(
         uri, table_id, job_config=job_config
     )
