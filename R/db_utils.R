@@ -11,23 +11,26 @@ open_connection <- function() {
 
 #' Generates the SQLite database with input data
 gen_db <- function() {
-    message("   - Prepping vaccine coverage...")
-    source("data-raw/coverage.R")
+    response <- menu(c("Yes", "No"), title = "Delete and rebuild database?")
+    if (response == 1) {
+        message("   - Prepping vaccine coverage...")
+        source("data-raw/coverage.R")
 
-    message("   - Prepping WPP inputs and all-cause deaths...")
-    source("data-raw/wpp_input.R")
+        message("   - Prepping WPP inputs and all-cause deaths...")
+        source("data-raw/wpp_input.R")
 
-    message("   - Prepping WPP observed...")
-    source("data-raw/obs_wpp.R")
+        message("   - Prepping WPP observed...")
+        source("data-raw/obs_wpp.R")
 
-    if (file.exists("inst/extdata/vimc_estimates.csv")) {
-        message("   - Prepping VIMC impact estimates...")
-        source("data-raw/vimc_impact.R")
-    } else {
-        warning("Add VIMC estimates to inst/extdata")
+        if (file.exists("inst/extdata/vimc_estimates.csv")) {
+            message("   - Prepping VIMC impact estimates...")
+            source("data-raw/vimc_impact.R")
+        } else {
+            warning("Add VIMC estimates to inst/extdata")
+        }
+
+        message("Done!")
     }
-
-    message("Done!")
 }
 
 list_db_tables <- function() {
