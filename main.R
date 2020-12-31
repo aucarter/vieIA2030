@@ -2,65 +2,31 @@
 devtools::load_all()
 
 ## Predict all and investigate results
-b <- 0.8
-a <- 0.8
-pred_all <- impute_rr(alpha = a, beta = b)
-pred_all[, averted := get_averted_scen(deaths_obs, coverage, pred_rr, a)]
+params <- jsonlite::fromJSON("params.json")
+pred_all <- impute_all_rr(params)
 pred_all[, error := vaccine_deaths_averted - averted]
-
-loc_dt <- pred_all[location_id == 126 &
-    !(vaccine_short %in% c("D", "T", "P", "BCG"))
-]
-loc_dt[, vaccine_deaths_averted := as.numeric(vaccine_deaths_averted)]
-melt_dt <- melt(
-    loc_dt[, .(year, age, vaccine_short, coverage, vaccine_deaths_averted, averted)],
-    id.vars = c("year", "age", "vaccine_short", "coverage")
-)
-gg <- ggplot(melt_dt, aes(x = coverage, color = variable, y = value)) +
-    geom_point(size = 0.1) +
-    facet_wrap(~vaccine_short, scales = "free_y")
-gg
-
-gg <- ggplot(loc_dt, aes(x = vaccine_deaths_averted, y = averted, color = age + 1)) +
-    geom_point() + facet_wrap(~vaccine_short, scales = "free") +
-            viridis::scale_color_viridis(
-            option = "viridis", 
-            direction = -1, 
-            trans = "log10") +
-    geom_abline(slope = 1) + expand_limits(x = 0)
-gg
 pdf("plots/vacc_fit.pdf")
 for(v in unique(pred_all[!(vaccine_short %in% c("D", "T", "P", "BCG"))]$vaccine_short)) {
     print(v)
     plot_dt <- pred_all[vaccine_short == v & vaccine_deaths_averted > 0 & averted > 0]
     min_val <- min(c(plot_dt$vaccine_deaths_averted, plot_dt$averted))
     gg <- ggplot(plot_dt, aes(x = vaccine_deaths_averted, y = averted, color = age + 1)) +
-        geom_point() +
+        geom_point(size = 0.2, alpha = 0.5) +
                 viridis::scale_color_viridis(
                 option = "viridis",
                 direction = -1,
                 trans = "log10") +
         geom_abline(slope = 1) + expand_limits(x = min_val, y = min_val) +
         scale_x_continuous(trans='log10') +
-        scale_y_continuous(trans='log10') + 
+        scale_y_continuous(trans='log10') +
         coord_fixed() + ggtitle(v) + theme_bw() +
         xlab("Observed") + ylab("Predicted")
     print(gg)
 }
 dev.off()
 
-pred_all[, value := vaccine_deaths_averted / mx]
-dt <- merge(pred_all, loc_table[, .(location_id, region)], by = "location_id")
-gg <- ggplot(dt[age == 1 & !(vaccine_short %in% c("D", "T", "P", "BCG"))], aes(x = coverage, y = value, color = region)) +
-    geom_point(size = 0.1, alpha = 0.5) +
-    facet_wrap(~vaccine_short, scales = "free_y") +
-    theme_bw()
-gg
-
-
 
 calc_mse <- function(dt) {
-    dt[, averted := get_averted_scen(deaths_obs, coverage, pred_rr, a)]
     dt[, error := vaccine_deaths_averted - averted]
     mse <- mean(dt$error^2, na.rm = T)
 

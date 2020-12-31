@@ -1,7 +1,7 @@
 ## Pull in various vaccine coverage data from the WHO website
 calc_total_cov <- function(admin_dt) {
     full_dt <- CJ(
-        age = 0:100, year = 2000:2039, activity_type = c("routine", "campaign")
+        age = 0:95, year = 2000:2095, activity_type = c("routine", "campaign")
     )
     merge_dt <- merge(
         full_dt,
@@ -22,9 +22,9 @@ calc_total_cov <- function(admin_dt) {
     for (i in (ncol - 1):1) {
         vec <- mat[, i]
         for (j in (i + 1):min(nrow, ncol)) {
-            mat[(j - i + 1):nrow, j] <- pmax(
-                mat[(j - i + 1):nrow, j],
-                vec[1:(nrow - j + i)]
+            mat[max(1, (j - i + 1)):nrow, j] <- pmax(
+                mat[max(1, (j - i + 1)):nrow, j],
+                vec[1:min(nrow, (nrow - j + i))]
             )
         }
     }
@@ -39,13 +39,13 @@ calc_total_cov <- function(admin_dt) {
     for (i in (ncol - 1):1) {
         vec <- c_mat[, i]
         for (j in (i + 1):min(nrow, ncol)) {
-            mat[(j - i + 1):nrow, j] <- 1 -
-                (1 - mat[(j - i + 1):nrow, j]) *
-                (1 - vec[1:(nrow - j + i)])
+            mat[max(1, (j - i + 1)):nrow, j] <- 1 -
+                (1 - mat[max(1, (j - i + 1)):nrow, j]) *
+                (1 - vec[1:min(nrow, (nrow - j + i))])
         }
     }
     dt <- melt(
-        as.data.table(cbind(age = 0:100, mat)),
+        as.data.table(cbind(age = 0:95, mat)),
         id.vars = "age", variable.name = "year"
     )
     dt[, year := as.integer(as.character(year))]

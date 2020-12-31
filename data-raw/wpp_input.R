@@ -384,7 +384,7 @@ wpp_input <- wpp_input %>%
   select(-c("location_name", "location_iso3")) %>%
   filter(!is.na(nx))
 wpp_input <- merge(
-  wpp_input, 
+  wpp_input,
   data.table("sex_name" = c("Male", "Female"), sex_id = 1:2),
   by = "sex_name"
 )
@@ -398,7 +398,7 @@ wpp_input <- wpp_input[order(location_id, year, age, sex_id),
 
 # Calculate both-sexes deaths
 temp_wpp_input <- merge(wpp_input, loc_table)
-deaths <- get_all_deaths(2000, 2030, temp_wpp_input)
+deaths <- get_all_deaths(2000, 2095, temp_wpp_input)
 deaths <- merge(deaths, loc_table[, .(location_iso3, location_id)])
 deaths[, c("location_name", "location_iso3") := NULL]
 deaths[, year := as.integer(year)]
