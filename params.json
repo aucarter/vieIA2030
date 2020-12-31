@@ -1,0 +1,70 @@
+{"HepB":{
+    "alpha": 1,
+    "beta": 1,
+    "age_knots" : [2, 5, 10, 25]
+},
+"HPV":{
+    "alpha": 1,
+    "beta": 1,
+    "age_knots" : [2, 5, 10, 25]
+},
+"Rubella":{
+    "alpha": 1,
+    "beta": 1,
+    "age_knots" : [2, 5, 10, 25]
+},
+"Rota":{
+    "alpha": 1,
+    "beta": 1,
+    "age_knots" : [2, 5, 10, 25]
+},
+"Measles":{
+    "alpha": 1,
+    "beta": 1,
+    "age_knots" : [2, 5, 10, 25]
+},
+"PCV":{
+    "alpha": 1,
+    "beta": 1,
+    "age_knots" : [2, 5, 10, 25]
+},
+"Hib":{
+    "alpha": 1,
+    "beta": 1,
+    "age_knots" : [2, 5, 10, 25]
+},
+"YF":{
+    "alpha": 1,
+    "beta": 1,
+    "age_knots" : [2, 5, 10, 25]
+},
+"MenA":{
+    "alpha": 1,
+    "beta": 1,
+    "age_knots" : [2, 5, 10, 25]
+},
+"JE":{
+    "alpha": 1,
+    "beta": 1,
+    "age_knots" : [2, 5, 10, 25]
+},
+"D":{
+    "alpha": 1,
+    "beta": 1,
+    "age_knots" : [2, 5, 10, 25]
+},
+"P":{
+    "alpha": 1,
+    "beta": 1,
+    "age_knots" : [2, 5, 10, 25]
+},
+"T":{
+    "alpha": 1,
+    "beta": 1,
+    "age_knots" : [2, 5, 10, 25]
+},
+"BCG":{
+    "alpha": 1,
+    "beta": 1,
+    "age_knots" : [2, 5, 10, 25]
+}}
