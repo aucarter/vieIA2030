@@ -1,3 +1,51 @@
+gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
+                             no_covid_effect = 2022, intro_year = 2025) {
+    # Load 2019 coverage
+    cov_dt <- db_pull("coverage_inputs")[year == 2019]
+
+    # Need to get explicit about age of intro here (missing 2)
+    # Could pick max difference? (most administered age)
+    zero_dt <- cov_dt[age == 0]
+
+    # Iterate through each vaccine
+    pdf("plots/ia2030_coverage.pdf")
+    for(v in unique(vaccine_table$vaccine_id)) {
+        v_dt <- zero_dt[vaccine_id == v][order(location_id)]
+
+        # Repeat out to 'no covid effect' year
+        n_covid <- no_covid_effect - 2019
+        covid_mat <- matrix(rep(v_dt$value, n_covid), ncol = n_covid)
+        
+        # Linear increase to goal with zeros delayed to intro_year
+        n_increase <- 2030 - no_covid_effect + 1
+        zero_n <- 2030 - intro_year + 1
+        zero_idx <- which(v_dt$value == 0)
+        setnames(v_dt, "value", "current")
+        roc_dt <- merge(
+            v_dt[, .(location_id, current)],
+            ia2030_dtp_goal[, .(location_id, value)],
+            by = "location_id"
+        )
+        roc_dt[, n := ifelse(current == 0, zero_n, n_increase)]
+        roc_dt[, roc := (value - current) / n]
+        t_mat <- matrix(
+            1:n_increase, byrow = T, ncol = n_increase, 
+            nrow = nrow(roc_dt)
+        )
+        t_mat[zero_idx,] <- matrix(c(rep(0, n_increase - zero_n), 1:zero_n), 
+            nrow = length(zero_idx), ncol = n_increase, byrow = T)
+        inc_mat <- v_dt$current + roc_dt$roc * t_mat
+       
+        # Combine
+        c_mat <- cbind(covid_mat, inc_mat)
+        matplot(t(c_mat), type = "l", xaxt = "n",
+            main = vaccine_table[vaccine_id == v]$vaccine_long)
+        axis(1, seq(2, 12, 2), labels = seq(2020, 2030, 2))
+    }
+    dev.off()
+}
+
+
 get_mx_scen <- function(is, y0, y1, scen, mx, nx) {
     default_coverage <- get_scen_coverage(is, y0, y1, "Default") %>%
         rename(default_cov = coverage)
