@@ -41,7 +41,7 @@ prep_rr <- function(vacc, vacc_params) {
     vacc_id <- vaccine_table[vaccine_short == vacc]$vaccine_id
     # Load data
     if (vimc) {
-        load_table_list(c("vimc_impact", "all_deaths", "coverage_inputs"))
+        load_tables(c("vimc_impact", "all_deaths", "coverage_inputs"))
         dt <- copy(vimc_impact)
         setnames(dt, "value", "vaccine_deaths_averted")
         dt[, c("sex_id", "vaccine_deaths") := .(3, NA)]
@@ -50,7 +50,7 @@ prep_rr <- function(vacc, vacc_params) {
                          by = .(age, year, location_id)]
         deaths[, sex_id := 3]
     } else {
-        load_table_list(c("gbd_vaccine_deaths", "all_deaths", "coverage_inputs"))
+        load_tables(c("gbd_vaccine_deaths", "all_deaths", "coverage_inputs"))
         dt <- copy(gbd_vaccine_deaths)
         setnames(dt, "value", "vaccine_deaths")
         dt[, vaccine_deaths_averted := NA]
@@ -106,7 +106,7 @@ merge_rr_covariates <- function(dt) {
     ))
     dt <- merge(full_dt, dt, by = c("location_id", "age", "year"), all.x = T)
     # Add mortality
-    load_table_list("wpp_input")
+    load_tables("wpp_input")
     mx_dt <- wpp_input[, .(mx = mean(mx)), by = .(location_id, year, age)]
     dt <- merge(dt, mx_dt, by = c("location_id", "age", "year"), all.x = T)
     # Add GBD covariates(SDI and HAQi)

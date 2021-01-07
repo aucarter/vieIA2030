@@ -1,17 +1,18 @@
 gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
                              no_covid_effect = 2022, intro_year = 2025) {
     # Load 2019 coverage
-    cov_dt <- db_pull("coverage_inputs")[year == 2019]
+    cov_dt <- load_tables("coverage_inputs")[year == 2019]
 
     # Need to get explicit about age of intro here (missing 2)
     # Could pick max difference? (most administered age)
     zero_dt <- cov_dt[age == 0]
 
     # Iterate through each vaccine
-    pdf("plots/ia2030_coverage.pdf")
-    for(v in unique(vaccine_table$vaccine_id)) {
+    dt <- rbindlist(lapply(unique(vaccine_table$vaccine_id), function(v) {
         v_dt <- zero_dt[vaccine_id == v][order(location_id)]
-
+        if (length(unique(v_dt$sex_id)) > 1) {
+            v_dt <- v_dt[sex_id == 2]
+        }
         # Repeat out to 'no covid effect' year
         n_covid <- no_covid_effect - 2019
         covid_mat <- matrix(rep(v_dt$value, n_covid), ncol = n_covid)
@@ -32,8 +33,10 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
             1:n_increase, byrow = T, ncol = n_increase, 
             nrow = nrow(roc_dt)
         )
-        t_mat[zero_idx,] <- matrix(c(rep(0, n_increase - zero_n), 1:zero_n), 
-            nrow = length(zero_idx), ncol = n_increase, byrow = T)
+        if (length(zero_idx > 0)) {
+            t_mat[zero_idx,] <- matrix(c(rep(0, n_increase - zero_n), 1:zero_n), 
+                nrow = length(zero_idx), ncol = n_increase, byrow = T)
+        }
         inc_mat <- v_dt$current + roc_dt$roc * t_mat
        
         # Combine and convert to data.table
@@ -44,12 +47,8 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
             id.vars = c("location_id", "vaccine_id", "age", "sex_id"),
             variable.name = "year"
         )
-
-        matplot(t(c_mat), type = "l", xaxt = "n",
-            main = vaccine_table[vaccine_id == v]$vaccine_long)
-        axis(1, seq(2, 12, 2), labels = seq(2020, 2030, 2))
-    }
-    dev.off()
+        return(melt_dt)
+    }))
 }
 
 
