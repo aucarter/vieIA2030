@@ -1,7 +1,8 @@
 gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
                              no_covid_effect = 2022, intro_year = 2025) {
     # Load 2019 coverage
-    cov_dt <- load_tables("coverage_inputs")[year == 2019]
+    load_tables("coverage_inputs")
+    cov_dt <- coverage_inputs[year == 2019]
 
     # Need to get explicit about age of intro here (missing 2)
     # Could pick max difference? (most administered age)
@@ -49,6 +50,7 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
         )
         return(melt_dt)
     }))
+    return(dt)
 }
 
 
