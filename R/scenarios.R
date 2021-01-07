@@ -36,8 +36,15 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
             nrow = length(zero_idx), ncol = n_increase, byrow = T)
         inc_mat <- v_dt$current + roc_dt$roc * t_mat
        
-        # Combine
+        # Combine and convert to data.table
         c_mat <- cbind(covid_mat, inc_mat)
+        colnames(c_mat) <- 2019:2030
+        dt <- cbind(v_dt[, -c("year", "current"), with = F], c_mat)
+        melt_dt <- melt(dt,
+            id.vars = c("location_id", "vaccine_id", "age", "sex_id"),
+            variable.name = "year"
+        )
+
         matplot(t(c_mat), type = "l", xaxt = "n",
             main = vaccine_table[vaccine_id == v]$vaccine_long)
         axis(1, seq(2, 12, 2), labels = seq(2020, 2030, 2))
