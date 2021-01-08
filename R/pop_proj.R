@@ -205,7 +205,8 @@ add_obs <- function(df, obs_wpp, is, y0, y1) {
     obs_wpp %>%
     filter(location_name == is & year %in% y0:y1) %>%
     mutate(group = "WPP2019") %>%
-    select(-c("location_id"))
+    select(-c("location_id")),
+    fill = T
   )
 
   return(out_df)

@@ -56,16 +56,16 @@ db_pull <- function(table, iso3_list = NULL, append_names = F) {
     DBI::dbDisconnect(mydb)
     if (append_names) {
         if ("location_id" %in% names(dt)) {
-                        left_join(
+            dt <- left_join(
                 dt,
-                loc_table[, .(location_id, location_iso3)],
+                loc_table[, .(location_id, location_iso3, location_name)],
                 by = "location_id"
             )
         }
         if ("vaccine_id" %in% names(dt)) {
             dt <- left_join(
-                dt, 
-                vaccine_table[, .(vaccine_id, vaccine_short)], 
+                dt,
+                vaccine_table[, .(vaccine_id, vaccine_short)],
                 by = "vaccine_id"
             )
         }
