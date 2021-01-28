@@ -1,0 +1,32 @@
+digraph flowchart { 
+  graph [fontsize = 20, fontname = Helvetica]
+  node [style = filled, fontsize = 14, fontname = Helvetica]
+
+  # Outputs
+  node [shape = parallelogram, fillcolor = burlywood3]
+  "Calibrated demography"; "Reference coverage"; "Relative-risks"; "Imputed relative-risks";
+  "Reference impact"; "IA2030 impact";"VIMC-aligned reference impact"; 
+  "Aligned IA2030 impact"; "IA2030 coverage scenario"; "Vaccine impact data"
+
+  # Edges
+  "Vaccine impact data"->"Relative-risks"
+  "Reference coverage"->"Relative-risks"
+  "Calibrated demography"->"Relative-risks"
+
+  "Relative-risks"->"Imputed relative-risks"
+  "Calibrated demography"->"Imputed relative-risks"
+
+  "Imputed relative-risks"->"Reference impact"
+  "Reference coverage"->"Reference impact"
+  "Calibrated demography"->"Reference impact"
+
+  "Reference impact"->"VIMC-aligned reference impact"
+
+  "Imputed relative-risks"->"IA2030 impact"
+  "IA2030 coverage scenario"->"IA2030 impact"
+  "Calibrated demography"->"IA2030 impact"
+
+
+  "IA2030 impact"->"Aligned IA2030 impact"
+  "VIMC-aligned reference impact"->"Aligned IA2030 impact"
+}
