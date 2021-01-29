@@ -22,7 +22,7 @@ vimc_dt <- merge(vimc_dt, loc_table[, .(location_iso3, location_id)],
 save(vimc_dt, file = "inst/shiny/vimc.RData")
 vimc_dt[, c("vaccine_long", "vaccine_short", "cause_name") := NULL]
 vimc_dt[, c("location_name", "location_iso3") := NULL]
-vimc_dt[order(location_id, vaccine_id, age, year), 
+vimc_dt[order(location_id, vaccine_id, age, year),
         .(location_id, vaccine_id, age, year, value)]
 
 upload_object(vimc_dt, "vimc_impact")

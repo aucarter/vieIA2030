@@ -14,4 +14,8 @@ yov_mean_dt <- yov_dt[,
     .SDcols = c("coverage", "fvps", "deaths_averted", "deaths_averted_rate")
 ]
 
+setnames(yov_mean_dt, c("country"), c("location_iso3"))
+yov_mean_dt <- merge(loc_table[, .(location_id, location_iso3)], yov_mean_dt)
+yov_mean_dt <- yov_mean_dt[!is.na(deaths_averted_rate)]
+
 upload_object(yov_mean_dt, "vimc_yov_impact")
