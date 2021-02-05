@@ -1,5 +1,6 @@
 gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
-                             no_covid_effect = 2022, intro_year = 2025) {
+                             no_covid_effect = 2022, intro_year = 2025,
+                             intro_range = T) {
     # Load 2019 coverage
     load_tables("coverage_inputs")
     cov_dt <- coverage_inputs[year == 2019]
@@ -10,6 +11,7 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
 
     # Iterate through each vaccine
     dt <- rbindlist(lapply(unique(vaccine_table$vaccine_id), function(v) {
+        # TODO: Subset for regional vaccines
         v_dt <- zero_dt[vaccine_id == v][order(location_id)]
         if (length(unique(v_dt$sex_id)) > 1) {
             v_dt <- v_dt[sex_id == 2]
@@ -18,31 +20,70 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
         n_covid <- no_covid_effect - 2019
         covid_mat <- matrix(rep(v_dt$value, n_covid), ncol = n_covid)
         
-        # Linear increase to goal with zeros delayed to intro_year
+        # Increase to goal with zeros delayed to intro_year
         n_increase <- 2030 - no_covid_effect + 1
-        zero_n <- 2030 - intro_year + 1
         zero_idx <- which(v_dt$value == 0)
+        if (intro_range) {
+            # Range of intro years split up by quintile of coverage goal
+            zero_locs <- v_dt[zero_idx]$location_id
+            ordered_locs <- ia2030_dtp_goal[location_id %in% zero_locs][rev(order(value))]$location_id
+            split_locs <- split(ordered_locs, floor(5 * seq.int(0, length(ordered_locs) - 1) / length(ordered_locs)))
+            names(split_locs) <- (-2:2 + intro_year)[1:length(split_locs)]
+        } else {
+            zero_n <- 2030 - intro_year + 1
+        }
         setnames(v_dt, "value", "current")
         roc_dt <- merge(
             v_dt[, .(location_id, current)],
             ia2030_dtp_goal[, .(location_id, value)],
             by = "location_id"
         )
-        roc_dt[, n := ifelse(current == 0, zero_n, n_increase)]
-        roc_dt[, roc := (value - current) / n]
+        roc_dt[, n := n_increase]
         t_mat <- matrix(
             1:n_increase, byrow = T, ncol = n_increase, 
             nrow = nrow(roc_dt)
         )
         if (length(zero_idx > 0)) {
-            t_mat[zero_idx,] <- matrix(c(rep(0, n_increase - zero_n), 1:zero_n), 
-                nrow = length(zero_idx), ncol = n_increase, byrow = T)
+            if(intro_range) {
+                for(i in zero_idx) {
+                    i_year <- as.integer(names(split_locs)[unlist(
+                        lapply(split_locs, function(s) {
+                            v_dt[i,]$location_id %in% s
+                        })
+                    )])
+                    zero_n <- 2030 - i_year + 1
+                    t_mat[i, ] <- c(rep(0, n_increase - zero_n), 1:zero_n)
+                    roc_dt[i, n := zero_n]
+                }
+            } else {
+                t_mat[zero_idx,] <- matrix(c(rep(0, n_increase - zero_n), 1:zero_n), 
+                    nrow = length(zero_idx), ncol = n_increase, byrow = T)
+                roc_dt[zero_idx, n := zero_n]
+            }
         }
-        inc_mat <- v_dt$current + roc_dt$roc * t_mat
-       
+        # Handle regionally-specific vaccines
+        if(v %in% c(8, 10)) {
+            if(v == 8) {
+                reg_locs <- loc_table[yf == 1]$location_id
+            } else if (v == 10) {
+                reg_locs <- loc_table[je == 1]$location_id
+            }
+            reg_idx <- which(v_dt$location_id %in% reg_locs)
+            roc_dt[!reg_idx, value := current]
+        }
+        if (linear) {
+            roc_dt[, roc := ((value - current) / n)]
+            roc_dt[roc < 0, roc := 0]
+            inc_mat <- v_dt$current + roc_dt$roc * t_mat
+        } else {
+            roc_dt[, roc := log((1 - value) /(1 - current)) /  n]
+            roc_dt[roc > 0, roc := 0]
+            inc_mat <- 1 - (1 - v_dt$current) * exp(roc_dt$roc * t_mat)
+        }
         # Combine and convert to data.table
         c_mat <- cbind(covid_mat, inc_mat)
         colnames(c_mat) <- 2019:2030
+        # matplot(t(c_mat), type = "l")
         dt <- cbind(v_dt[, -c("year", "current"), with = F], c_mat)
         melt_dt <- melt(dt,
             id.vars = c("location_id", "vaccine_id", "age", "sex_id"),
