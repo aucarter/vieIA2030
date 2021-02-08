@@ -1,0 +1,16 @@
+---
+title: "Untitled"
+author: "Austin Carter"
+date: "2/7/2021"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+$$
+\text{cov}_t = 1 - (1 - \text{cov}_{t_0})\cdot\text{exp}\left(\log\left(\frac{1 - \text{cov}_T}{1 - \text{cov}_{t_0}}\right)\frac{t}{T - t_0}\right)
+$$
+where $t_0$ is the baseline year and $T$ is the target year.
