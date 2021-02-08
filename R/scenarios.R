@@ -9,9 +9,9 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
     # Could pick max difference? (most administered age)
     zero_dt <- cov_dt[age == 0]
 
-    # Iterate through each vaccine
-    dt <- rbindlist(lapply(unique(vaccine_table$vaccine_id), function(v) {
-        # TODO: Subset for regional vaccines
+    # Iterate through each vaccine (except HPV which is special)
+    vaccs <- setdiff(unique(vaccine_table$vaccine_id), 2)
+    dt <- rbindlist(lapply(vaccs, function(v) {
         v_dt <- zero_dt[vaccine_id == v][order(location_id)]
         if (length(unique(v_dt$sex_id)) > 1) {
             v_dt <- v_dt[sex_id == 2]
@@ -23,15 +23,22 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
         # Increase to goal with zeros delayed to intro_year
         n_increase <- 2030 - no_covid_effect + 1
         zero_idx <- which(v_dt$value == 0)
+        # Change intro_year to 2024 for YF
+        if (v == 8) {
+            temp_intro_year <- intro_year - 1
+        } else {
+            temp_intro_year <- intro_year
+        }
         if (intro_range) {
             # Range of intro years split up by quintile of coverage goal
             zero_locs <- v_dt[zero_idx]$location_id
             ordered_locs <- ia2030_dtp_goal[location_id %in% zero_locs][rev(order(value))]$location_id
             split_locs <- split(ordered_locs, floor(5 * seq.int(0, length(ordered_locs) - 1) / length(ordered_locs)))
-            names(split_locs) <- (-2:2 + intro_year)[1:length(split_locs)]
+            names(split_locs) <- (-2:2 + temp_intro_year)[1:length(split_locs)]
         } else {
-            zero_n <- 2030 - intro_year + 1
+            zero_n <- 2030 - temp_intro_year + 1
         }
+
         setnames(v_dt, "value", "current")
         roc_dt <- merge(
             v_dt[, .(location_id, current)],
@@ -44,8 +51,8 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
             nrow = nrow(roc_dt)
         )
         if (length(zero_idx > 0)) {
-            if(intro_range) {
-                for(i in zero_idx) {
+            if (intro_range) {
+                for (i in zero_idx) {
                     i_year <- as.integer(names(split_locs)[unlist(
                         lapply(split_locs, function(s) {
                             v_dt[i,]$location_id %in% s
@@ -56,21 +63,46 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
                     roc_dt[i, n := zero_n]
                 }
             } else {
-                t_mat[zero_idx,] <- matrix(c(rep(0, n_increase - zero_n), 1:zero_n), 
+                t_mat[zero_idx,] <- matrix(
+                    c(rep(0, n_increase - zero_n), 1:zero_n),
                     nrow = length(zero_idx), ncol = n_increase, byrow = T)
                 roc_dt[zero_idx, n := zero_n]
             }
         }
         # Handle regionally-specific vaccines
-        if(v %in% c(8, 10)) {
-            if(v == 8) {
+        if (v %in% c(8:10)) {
+            if (v == 8) {
                 reg_locs <- loc_table[yf == 1]$location_id
+                # Remove Argentina and Kenya
+                reg_locs <- setdiff(reg_locs, c(7, 90))
+            } else if (v == 9){
+                reg_locs <- loc_table[mena == 1]$location_id
             } else if (v == 10) {
                 reg_locs <- loc_table[je == 1]$location_id
+                # Remove Russia and Pakistan
+                reg_locs <- setdiff(reg_locs, c(131, 144))
             }
             reg_idx <- which(v_dt$location_id %in% reg_locs)
             roc_dt[!reg_idx, value := current]
         }
+        # Do no introduce HepB or BCG in any countries
+        if (v %in% c(1, 14)) {
+            roc_dt[zero_idx, value := current]
+        }
+        # Hold medium/low BCG coverage constant in France, Ireland, Sweden
+        if (v == 14) {
+            hold_locs <- c(63, 83, 168)
+            hold_idx <- which(v_dt$location_id %in% hold_locs)
+            roc_dt[hold_idx, value := current]
+        }
+        # Keep current JE levels in countries with only subnational endemicity
+        # Indonesia, India, and Malaysia
+        if (v == 10) {
+            hold_locs <- c(79, 80, 104)
+            hold_idx <- which(v_dt$location_id %in% hold_locs)
+            roc_dt[hold_idx, value := current]
+        }
+        # Linear vs. non-linear
         if (linear) {
             roc_dt[, roc := ((value - current) / n)]
             roc_dt[roc < 0, roc := 0]
@@ -91,6 +123,9 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
         )
         return(melt_dt)
     }))
+
+    ## Add HPV
+    dt <- rbind(dt, hpv_target, use.names = T)
     return(dt)
 }
 
