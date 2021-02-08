@@ -1,4 +1,4 @@
-locs <- c(0, 98, 194)
+locs <- c(0, 112, 194)
 vaccs <- c(0, 10, 14)
 plot(c(locs[1], locs[3]), c(vaccs[1], vaccs[3]), type = "n",
      xaxt = 'n', yaxt = 'n', bty  = 'n',
