@@ -30,7 +30,8 @@ Imports:
     rnaturalearthdata,
     rgeos,
     utils,
-    viridis
+    viridis,
+    bigrquery
 Suggests: 
     knitr,
     rmarkdown,
