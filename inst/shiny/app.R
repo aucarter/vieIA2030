@@ -1,7 +1,7 @@
 library(shiny)
 library(viridis)
 
-load("vimc.RData")
+vimc_dt <- loadRDS("vimc.rds")
 locs <- sort(unique(vimc_dt$location_name))
 vaccs <- sort(unique(vimc_dt$vaccine_long))
 # Define UI for application
