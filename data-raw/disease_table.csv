@@ -1,0 +1,15 @@
+﻿disease,disease_long,vimc
+HepB,Hepatitis B,1
+HPV,Human papillomavirus,1
+Rubella,Rubella,1
+Rota,Rotavirus,1
+Measles,Measles,1
+PCV,Pneumococcal,1
+Hib,Haemophilus influenzae type b,1
+YF,Yellow Fever,1
+MenA,Meningitis A,1
+JE,Japanese encephalitis,1
+D,Diphtheria,0
+T,Tetanus,0
+P,Pertussis,0
+TB,Tuberculosis,0
