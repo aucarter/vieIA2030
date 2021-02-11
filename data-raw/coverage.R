@@ -1,73 +1,18 @@
-## Pull in various vaccine coverage data from the WHO website
-calc_total_cov <- function(admin_dt) {
-    full_dt <- CJ(
-        age = 0:95, year = 2000:2095, activity_type = c("routine", "campaign")
-    )
-    merge_dt <- merge(
-        full_dt,
-        admin_dt[, .(activity_type, age, year, value)],
-        by = c("activity_type", "age", "year"), all.x = T
-    )
-    merge_dt[is.na(value), value := 0]
-    mat <- as.matrix(
-        dcast(
-            merge_dt[activity_type == "routine"],
-            age ~ year, value.var = "value"
-        )
-    )[, -1]
-    nrow <- dim(mat)[1]
-    ncol <- dim(mat)[2]
-
-    # Routine -- take the max
-    for (i in (ncol - 1):1) {
-        vec <- mat[, i]
-        for (j in (i + 1):min(nrow, ncol)) {
-            mat[max(1, (j - i + 1)):nrow, j] <- pmax(
-                mat[max(1, (j - i + 1)):nrow, j],
-                vec[1:min(nrow, (nrow - j + i))]
-            )
-        }
-    }
-
-    c_mat <- as.matrix(
-        dcast(
-            merge_dt[activity_type == "campaign"],
-            age ~ year, value.var = "value"
-        )
-    )[, -1]
-    # Campaign - Assume independence
-    for (i in (ncol - 1):1) {
-        vec <- c_mat[, i]
-        for (j in (i + 1):min(nrow, ncol)) {
-            mat[max(1, (j - i + 1)):nrow, j] <- 1 -
-                (1 - mat[max(1, (j - i + 1)):nrow, j]) *
-                (1 - vec[1:min(nrow, (nrow - j + i))])
-        }
-    }
-    dt <- melt(
-        as.data.table(cbind(age = 0:95, mat)),
-        id.vars = "age", variable.name = "year"
-    )
-    dt[, year := as.integer(as.character(year))]
-
-    return(dt[])
-}
-
 prep_vimc_coverage_data <- function() {
     dt <- fread(
         system.file("extdata", "vimc_coverage.csv", package = "vieIA2030")
     )
-    setnames(
-        dt,
-        c("country", "disease"),
-        c("location_iso3", "vaccine_short")
-    )
+    setnames(dt,"country", "location_iso3")
     vimc_dt <- dt[, lapply(.SD, sum),
-             by = .(location_iso3, vaccine_short, activity_type, year, age),
+             by = .(location_iso3, disease, vaccine, activity_type, year, age, gender),
              .SDcols = c("fvps_adjusted", "cohort_size")]
-    vimc_dt[, value := fvps_adjusted / cohort_size]
-    vimc_dt[, c("fvps_adjusted", "cohort_size") := NULL]
-    vimc_dt[, sex_id := ifelse(vaccine_short == "HPV", 2, 3)]
+    vimc_dt[, coverage := fvps_adjusted / cohort_size]
+    vimc_dt[, c("disease") := NULL]
+    vimc_dt <- merge(vimc_dt,
+        data.table(gender = c("Both", "Female", "Male"), sex_id = c(3, 2, 1)),
+        by = "gender")
+    vimc_dt[, gender := NULL]
+    setnames(vimc_dt, "fvps_adjusted", "fvps")
 
     return(vimc_dt[])
 }
@@ -87,7 +32,7 @@ prep_wuenic_data <- function() {
             names_transform = list(year = as.integer)
         )
     })
-    file.remove(xls)
+    temp <- file.remove(xls)
 
     dt <- rbindlist(data_list, fill = T)
     dt[, Cname := NULL]
@@ -97,8 +42,8 @@ prep_wuenic_data <- function() {
     wuenic_dt[, wuenic_name := NULL]
 
     wuenic_dt[is.na(value), value := 0]
-    wuenic_dt[, value := value / 100]
-    wuenic_dt[, c("age", "activity_type", "sex_id") := .(0, "routine", 3)]
+    wuenic_dt[, coverage := value / 100]
+    wuenic_dt[, c("age", "activity_type", "sex_id", "value") := .(0, "routine", 3, NULL)]
 
     return(wuenic_dt[])
 }
@@ -112,24 +57,24 @@ prep_reported_data <- function() {
     dt <- suppressWarnings(
         data.table(readxl::read_excel(path = xls, sheet = sheets[2]))
     )
-    file.remove(xls)
+    temp <- file.remove(xls)
     dt[, c("WHO_REGION", "Continent", "Asterisc") := NULL]
     setnames(
         dt,
         c("ISO_code", "Vaccine", "Year", "Percent_covrage"),
-        c("location_iso3", "vaccine_short", "year", "value")
+        c("location_iso3", "vaccine", "year", "value")
     )
-    dt <- dt[vaccine_short %in% c("JapEnc", "MenA")]
-    dt[vaccine_short == "JapEnc", vaccine_short := "JE"]
+    dt <- dt[vaccine %in% c("JapEnc", "MenA")]
+    dt[vaccine == "JapEnc", vaccine := "JE"]
     dt[, sex_id := 3]
-    dt[, value := value / 100]
-    dt <- dt[, .(location_iso3, sex_id, year, vaccine_short, value)]
+    dt[, coverage := value / 100]
+    dt <- dt[, .(location_iso3, sex_id, year, vaccine, coverage)]
     je_dt <- rbindlist(lapply(0:14, function(a) {
-        copy_dt <- copy(dt[vaccine_short == "JE"])
+        copy_dt <- copy(dt[vaccine == "JE"])
         copy_dt[, age := a]
     }))
     mena_dt <- rbindlist(lapply(0:29, function(a) {
-        copy_dt <- copy(dt[vaccine_short == "MenA"])
+        copy_dt <- copy(dt[vaccine == "MenA"])
         copy_dt[, age := a]
     }))
     dt <- rbind(je_dt, mena_dt)
@@ -144,17 +89,17 @@ prep_hpv_data <- function() {
     download.file(url, xls, quiet = T, mode = 'wb')
     sheets <- readxl::excel_sheets(xls)
     dt <- data.table(readxl::read_excel(path = xls, sheet = sheets[2]))
-    file.remove(xls)
+    temp <- file.remove(xls)
 
     # NOTE: We are subsetting to only those received a complete dosage!!
     dt <- dt[grepl("prHPVc", indicator)]
-    dt[, vaccine_short := "HPV"]
+    dt[, vaccine := "HPV"]
     setnames(dt, "iso3code", "location_iso3")
     dt[, sex_id := ifelse(sex == "Male", 1, 2)]
     dt[, value_no_pct := tstrsplit(value_str, "%")[[1]]]
     dt[value_no_pct == "-", value_no_pct := "0"]
-    dt[, value := as.numeric(value_no_pct) / 100]
-    dt <- dt[, .(location_iso3, sex_id, year, vaccine_short, value)]
+    dt[, coverage := as.numeric(value_no_pct) / 100]
+    dt <- dt[, .(location_iso3, sex_id, year, vaccine, coverage)]
     # Give the same coverage level to age 8 through 13
     dt <- rbindlist(lapply(8:13, function(a) {
         copy_dt <- copy(dt)
@@ -173,50 +118,36 @@ hpv_dt <- prep_hpv_data()
 non_vimc_dt <- rbindlist(
     list(wuenic_dt, reported_dt, hpv_dt), use.names = T
 )
-for (v in unique(non_vimc_dt$vaccine_short)) {
+# Sub in WUENIC data for locations not in VIMC
+for (v in unique(non_vimc_dt$vaccine)) {
     non_vimc_dt <- non_vimc_dt[
-        !(vaccine_short == v &
-        location_iso3 %in% unique(vimc_dt[vaccine_short == v]$location_iso3)
+        !(vaccine == v &
+        location_iso3 %in% unique(vimc_dt[vaccine == v]$location_iso3)
         )
     ]
 }
-all_dt <- rbind(vimc_dt, non_vimc_dt)
+# Merge on cohort size and calculate fvps
+load_tables("wpp_input")
+both_dt <- wpp_input[, .(cohort_size = sum(nx)), by = .(location_id, year, age)]
+non_vimc_dt <- merge(non_vimc_dt, loc_table[, .(location_id, location_iso3)])
+non_vimc_dt <- merge(non_vimc_dt, both_dt, by = c("location_id", "year", "age"))
+non_vimc_dt[, fvps := coverage * cohort_size]
 
-## Calculate total coverage for every vaccine, location, sex
-coverage <- rbindlist(lapply(unique(all_dt$vaccine_short), function(v) {
-    v_dt <- all_dt[vaccine_short == v]
-    vacc_dt <- rbindlist(lapply(unique(v_dt$location_iso3), function(l) {
-        l_dt <- v_dt[location_iso3 == l]
-        loc_dt <- rbindlist(lapply(unique(l_dt$sex_id), function(s) {
-            s_dt <- l_dt[sex_id == s]
-            sex_dt <- calc_total_cov(s_dt)
-            sex_dt[, sex_id := s]
-        }))
-        loc_dt[, location_iso3 := l]
-        return(loc_dt)
-    }))
-    vacc_dt <- vacc_dt[, vaccine_short := v]
-    # Set a cap on BCG effect at age 15
-    if (v == "BCG") {
-        vacc_dt[age >= 15, value := 0]
-    }
-    return(vacc_dt)
-}))
-
-## Merge on location_id
-coverage <- merge(
-    coverage, loc_table[, .(location_iso3, location_id)]
-)
+vimc_dt <- merge(vimc_dt, loc_table[, .(location_id, location_iso3)])
+coverage <- rbind(vimc_dt, non_vimc_dt)
 coverage[, location_iso3 := NULL]
 
 ## Merge on vaccine_id
 coverage <- merge(
-    coverage, vaccine_table[, .(vaccine_short, vaccine_id)]
+    coverage, strata_table[, .(vaccine, activity_type, strata_id)],
+    by = c("vaccine", "activity_type")
 )
-coverage[, vaccine_short := NULL]
+coverage[, c("vaccine", "activity_type") := NULL]
 coverage[, age := as.integer(age)]
 coverage[, sex_id := as.integer(sex_id)]
-coverage <- coverage[order(location_id, vaccine_id, year, age, sex_id),
-                 .(location_id, vaccine_id, year, age, sex_id, value)]
+coverage <- coverage[order(location_id, strata_id, year, age, sex_id),
+                 .(location_id, strata_id, year, age, sex_id, fvps, coverage)]
 
-upload_object(coverage, "coverage_inputs")
+coverage <- coverage[fvps != 0]
+
+upload_object(coverage, "coverage")
