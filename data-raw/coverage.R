@@ -139,14 +139,14 @@ coverage[, location_iso3 := NULL]
 
 ## Merge on vaccine_id
 coverage <- merge(
-    coverage, strata_table[, .(vaccine, activity_type, strata_id)],
+    coverage, v_at_table[, .(vaccine, activity_type, v_at_id)],
     by = c("vaccine", "activity_type")
 )
 coverage[, c("vaccine", "activity_type") := NULL]
 coverage[, age := as.integer(age)]
 coverage[, sex_id := as.integer(sex_id)]
-coverage <- coverage[order(location_id, strata_id, year, age, sex_id),
-                 .(location_id, strata_id, year, age, sex_id, fvps, coverage)]
+coverage <- coverage[order(location_id, v_at_id, year, age, sex_id),
+                 .(location_id, v_at_id, year, age, sex_id, fvps, coverage)]
 
 coverage <- coverage[fvps != 0]
 
