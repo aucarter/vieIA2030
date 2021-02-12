@@ -1,18 +1,22 @@
 #' Calculate total coverage for every vaccine, location, sex
 total_coverage <- function(coverage) {
-    cov_dt <- merge(coverage, strata_table)
+    cov_dt <- merge(coverage, v_at_table)
     total_coverage <- rbindlist(lapply(unique(cov_dt$vaccine), function(v) {
-        print(v)
         v_dt <- cov_dt[vaccine == v]
-        vacc_dt <- rbindlist(lapply(unique(v_dt$location_id), function(l) {
-            l_dt <- v_dt[location_id == l]
-            loc_dt <- rbindlist(lapply(unique(l_dt$sex_id), function(s) {
-                dt <- l_dt[sex_id == s]
-                total_dt <- calc_total_cov(dt)
-                total_dt[, sex_id := s]
+        vacc_dt <- rbindlist(lapply(unique(v_dt$activity_type), function(a) {
+            a_dt <- v_dt[activity_type == a]
+            act_dt <- rbindlist(lapply(unique(a_dt$location_id), function(l) {
+                l_dt <- v_dt[location_id == l]
+                loc_dt <- rbindlist(lapply(unique(l_dt$sex_id), function(s) {
+                    dt <- l_dt[sex_id == s]
+                    total_dt <- calc_total_cov(dt)
+                    total_dt[, sex_id := s]
+                }))
+                loc_dt[, location_id := l]
+                return(loc_dt)
             }))
-            loc_dt[, location_id := l]
-            return(loc_dt)
+            act_dt[, activity_type := a]
+            return(act_dt)
         }))
         vacc_dt <- vacc_dt[, vaccine := v]
         # Set a cap on BCG effect at age 15
