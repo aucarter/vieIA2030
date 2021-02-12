@@ -34,12 +34,12 @@ gbd_estimates <- gbd_estimates[cause_name %in% cause_subset]
 ## Subset to rate
 gbd_estimates <- gbd_estimates[metric_id == 3]
 gbd_estimates[, metric_id := NULL]
-
+setnames(gbd_estimates, "cause_name", "disease_long")
 ## Merge on associated vaccine info
 gbd_estimates <- merge(
     gbd_estimates,
-    vaccine_table[, .(vaccine_id, cause_name)],
-    by = "cause_name"
+    disease_table[, .(disease, disease_long)],
+    by = "disease_long"
 )
 
 ## Merge on location_id
@@ -49,6 +49,6 @@ gbd_estimates <- merge(
     by = "location_name"
 )
 
-gbd_estimates[, c("location_name", "cause_name") := NULL]
+gbd_estimates[, c("location_name", "disease_long") := NULL]
 
 save(gbd_estimates, file = "inst/extdata/gbd19_estimates.RData")
