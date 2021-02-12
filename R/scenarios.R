@@ -2,29 +2,31 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
                              no_covid_effect = 2022, intro_year = 2025,
                              intro_range = T) {
     # Load 2019 coverage
-    load_tables("coverage_inputs")
-    cov_dt <- coverage_inputs[year == 2019]
-
-    # Need to get explicit about age of intro here (missing 2)
-    # Could pick max difference? (most administered age)
-    zero_dt <- cov_dt[age == 0]
+    load_tables("coverage")
+    cov_dt <- coverage[year == 2019]
 
     # Iterate through each vaccine (except HPV which is special)
-    vaccs <- setdiff(unique(vaccine_table$vaccine_id), 2)
+    vaccs <- setdiff(unique(v_at_table[activity_type == "routine"]$v_at_id), 2)
     dt <- rbindlist(lapply(vaccs, function(v) {
-        v_dt <- zero_dt[vaccine_id == v][order(location_id)]
+        v_dt <- cov_dt[v_at_id == v][order(location_id)]
         if (length(unique(v_dt$sex_id)) > 1) {
             v_dt <- v_dt[sex_id == 2]
         }
+        missing_locs <- setdiff(loc_table$location_id, v_dt$location_id)
+        missing_dt <- data.table(location_id = missing_locs, coverage = 0,
+            v_at_id = v, year = 2019, age = 0, sex_id = unique(v_dt$sex_id),
+            fvps = 0)
+        v_dt <- rbind(v_dt, missing_dt, use.names = T)
+        v_dt <- v_dt[order(location_id)]
         # Repeat out to 'no covid effect' year
         n_covid <- no_covid_effect - 2019
-        covid_mat <- matrix(rep(v_dt$value, n_covid), ncol = n_covid)
+        covid_mat <- matrix(rep(v_dt$coverage, n_covid), ncol = n_covid)
         
         # Increase to goal with zeros delayed to intro_year
         n_increase <- 2030 - no_covid_effect + 1
-        zero_idx <- which(v_dt$value == 0)
+        zero_idx <- which(v_dt$coverage == 0)
         # Change intro_year to 2024 for YF
-        if (v == 8) {
+        if (v == 19) {
             temp_intro_year <- intro_year - 1
         } else {
             temp_intro_year <- intro_year
@@ -39,7 +41,7 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
             zero_n <- 2030 - temp_intro_year + 1
         }
 
-        setnames(v_dt, "value", "current")
+        setnames(v_dt, "coverage", "current")
         roc_dt <- merge(
             v_dt[, .(location_id, current)],
             ia2030_dtp_goal[, .(location_id, value)],
@@ -70,14 +72,14 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
             }
         }
         # Handle regionally-specific vaccines
-        if (v %in% c(8:10)) {
-            if (v == 8) {
+        if (v %in% c(19, 12, 7)) {
+            if (v == 19) {
                 reg_locs <- loc_table[yf == 1]$location_id
                 # Remove Argentina and Kenya
                 reg_locs <- setdiff(reg_locs, c(7, 90))
-            } else if (v == 9){
+            } else if (v == 12){
                 reg_locs <- loc_table[mena == 1]$location_id
-            } else if (v == 10) {
+            } else if (v == 7) {
                 reg_locs <- loc_table[je == 1]$location_id
                 # Remove Russia and Pakistan
                 reg_locs <- setdiff(reg_locs, c(131, 144))
@@ -86,18 +88,18 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
             roc_dt[!reg_idx, value := current]
         }
         # Do no introduce HepB or BCG in any countries
-        if (v %in% c(1, 14)) {
+        if (v %in% c(3, 21)) {
             roc_dt[zero_idx, value := current]
         }
         # Hold medium/low BCG coverage constant in France, Ireland, Sweden
-        if (v == 14) {
+        if (v == 21) {
             hold_locs <- c(63, 83, 168)
             hold_idx <- which(v_dt$location_id %in% hold_locs)
             roc_dt[hold_idx, value := current]
         }
         # Keep current JE levels in countries with only subnational endemicity
         # Indonesia, India, and Malaysia
-        if (v == 10) {
+        if (v == 7) {
             hold_locs <- c(79, 80, 104)
             hold_idx <- which(v_dt$location_id %in% hold_locs)
             roc_dt[hold_idx, value := current]
@@ -116,9 +118,9 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
         c_mat <- cbind(covid_mat, inc_mat)
         colnames(c_mat) <- 2019:2030
         # matplot(t(c_mat), type = "l")
-        dt <- cbind(v_dt[, -c("year", "current"), with = F], c_mat)
+        dt <- cbind(v_dt[, -c("year", "current", "fvps"), with = F], c_mat)
         melt_dt <- melt(dt,
-            id.vars = c("location_id", "vaccine_id", "age", "sex_id"),
+            id.vars = c("location_id", "v_at_id", "age", "sex_id"),
             variable.name = "year"
         )
         return(melt_dt)
