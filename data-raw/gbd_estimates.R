@@ -21,4 +21,4 @@ gbd_estimates <- gbd_estimates[
     .(location_id, disease, sex_id, age, year, value)
 ]
 gbd_estimates <- merge(gbd_estimates, d_v_at_table, by = "disease")
-upload_object(gbd_estimates, "gbd_vaccine_deaths")
+upload_object(gbd_estimates, "gbd_strata_deaths")
