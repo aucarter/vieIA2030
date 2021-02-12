@@ -1,70 +1,149 @@
-{"HepB":{
-    "alpha": 1,
-    "beta": 1,
-    "age_knots" : [2, 5, 10, 25]
-},
-"HPV":{
-    "alpha": 1,
-    "beta": 1,
-    "age_knots" : [2, 5, 10, 25]
-},
-"Rubella":{
-    "alpha": 1,
-    "beta": 1,
-    "age_knots" : [2, 5, 10, 25]
-},
-"Rota":{
-    "alpha": 1,
-    "beta": 1,
-    "age_knots" : [2, 5, 10, 25]
-},
-"Measles":{
-    "alpha": 1,
-    "beta": 1,
-    "age_knots" : [2, 5, 10, 25]
-},
-"PCV":{
-    "alpha": 1,
-    "beta": 1,
-    "age_knots" : [2, 5, 10, 25]
-},
-"Hib":{
-    "alpha": 1,
-    "beta": 1,
-    "age_knots" : [2, 5, 10, 25]
-},
-"YF":{
-    "alpha": 1,
-    "beta": 1,
-    "age_knots" : [2, 5, 10, 25]
-},
-"MenA":{
-    "alpha": 1,
-    "beta": 1,
-    "age_knots" : [2, 5, 10, 25]
-},
-"JE":{
-    "alpha": 1,
-    "beta": 1,
-    "age_knots" : [2, 5, 10, 25]
-},
-"D":{
-    "alpha": 1,
-    "beta": 1,
-    "age_knots" : [2, 5, 10, 25]
-},
-"P":{
-    "alpha": 1,
-    "beta": 1,
-    "age_knots" : [2, 5, 10, 25]
-},
-"T":{
-    "alpha": 1,
-    "beta": 1,
-    "age_knots" : [2, 5, 10, 25]
-},
-"BCG":{
-    "alpha": 1,
-    "beta": 1,
-    "age_knots" : [2, 5, 10, 25]
-}}
+{
+  "1": {
+    "vaccine": ["HPV"],
+    "activity_type": ["campaign"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "2": {
+    "vaccine": ["HPV"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "3": {
+    "vaccine": ["HepB"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "4": {
+    "vaccine": ["HepB_BD"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "5": {
+    "vaccine": ["Hib3"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "6": {
+    "vaccine": ["JE"],
+    "activity_type": ["campaign"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "7": {
+    "vaccine": ["JE"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "8": {
+    "vaccine": ["MCV1"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "9": {
+    "vaccine": ["MCV2"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "10": {
+    "vaccine": ["Measles"],
+    "activity_type": ["campaign"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "11": {
+    "vaccine": ["MenA"],
+    "activity_type": ["campaign"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "12": {
+    "vaccine": ["MenA"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "13": {
+    "vaccine": ["PCV3"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "14": {
+    "vaccine": ["RCV2"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "15": {
+    "vaccine": ["Rota"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "16": {
+    "vaccine": ["Rubella"],
+    "activity_type": ["campaign"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "17": {
+    "vaccine": ["Rubella"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "18": {
+    "vaccine": ["YF"],
+    "activity_type": ["campaign"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "19": {
+    "vaccine": ["YF"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "20": {
+    "vaccine": ["DTP3"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  },
+  "21": {
+    "vaccine": ["BCG"],
+    "activity_type": ["routine"],
+    "alpha": [1],
+    "beta": [1],
+    "age_knots": [2, 5, 10, 25]
+  }
+}
