@@ -7,6 +7,6 @@ non_vimc <- data.table(
     vaccine = c("DTP3", "BCG"),
     activity_type = "routine"
 )
-strata_table <- rbind(vimc, non_vimc)
-strata_table[, strata_id := .I]
-usethis::use_data(strata_table, overwrite = TRUE)
+v_at_table <- rbind(vimc, non_vimc)
+v_at_table[, v_at_id := .I]
+usethis::use_data(v_at_table, overwrite = TRUE)
