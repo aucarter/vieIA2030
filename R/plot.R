@@ -83,3 +83,26 @@ plot_age_year <- function(dt, log_transform = F, value_name = "") {
         theme(text = element_text(size = 20))
     print(gg)
 }
+
+plot_strata_fit <- function(pred_all) {
+    pdf("plots/strata_fit.pdf")
+    for(s in unique(pred_all[!(d_v_at_id %in% 20:23)]$d_v_at_id)) {
+        print(s)
+        plot_dt <- pred_all[d_v_at_id == s & strata_deaths_averted > 0 & averted > 0]
+        min_val <- min(c(plot_dt$strata_deaths_averted, plot_dt$averted))
+        s_title <- paste(unlist(d_v_at_table[d_v_at_id  == s, .(vaccine, activity_type)]), collapse = " ")
+        gg <- ggplot(plot_dt, aes(x = strata_deaths_averted, y = averted, color = age + 1)) +
+            geom_point(size = 0.2, alpha = 0.5) +
+                    viridis::scale_color_viridis(
+                    option = "viridis",
+                    direction = -1,
+                    trans = "log10") +
+            geom_abline(slope = 1) + expand_limits(x = min_val, y = min_val) +
+            scale_x_continuous(trans='log10') +
+            scale_y_continuous(trans='log10') +
+            coord_fixed() + ggtitle(s_title) + theme_bw() +
+            xlab("Observed") + ylab("Predicted")
+        print(gg)
+    }
+    dev.off()
+}

@@ -4,26 +4,7 @@ devtools::load_all()
 ## Predict all and investigate results
 params <- jsonlite::fromJSON("params.json")
 pred_all <- impute_all_rr(params)
-pred_all[, error := strata_deaths_averted - averted]
-pdf("plots/strata_fit.pdf")
-for(s in unique(pred_all[!(strata_id %in% )]$strata_id)) {
-    print(s)
-    plot_dt <- pred_all[strata_id == s & strata_deaths_averted > 0 & averted > 0]
-    min_val <- min(c(plot_dt$strata_deaths_averted, plot_dt$averted))
-    gg <- ggplot(plot_dt, aes(x = strata_deaths_averted, y = averted, color = age + 1)) +
-        geom_point(size = 0.2, alpha = 0.5) +
-                viridis::scale_color_viridis(
-                option = "viridis",
-                direction = -1,
-                trans = "log10") +
-        geom_abline(slope = 1) + expand_limits(x = min_val, y = min_val) +
-        scale_x_continuous(trans='log10') +
-        scale_y_continuous(trans='log10') +
-        coord_fixed() + ggtitle(v) + theme_bw() +
-        xlab("Observed") + ylab("Predicted")
-    print(gg)
-}
-dev.off()
+plot_strata_fit(pred_all)
 
 
 calc_mse <- function(dt) {
