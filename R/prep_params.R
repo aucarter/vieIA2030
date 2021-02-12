@@ -1,11 +1,12 @@
 prep_params <- function() {
-    params_list <- lapply(strata_table$strata_id, function(id) {
+    params_list <- lapply(d_v_at_table$d_v_at_id, function(id) {
         list(
-            vaccine = strata_table[strata_id == id]$vaccine,
-            activity_type = strata_table[strata_id == id]$activity_type,
+            disease = d_v_at_table[d_v_at_id == id]$disease,
+            vaccine = d_v_at_table[d_v_at_id == id]$vaccine,
+            activity_type = d_v_at_table[d_v_at_id == id]$activity_type,
             alpha = 1, beta = 1, age_knots = c(2, 5, 10, 25)
         )
     })
-    names(params_list) <- strata_table$strata_id
+    names(params_list) <- d_v_at_table$d_v_at_id
     jsonlite::write_json(params_list, "params.json", pretty = T)
 }
