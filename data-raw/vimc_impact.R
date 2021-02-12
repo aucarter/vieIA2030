@@ -9,12 +9,12 @@ vimc_impact <- dt[order(
 # vimc_impact <- vimc_impact[!is.na(deaths_averted) & deaths_averted > 0]
 
 # Convert to strata_id and location_id to save space
-vimc_dt <- merge(vimc_impact, strata_table, by = c("disease", "vaccine", "activity_type"))
+vimc_dt <- merge(vimc_impact, d_v_at_table, by = c("disease", "vaccine", "activity_type"))
 vimc_dt <- merge(vimc_dt, loc_table[, .(location_iso3, location_id)],
                  by = "location_iso3")
 
 saveRDS(vimc_dt, "inst/shiny/vimc.rds")
-vimc_dt <- vimc_dt[order(location_id, strata_id, age, year),
-        .(location_id, strata_id, age, year, deaths_averted)]
+vimc_dt <- vimc_dt[order(location_id, d_v_at_id, age, year),
+        .(location_id, d_v_at_id, age, year, deaths_averted)]
 
 upload_object(vimc_dt, "vimc_impact")
