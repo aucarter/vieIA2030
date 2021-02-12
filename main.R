@@ -4,13 +4,13 @@ devtools::load_all()
 ## Predict all and investigate results
 params <- jsonlite::fromJSON("params.json")
 pred_all <- impute_all_rr(params)
-pred_all[, error := vaccine_deaths_averted - averted]
-pdf("plots/vacc_fit.pdf")
-for(v in unique(pred_all[!(vaccine_short %in% c("D", "T", "P", "BCG"))]$vaccine_short)) {
-    print(v)
-    plot_dt <- pred_all[vaccine_short == v & vaccine_deaths_averted > 0 & averted > 0]
-    min_val <- min(c(plot_dt$vaccine_deaths_averted, plot_dt$averted))
-    gg <- ggplot(plot_dt, aes(x = vaccine_deaths_averted, y = averted, color = age + 1)) +
+pred_all[, error := strata_deaths_averted - averted]
+pdf("plots/strata_fit.pdf")
+for(s in unique(pred_all[!(strata_id %in% )]$strata_id)) {
+    print(s)
+    plot_dt <- pred_all[strata_id == s & strata_deaths_averted > 0 & averted > 0]
+    min_val <- min(c(plot_dt$strata_deaths_averted, plot_dt$averted))
+    gg <- ggplot(plot_dt, aes(x = strata_deaths_averted, y = averted, color = age + 1)) +
         geom_point(size = 0.2, alpha = 0.5) +
                 viridis::scale_color_viridis(
                 option = "viridis",
@@ -27,7 +27,7 @@ dev.off()
 
 
 calc_mse <- function(dt) {
-    dt[, error := vaccine_deaths_averted - averted]
+    dt[, error := strata_deaths_averted - averted]
     mse <- mean(dt$error^2, na.rm = T)
 
     return(mse)
