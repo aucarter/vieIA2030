@@ -1,18 +1,22 @@
 
 ## Pull coverage
 devtools::load_all()
-load_tables("coverage_inputs")
-cov_dt <- coverage_inputs[vaccine_id %in% c(7, 11) & age == 0 & year < 2020]
-dt <- merge(cov_dt, vaccine_table[, .(vaccine_id, vaccine_short)])
-cast_dt <- dcast(dt, location_id + year ~ vaccine_short, value.var = "value")
+load_tables("coverage")
+cov_dt <- coverage[strata_id %in% c(5, 20) & age == 0 & year < 2020]
+dt <- merge(cov_dt, strata_table[, .(strata_id, vaccine)])
+cast_dt <- dcast(dt, location_id + year ~ vaccine, value.var = "coverage")
+cast_dt[is.na(Hib3), Hib3 := 0]
 
 ## Hib to DTP3 ratio by year post Hib intro
-intro_locs <- unique(cast_dt[Hib == 0]$location_id)
-pos_dt <- cast_dt[(Hib > 0 & D > 0) & location_id %in% intro_locs]
+intro_locs <- unique(cast_dt[Hib3 == 0]$location_id)
+pos_dt <- cast_dt[(Hib3 > 0 & DTP3 > 0) & location_id %in% intro_locs]
 pos_dt[, hib_intro := min(year), by = location_id]
 pos_dt[, years_intro := year - hib_intro + 1]
-pos_dt[, ratio := Hib / D]
+pos_dt[, ratio := Hib3 / DTP3]
 
+in_locs <- unique(pos_dt[Hib3 > 0 & year == 2019]$location_id)
+out_locs <- setdiff(loc_table$location_id, in_locs)
+loc_table[location_id %in% out_locs]$location_name
 ## Plot
 pdf("plots/hib_scaleup_data.pdf")
 gg <- ggplot(pos_dt, aes(x = years_intro, y = ratio, group = location_id)) +
