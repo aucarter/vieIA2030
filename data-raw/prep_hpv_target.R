@@ -44,7 +44,7 @@ interp_dt <- rbindlist(lapply(1:4, function(i) {
     i_dt[value < 0.9 & value > 0, value := value + (0.9 - value) / 4 * i]
 }))
 hpv_target <- rbind(hpv_target, interp_dt)
-hpv_target[, vaccine_id := 2]
+hpv_target[, v_at_id := 2]
 
 usethis::use_data(hpv_target, overwrite = TRUE)
 
