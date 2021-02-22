@@ -4,7 +4,7 @@ calc_scenario_impact <- function(scenario_dt, impact_dt) {
     scenario_dt[, v_at_id := NULL]
     dt <- merge(
         impact_dt[, .(location_id, disease, vaccine, activity_type, impact_factor)],
-        fvp_dt[fvps > 0, .(location_id, year, age, vaccine, activity_type, fvps)],
+        scenario_dt[fvps > 0, .(location_id, year, age, vaccine, activity_type, fvps)],
         by = c("location_id", "vaccine", "activity_type"), all.y = T,
         allow.cartesian = T
     )
