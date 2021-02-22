@@ -5,7 +5,7 @@
     "activity_type": ["campaign"],
     "alpha": [1],
     "beta": [1],
-    "age_knots": [2, 5, 10, 25]
+    "age_knots": [12, 15, 20, 35]
   },
   "2": {
     "disease": ["HPV"],
@@ -13,7 +13,7 @@
     "activity_type": ["routine"],
     "alpha": [1],
     "beta": [1],
-    "age_knots": [2, 5, 10, 25]
+    "age_knots": [12, 15, 20, 35]
   },
   "3": {
     "disease": ["HepB"],
@@ -37,7 +37,7 @@
     "activity_type": ["routine"],
     "alpha": [1],
     "beta": [1],
-    "age_knots": [2, 5, 10, 25]
+    "age_knots": [1, 2, 3]
   },
   "6": {
     "disease": ["JE"],
@@ -101,7 +101,7 @@
     "activity_type": ["routine"],
     "alpha": [1],
     "beta": [1],
-    "age_knots": [2, 5, 10, 25]
+    "age_knots": [1, 2, 3]
   },
   "14": {
     "disease": ["Rota"],
@@ -117,7 +117,7 @@
     "activity_type": ["routine"],
     "alpha": [1],
     "beta": [1],
-    "age_knots": [2, 5, 10, 25]
+    "age_knots": [17, 20, 25, 40]
   },
   "16": {
     "disease": ["Rubella"],
@@ -125,7 +125,7 @@
     "activity_type": ["campaign"],
     "alpha": [1],
     "beta": [1],
-    "age_knots": [2, 5, 10, 25]
+    "age_knots": [17, 20, 25, 40]
   },
   "17": {
     "disease": ["Rubella"],
@@ -133,7 +133,7 @@
     "activity_type": ["routine"],
     "alpha": [1],
     "beta": [1],
-    "age_knots": [2, 5, 10, 25]
+    "age_knots": [17, 20, 25, 40]
   },
   "18": {
     "disease": ["YF"],

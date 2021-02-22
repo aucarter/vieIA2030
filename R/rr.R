@@ -69,7 +69,7 @@ prep_rr <- function(strata, strata_params) {
     )
     dt[, d_v_at_id := strata]
     # Coverage
-    tot_cov <- total_coverage(coverage[v_at_id == v_at])
+    tot_cov <- total_coverage(coverage[v_at_id == v_at & year %in% 2000:2030])
     #TODO: This collapsing of sex should go away
     cov_dt <- tot_cov[, .(coverage = mean(value)),
         by = .(location_id, year, age)]
@@ -91,7 +91,7 @@ prep_rr <- function(strata, strata_params) {
         dt <- gbd_rr(dt, strata_params$alpha, strata_params$beta)
 
     }
-    out_dt <- dt[!is.na(rr), .(location_id, age, year, d_v_at_id, deaths_obs,
+    out_dt <- dt[, .(location_id, age, year, d_v_at_id, deaths_obs,
                  strata_deaths_averted, strata_deaths, coverage, rr)]
     # Check
     check_rr(out_dt)
@@ -125,7 +125,7 @@ get_averted_deaths <- function(deaths_obs, coverage, rr, alpha) {
 
 impute_strata_rr <- function(strata, params) {
     message(paste("Imputing relative risk in strata:", strata))
-    strata_params <- params[[strata]]
+    strata_params <- params[[as.character(strata)]]
     dt <- prep_rr(strata, strata_params)
     dt <- merge_rr_covariates(dt)
     if(nrow(dt[rr < 1 & rr > 0]) == 0) {
@@ -154,7 +154,7 @@ impute_strata_rr <- function(strata, params) {
 impute_all_rr <- function(params) {
     pred_all <- rbindlist(
         lapply(
-            unique(d_v_at_table$d_v_at_id),
+            as.integer(names(params)),
             impute_strata_rr,
             params
         ),

@@ -6,10 +6,11 @@ yov_dt <- as.data.table(
 yov_dt <- yov_dt[touchstone == "201910gavi",
     .(country, year, vaccine, model, activity_type, coverage, fvps,
     deaths_averted, deaths_averted_rate)]
+yov_dt[is.na(deaths_averted_rate), deaths_averted_rate := deaths_averted / fvps]
 
 # Take the mean of the deaths_averted rate across models
 yov_mean_dt <- yov_dt[,
-    lapply(.SD, mean),
+    lapply(.SD, mean, na.rm = T),
     by = .(country, year, vaccine, activity_type),
     .SDcols = c("coverage", "fvps", "deaths_averted", "deaths_averted_rate")
 ]

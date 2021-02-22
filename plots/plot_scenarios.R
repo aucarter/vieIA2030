@@ -54,3 +54,46 @@ for (l in unique(plot_dt2$location_id)) {
 
 }
 dev.off()
+
+## Plot impact of each scenario
+pdf("plots/impact_by_scenario.pdf")
+lin_range_impact <- calc_scenario_impact(lin_range, impact_dt)$year_totals
+lin_range_impact[, label := "Linear; Intro range"]
+
+lin_no_range_impact <- calc_scenario_impact(lin_no_range, impact_dt)$year_totals
+lin_no_range_impact[, label := "Linear; No intro range"]
+
+no_lin_range_impact <- calc_scenario_impact(no_lin_range, impact_dt)$year_totals
+no_lin_range_impact[, label := "Non-linear; Intro range"]
+
+no_lin_no_range_impact <- calc_scenario_impact(no_lin_no_range, impact_dt)$year_totals
+no_lin_no_range_impact[, label := "Non-linear; No intro range"]
+plot_dt <- rbindlist(list(lin_range_impact, lin_no_range_impact, no_lin_range_impact, no_lin_no_range_impact))
+
+gg <- ggplot(plot_dt, aes(x = year, y = total / 1e6, color = label)) + geom_line() +
+    theme_bw() + theme(legend.position = "bottom", legend.title = element_blank()) +
+    guides(color = guide_legend(nrow = 2)) +
+    xlab("Year") + ylab("Deaths averted (in millions by YoV)") +
+    ggtitle("Deaths averted by year of vaccination for IA2030 coverage scenarios")
+gg
+dev.off()
+
+## Total number split by introduced and not
+lin_range_impact <- calc_scenario_impact(lin_range, impact_dt)$dt
+lin_range_impact[, label := "Linear; Intro range"]
+
+lin_no_range_impact <- calc_scenario_impact(lin_no_range, impact_dt)$dt
+lin_no_range_impact[, label := "Linear; No intro range"]
+
+no_lin_range_impact <- calc_scenario_impact(no_lin_range, impact_dt)$dt
+no_lin_range_impact[, label := "Non-linear; Intro range"]
+
+no_lin_no_range_impact <- calc_scenario_impact(no_lin_no_range, impact_dt)$dt
+no_lin_no_range_impact[, label := "Non-linear; No intro range"]
+dt <- rbindlist(list(lin_range_impact, lin_no_range_impact, no_lin_range_impact, no_lin_no_range_impact))
+intro_dt <- dt[, .(intro = ifelse(min(year) == 2020, 0, 1)), by = .(location_id, vaccine, activity_type)]
+dt <- merge(dt, intro_dt)
+total_dt <- dt[year > 2020, .(total_deaths_averted = sum(deaths_averted, na.rm = T)), by = .(intro, label)]
+write.csv(total_dt, "total_averted_by_scenario_intro.csv", row.names = F)
+
+total_dt[, .(total = sum(total_deaths_averted)), by = label]

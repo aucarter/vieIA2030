@@ -128,6 +128,9 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
 
     ## Add HPV
     dt <- rbind(dt, hpv_target, use.names = T)
+    
+    dt[, year := as.integer(as.character(year))]
+    dt <- dt[year > 2019]
     return(dt)
 }
 
