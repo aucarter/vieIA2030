@@ -50,7 +50,7 @@ db_pull <- function(table, iso3_list = NULL, append_names = F) {
     mydb <- open_connection()
     dt <- as.data.table(
         tbl(mydb, table) %>%
-        filter(location_id %in% loc_ids) %>%
+        # filter(location_id %in% loc_ids) %>%
         collect()
     )
     DBI::dbDisconnect(mydb)
