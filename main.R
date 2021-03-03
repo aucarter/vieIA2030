@@ -3,7 +3,7 @@ devtools::load_all()
 
 ## Predict all and plot results
 params <- jsonlite::fromJSON("params.json")
-pred_all <- impute_all_rr(params)
+pred_all <- impute_all_rr(params, routine_only = T)
 fit_summary <- summarize_fit(pred_all)
 plot_strata_fit(pred_all)
 
@@ -11,13 +11,15 @@ plot_strata_fit(pred_all)
 impact_factors <- calc_impact_factors(pred_all)
 impact_dt <- rake_impact(impact_factors)
 
-## Merge on coverage scenario
+## Merge on coverage scenario onto past for full set of FVPs
 past_dt <- coverage[year < 2020 & year >= 2000]
 setnames(past_dt, "coverage", "value")
 future_dt <- gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
     intro_year = 2025, intro_range = T)
 fvp_future <- cov2fvp(future_dt)
 scenario_dt <- rbind(past_dt, fvp_future)
+
+## Calculate scenario impact and clean up some missing labels
 scenario_impact <- calc_scenario_impact(scenario_dt, impact_dt)
 temp_d_v_table <- copy(d_v_table)
 setnames(temp_d_v_table, "disease", "disease2")
@@ -25,6 +27,8 @@ scenario_impact_add <- merge(scenario_impact$dt[is.na(disease)], temp_d_v_table,
 scenario_impact_add[, disease := disease2]
 scenario_impact_add[, c("disease2", "d_v_id") := NULL]
 scenario_impact$dt <- rbind(scenario_impact$dt[!is.na(disease)], scenario_impact_add)
+
+## Plot the total by year
 plot(scenario_impact$year_totals$year, scenario_impact$year_totals$total,
     ylim = c(0, 6e6), type = "l")
 
@@ -92,5 +96,39 @@ for(loc in sort(unique(loc_vacc_year_dt$location_name))) {
         theme_bw() + xlab("Year") + ylab("Deaths averted") +
         ggtitle(loc)
     print(gg)
+}
+dev.off()
+
+## Plot by region
+dt <- fread("outputs/v02_reference_results.csv")
+dt <- merge(dt, loc_table[, .(location_id, region)])
+region_dt <- dt[, .(deaths_averted = sum(deaths_averted)), by = .(region, year)]
+pdf("plots/region_plots.pdf")
+gg <- ggplot(region_dt, aes(x = year, y = deaths_averted, color = region)) + 
+    geom_line() + theme_bw() + xlab("Year") + ylab("Deaths averted") +
+    ggtitle("Deaths averted by region")
+print(gg)
+dev.off()
+
+## Plot by disease in each region
+region_d_dt <- dt[, .(deaths_averted = sum(deaths_averted)), by = .(region, year, disease)]
+full_dt <- data.table(expand.grid(
+    region = unique(region_d_dt$region),
+    year = unique(region_d_dt$year),
+    disease = unique(region_d_dt$disease)
+))
+region_d_dt <- merge(region_d_dt, full_dt, all.y = T)
+region_d_dt[is.na(deaths_averted), deaths_averted := 0]
+my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
+pdf("plots/region_disease_plots.pdf")
+for(r in unique(region_d_dt$region)) {
+    plot_dt <- region_d_dt[region == r]
+    gg <- ggplot(plot_dt[year %in% 2000:2030], aes(x = year, y = deaths_averted , fill = disease)) +
+    geom_area(color = "white", alpha = 0.8) +
+    scale_fill_manual(values = my_colors1, name = "Vaccine") +
+    theme_bw() + xlab("Year") + ylab("Deaths averted") +
+    ggtitle(r)
+    print(gg)
+
 }
 dev.off()
