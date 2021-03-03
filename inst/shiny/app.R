@@ -2,6 +2,7 @@ library(shiny)
 library(viridis)
 
 vimc_dt <- readRDS("vimc.rds")
+vimc_dt <- vimc_dt[activity_type == "routine"]
 locs <- sort(unique(vimc_dt$location_iso3))
 vaccines <- sort(unique(vimc_dt$vaccine))
 # Define UI for application
@@ -30,13 +31,7 @@ ui <- fluidPage(
 server <- function(input, output) {
 
     output$plot <- renderPlot({
-        dt <- vimc_dt[location_iso3 == input$l & vaccine == input$v]
-        cast_dt <- dcast(dt, age ~ year, value.var = "deaths_averted")
-        cast_dt[, age := NULL]
-        mat <- as.matrix(cast_dt)
-        image(t(mat), xlab = "Year", ylab = "Age")
-        axis(1, at = seq(min(dt$year), max(dt$year), by = 5))
-        
+        dt <- vimc_dt[location_iso3 == input$l & vaccine == input$v & deaths_averted > 0]
         gg <- ggplot(dt, aes(x = year, y = age, fill = deaths_averted)) + 
             geom_tile() +
             xlab("Year") + ylab("Age") + labs(fill = "Deaths averted") +
