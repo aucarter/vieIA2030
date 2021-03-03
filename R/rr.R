@@ -151,15 +151,19 @@ impute_strata_rr <- function(strata, params) {
     return(dt)
 }
 
-impute_all_rr <- function(params) {
+impute_all_rr <- function(params, routine_only = TRUE) {
+    if (routine_only) {
+        s_list <- d_v_at_table[activity_type == "routine"]$d_v_at_id
+    } else {
+        s_list <- as.integer(names(params))
+    }
     pred_all <- rbindlist(
         lapply(
-            as.integer(names(params)),
+            s_list,
             impute_strata_rr,
             params
         ),
         fill = T
     )
-
     return(pred_all)
 }
