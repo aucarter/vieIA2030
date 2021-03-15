@@ -132,3 +132,97 @@ for(r in unique(region_d_dt$region)) {
 
 }
 dev.off()
+
+## Impact by region
+no_lin_range <- cov2fvp(gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
+    intro_year = 2025, intro_range = T))
+past_dt <- coverage[year == 2019]
+setnames(past_dt, "coverage", "value")
+cov_dt <- rbind(past_dt, no_lin_range, fill = T)
+scenario_impact <- calc_scenario_impact(cov_dt, impact_dt)
+temp_d_v_table <- copy(d_v_table)
+setnames(temp_d_v_table, "disease", "disease2")
+scenario_impact_add <- merge(scenario_impact$dt[is.na(disease)], temp_d_v_table, by = "vaccine", all.x = T)
+scenario_impact_add[, disease := disease2]
+scenario_impact_add[, c("disease2", "d_v_id") := NULL]
+scenario_impact$dt <- rbind(scenario_impact$dt[!is.na(disease)], scenario_impact_add)
+dt <- scenario_impact$dt
+dt <- merge(dt, loc_table[, .(location_id, region)], by = "location_id")
+baseline_dt <- dt[year == 2019]
+setnames(baseline_dt, "deaths_averted", "baseline_deaths_averted")
+baseline_dt[, year := NULL]
+table_dt <- merge(dt[year %in% 2021:2030], baseline_dt,
+    by = c("location_id", "region", "disease", "vaccine", "activity_type"),
+    all.x = T)
+table_dt[is.na(baseline_deaths_averted), baseline_deaths_averted := 0]
+table_dt[is.na(deaths_averted), deaths_averted := 0]
+table_dt[activity_type %in% c("routine", "combined"), 
+    incremental := deaths_averted - baseline_deaths_averted]
+table_totals <- table_dt[, .(total = sum(deaths_averted, na.rm = T),
+    incremental = sum(incremental, na.rm = T)), by = .(region, disease, year)][
+        order(region, disease, year)
+    ]
+write.csv(table_totals, "outputs/detailed_results.csv", row.names = F)
+
+global_dt <- table_totals[, .(deaths_averted = sum(deaths_averted, na.rm = T)), by = .(year, disease, vaccine, activity_type)]
+global_dt[, region := "Global"]
+region_dt <- table_totals[, .(deaths_averted = sum(deaths_averted, na.rm = T)), by = .(region, year, disease, vaccine, activity_type)]
+all_dt <- rbind(global_dt, region_dt)
+
+write.csv(table_totals, "outputs/results_table_region.csv", row.names = F)
+
+## 
+no_lin_range <- cov2fvp(gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
+    intro_year = 2025, intro_range = T))
+past_dt <- coverage[year == 2019]
+setnames(past_dt, "coverage", "value")
+cov_dt <- rbind(past_dt, no_lin_range, fill = T)
+dt <- calc_scenario_impact(cov_dt, impact_dt)$dt
+dt <- merge(dt, loc_table[, .(location_id, income_group)], by = "location_id")
+global_dt <- dt[, .(deaths_averted = sum(deaths_averted, na.rm = T)), by = .(year, disease, vaccine, activity_type)]
+global_dt[, income_group := "Global"]
+income_group_dt <- dt[, .(deaths_averted = sum(deaths_averted, na.rm = T)), by = .(income_group, year, disease, vaccine, activity_type)]
+all_dt <- rbind(global_dt, income_group_dt)
+baseline_dt <- all_dt[year == 2019]
+setnames(baseline_dt, "deaths_averted", "baseline_deaths_averted")
+baseline_dt[, year := NULL]
+table_dt <- merge(all_dt[year %in% 2021:2030], baseline_dt,
+    by = c("income_group", "disease", "vaccine", "activity_type"), all.x = T)
+table_dt[, incremental := deaths_averted - baseline_deaths_averted]
+table_totals <- table_dt[, .(total = sum(deaths_averted, na.rm = T) / 1e5,
+    incremental = sum(incremental, na.rm = T) / 1e5), by = income_group]
+write.csv(table_totals, "outputs/results_table_income.csv", row.names = F)
+
+dt[, (deaths_averted)]
+
+
+## Impact by income
+no_lin_range <- cov2fvp(gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
+    intro_year = 2025, intro_range = T))
+past_dt <- coverage[year == 2019]
+setnames(past_dt, "coverage", "value")
+cov_dt <- rbind(past_dt, no_lin_range, fill = T)
+scenario_impact <- calc_scenario_impact(cov_dt, impact_dt)
+temp_d_v_table <- copy(d_v_table)
+setnames(temp_d_v_table, "disease", "disease2")
+scenario_impact_add <- merge(scenario_impact$dt[is.na(disease)], temp_d_v_table, by = "vaccine", all.x = T)
+scenario_impact_add[, disease := disease2]
+scenario_impact_add[, c("disease2", "d_v_id") := NULL]
+scenario_impact$dt <- rbind(scenario_impact$dt[!is.na(disease)], scenario_impact_add)
+dt <- scenario_impact$dt
+dt <- merge(dt, loc_table[, .(location_id, income_group)], by = "location_id")
+baseline_dt <- dt[year == 2019]
+setnames(baseline_dt, "deaths_averted", "baseline_deaths_averted")
+baseline_dt[, year := NULL]
+table_dt <- merge(dt[year %in% 2021:2030], baseline_dt,
+    by = c("location_id", "income_group", "disease", "vaccine", "activity_type"),
+    all.x = T)
+table_dt[is.na(baseline_deaths_averted), baseline_deaths_averted := 0]
+table_dt[is.na(deaths_averted), deaths_averted := 0]
+table_dt[activity_type %in% c("routine", "combined"), 
+    incremental := deaths_averted - baseline_deaths_averted]
+table_totals <- table_dt[, .(total = sum(deaths_averted, na.rm = T),
+    incremental = sum(incremental, na.rm = T)), by = .(income_group, disease, year)][
+        order(income_group, disease, year)
+    ]
+write.csv(table_totals, "outputs/detailed_results_income.csv", row.names = F)

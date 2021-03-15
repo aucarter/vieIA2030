@@ -1,0 +1,303 @@
+---
+title: "IA2030 vaccine impact results"
+author: "Austin Carter"
+date: "3/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(data.table); library(ggplot2); library(knitr)
+```
+
+```{r, echo = F}
+dt <- fread("outputs/detailed_results.csv")
+```
+
+## Global annual total with baseline
+```{r, results = 'asis', echo = F}
+dt[, baseline := total - incremental]
+global_baseline <- sum(dt[year == 2021]$baseline)
+global_ann <- rbind(
+  data.table(year = "2019 (baseline)", `Total deaths averted` = global_baseline),
+  dt[, .(`Total deaths averted` = sum(total)), by = year]
+)
+setnames(global_ann, "year", "Year")
+write.csv(global_ann, "results/global_ann.csv", row.names = F)
+kable(global_ann)
+```
+
+## By disease global
+
+```{r, echo = F}
+disease_year_dt <- dt[, .(deaths_averted = sum(total, na.rm = T)), by = .(disease, year)] 
+my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
+my_colors2<- rev(RColorBrewer::brewer.pal(name = "Paired", n = 3))
+## By vaccine
+gg <- ggplot(disease_year_dt[year %in% 2000:2030], aes(x = year, y = deaths_averted / 1e6, fill = disease)) +
+    geom_area(color = "white", alpha = 0.8) +
+    scale_fill_manual(values = my_colors1, name = "Disease") +
+    theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
+    ggtitle("Global deaths averted") +
+  scale_x_continuous(breaks = scales::pretty_breaks())
+gg
+png("results/global_by_disease.png")
+print(gg)
+dev.off()
+disease_year_dt[, deaths_averted := round(deaths_averted / 1e3)]
+cast_dt <- dcast(disease_year_dt, disease ~ year, value.var = "deaths_averted")
+kable(cast_dt)
+cast_dt
+write.csv(cast_dt, "results/disease_year.csv", row.names = F)
+```
+
+## By disease for each region
+
+```{r, echo = F}
+region_d_dt <- dt[, .(deaths_averted = sum(total)), by = .(region, year, disease)]
+full_dt <- data.table(expand.grid(
+    region = unique(region_d_dt$region),
+    year = unique(region_d_dt$year),
+    disease = unique(region_d_dt$disease)
+))
+region_d_dt <- merge(region_d_dt, full_dt, all.y = T)
+region_d_dt[is.na(deaths_averted), deaths_averted := 0]
+my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
+for(r in unique(region_d_dt$region)) {
+    plot_dt <- region_d_dt[region == r]
+    gg <- ggplot(plot_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted , fill = disease)) +
+    geom_area(color = "white", alpha = 0.8) +
+    scale_fill_manual(values = my_colors1, name = "Disease") +
+    theme_bw() + xlab("Year") + ylab("Deaths averted") +
+    ggtitle(r) +
+  scale_x_continuous(breaks = scales::pretty_breaks())
+    print(gg)
+    png(paste0("results/", r, "_by_disease.png"))
+    print(gg)
+    dev.off()
+}
+```
+
+## Total by year by region
+```{r, echo = F}
+region_y_dt <- dt[, .(deaths_averted = sum(total)), by = .(region, year)]
+my_colors1 <- RColorBrewer::brewer.pal(name = "Paired", n = 6)
+
+gg <- ggplot(region_y_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted / 1e6 , fill = region)) +
+  geom_area(color = "white", alpha = 0.8) +
+  scale_fill_manual(values = my_colors1, name = "Region") +
+  theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
+  ggtitle("Deaths averted by region") +
+  scale_x_continuous(breaks = scales::pretty_breaks())
+print(gg)
+png("results/total_by_region.png")
+print(gg)
+dev.off()
+```
+
+## By disease mean annual total deaths averted with min and max annual
+```{r, echo = F}
+ann_d_dt <- dt[, .(total = sum(total)), by = .(year, disease)]
+d_summ <- ann_d_dt[, .(mean = mean(total), min = min(total), max = max(total)), by = disease]
+ann_dt <- dt[, .(total = sum(total)), by = year]
+t_summ <- ann_dt[, .(mean = mean(total), min = min(total), max = max(total))]
+t_summ[, disease := "Total"]
+d <- rbind(d_summ, t_summ)
+gg <- ggplot(d_summ, aes(x = disease, y = mean / 1e3)) + geom_point() +
+  geom_errorbar(aes(ymin = min / 1e3, ymax = max / 1e3), width = 0.2) +
+  theme_bw() + xlab("Disease") + ylab("Annual total deaths averted (in thousands)") +
+  ggtitle("Mean and range of annual total deaths averted by disease")
+print(gg)
+png("results/mean_range_disease.png")
+print(gg)
+dev.off()
+kable(d)
+```
+
+
+# Incremental
+
+## Global annual incremental
+```{r, results = 'asis', echo = F}
+global_ann <- dt[, .(`Incremental deaths averted` = sum(incremental)), by = year]
+setnames(global_ann, "year", "Year")
+kable(global_ann)
+```
+
+## By disease global
+
+```{r, echo = F}
+disease_year_dt <- dt[, .(deaths_averted = sum(incremental, na.rm = T)), by = .(disease, year)] 
+my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
+my_colors2<- rev(RColorBrewer::brewer.pal(name = "Paired", n = 3))
+## By vaccine
+gg <- ggplot(disease_year_dt[year %in% 2000:2030], aes(x = year, y = deaths_averted / 1e6, fill = disease)) +
+    geom_area(color = "white", alpha = 0.8) +
+    scale_fill_manual(values = my_colors1, name = "Disease") +
+    theme_bw() + xlab("Year") + ylab("Deaths averted (in millions by YoV)") +
+    ggtitle("Global deaths averted") +
+  scale_x_continuous(breaks = scales::pretty_breaks())
+gg
+png("results/inc_global_by_disease.png")
+print(gg)
+dev.off()
+cast_dt <- dcast(disease_year_dt, disease ~ year, value.var = "deaths_averted")
+kable(cast_dt)
+```
+
+## By disease for each region
+
+```{r, echo = F}
+region_d_dt <- dt[, .(deaths_averted = sum(incremental)), by = .(region, year, disease)]
+full_dt <- data.table(expand.grid(
+    region = unique(region_d_dt$region),
+    year = unique(region_d_dt$year),
+    disease = unique(region_d_dt$disease)
+))
+region_d_dt <- merge(region_d_dt, full_dt, all.y = T)
+region_d_dt[is.na(deaths_averted), deaths_averted := 0]
+my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
+for(r in unique(region_d_dt$region)) {
+    plot_dt <- region_d_dt[region == r]
+    gg <- ggplot(plot_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted , fill = disease)) +
+    geom_area(color = "white", alpha = 0.8) +
+    scale_fill_manual(values = my_colors1, name = "Disease") +
+    theme_bw() + xlab("Year") + ylab("Deaths averted") +
+    ggtitle(r) +
+  scale_x_continuous(breaks = scales::pretty_breaks())
+    print(gg)
+    png(paste0("results/inc_", r, "_by_disease.png"))
+    print(gg)
+    dev.off()
+}
+```
+
+## Incremental by year by region
+```{r, echo = F}
+region_y_dt <- dt[, .(deaths_averted = sum(incremental)), by = .(region, year)]
+my_colors1 <- RColorBrewer::brewer.pal(name = "Paired", n = 6)
+
+gg <- ggplot(region_y_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted / 1e6 , fill = region)) +
+  geom_area(color = "white", alpha = 0.8) +
+  scale_fill_manual(values = my_colors1, name = "Region") +
+  theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
+  ggtitle("Deaths averted by region") +
+  scale_x_continuous(breaks = scales::pretty_breaks())
+print(gg)
+png("results/inc_by_region.png")
+print(gg)
+dev.off()
+```
+
+## By disease mean annual incremental deaths averted with min and max annual
+```{r, echo = F}
+ann_d_dt <- dt[, .(incremental = sum(incremental)), by = .(year, disease)]
+d_summ <- ann_d_dt[, .(mean = mean(incremental), min = min(incremental), max = max(incremental)), by = disease]
+ann_dt <- dt[, .(incremental = sum(incremental)), by = year]
+t_summ <- ann_dt[, .(mean = mean(incremental), min = min(incremental), max = max(incremental))]
+t_summ[, disease := "Total"]
+d <- rbind(d_summ, t_summ)
+gg <- ggplot(d_summ, aes(x = disease, y = mean / 1e3)) + geom_point() +
+  geom_errorbar(aes(ymin = min / 1e3, ymax = max / 1e3), width = 0.2) +
+  theme_bw() + xlab("Disease") + ylab("Annual incremental deaths averted (in thousands)") +
+  ggtitle("Mean and range of annual incremental deaths averted by disease")
+print(gg)
+png("results/inc_mean_range_disease.png")
+print(gg)
+dev.off()
+kable(d)
+```
+
+# Income grouping
+```{r}
+dt <- fread("outputs/detailed_results_income.csv")
+```
+
+## Total by disease for each income group
+
+```{r, echo = F}
+income_group_d_dt <- dt[, .(deaths_averted = sum(total)), by = .(income_group, year, disease)]
+full_dt <- data.table(expand.grid(
+    income_group = unique(income_group_d_dt$income_group),
+    year = unique(income_group_d_dt$year),
+    disease = unique(income_group_d_dt$disease)
+))
+income_group_d_dt <- merge(income_group_d_dt, full_dt, all.y = T)
+income_group_d_dt[is.na(deaths_averted), deaths_averted := 0]
+my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
+for(r in unique(income_group_d_dt$income_group)) {
+    plot_dt <- income_group_d_dt[income_group == r]
+    gg <- ggplot(plot_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted , fill = disease)) +
+    geom_area(color = "white", alpha = 0.8) +
+    scale_fill_manual(values = my_colors1, name = "Disease") +
+    theme_bw() + xlab("Year") + ylab("Deaths averted") +
+    ggtitle(r) +
+  scale_x_continuous(breaks = scales::pretty_breaks())
+    print(gg)
+    png(paste0("results/", r, "_by_disease.png"))
+    print(gg)
+    dev.off()
+}
+```
+
+## Total by year by income
+```{r, echo = F}
+income_group_y_dt <- dt[, .(deaths_averted = sum(total)), by = .(income_group, year)]
+my_colors1 <- RColorBrewer::brewer.pal(name = "Paired", n = 6)
+
+gg <- ggplot(income_group_y_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted / 1e6 , fill = income_group)) +
+  geom_area(color = "white", alpha = 0.8) +
+  scale_fill_manual(values = my_colors1, name = "Income group") +
+  theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
+  ggtitle("Deaths averted by income_group") +
+  scale_x_continuous(breaks = scales::pretty_breaks())
+print(gg)
+png("results/total_by_income.png")
+print(gg)
+dev.off()
+```
+
+
+## Incremental by disease for each income group
+
+```{r, echo = F}
+income_group_d_dt <- dt[, .(deaths_averted = sum(incremental)), by = .(income_group, year, disease)]
+full_dt <- data.table(expand.grid(
+    income_group = unique(income_group_d_dt$income_group),
+    year = unique(income_group_d_dt$year),
+    disease = unique(income_group_d_dt$disease)
+))
+income_group_d_dt <- merge(income_group_d_dt, full_dt, all.y = T)
+income_group_d_dt[is.na(deaths_averted), deaths_averted := 0]
+my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
+for(r in unique(income_group_d_dt$income_group)) {
+    plot_dt <- income_group_d_dt[income_group == r]
+    gg <- ggplot(plot_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted , fill = disease)) +
+    geom_area(color = "white", alpha = 0.8) +
+    scale_fill_manual(values = my_colors1, name = "Disease") +
+    theme_bw() + xlab("Year") + ylab("Deaths averted") +
+    ggtitle(r) +
+  scale_x_continuous(breaks = scales::pretty_breaks())
+    print(gg)
+    png(paste0("results/inc_", r, "_by_disease.png"))
+    print(gg)
+    dev.off()
+}
+```
+
+## Incremental by year by income
+```{r, echo = F}
+income_group_y_dt <- dt[, .(deaths_averted = sum(incremental)), by = .(income_group, year)]
+my_colors1 <- RColorBrewer::brewer.pal(name = "Paired", n = 6)
+
+gg <- ggplot(income_group_y_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted / 1e6 , fill = income_group)) +
+  geom_area(color = "white", alpha = 0.8) +
+  scale_fill_manual(values = my_colors1, name = "Income group") +
+  theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
+  ggtitle("Deaths averted by income group") +
+  scale_x_continuous(breaks = scales::pretty_breaks())
+print(gg)
+png("results/inc_by_income.png")
+print(gg)
+dev.off()
+```
