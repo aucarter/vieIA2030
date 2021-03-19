@@ -1,0 +1,29 @@
+﻿No,Pathogen,Vaccines,,,,Disease,
+,,Immunization schedule,Efficacy in models,Duration,Herd immunity,Disease states,Case fatality rate
+1,Hepatitis B virus,Birth dose and three infant doses (<1 year),"CDA: (for infants born to mother with high viral load) 20% for birthdose, 71% for 3 doses w/o birth dose, 88% for birth and 4 doses; (against acute infection) 10% for birth dose, 67% for 3 doses w/o birth dose, 86% for 3 doses","CDA, ICL, Goldstein et al: Lifelong","Yes (CDA, Imperial College London)","CDA: liver disease; ICL: Acute (severe acute and non-severe acute) and chronic (immune tolerant, immune reactive, asymptomatic carrier, Chronic Hepatitis B, compensated cirrhosis, decompensated cirrhosis and liver cancer); Goldsten et al: fulminant hepatitis, liver cirrhosis and hepatocellular carcinoma",CDA:  0.335% for 0-14 years 
+,,,"ICL: Birth dose: 83% if mother is HBeAg+; 95% if mother is HBeAg-, HBsAg+ ; 95% for infant vaccines",,,,0.45% for 15 years and above
+,,,"Goldstein et al: 95 % for birth, second and third dose",,,,ICL: Age dependant (21.2 – 58.1%)
+,,,,,,,Goldstein et al:  70% from fulminant hepatitis
+2,Haemophilus influenzae type B,Three infant doses (<1 year),JHU: 93% for 3 doses,JHU: until 5 ,No,JHU: Hib pneumonia and meningitis cases and deaths,JHU: N/A. overall <5 mortality envelope and disease specific mortality estimates
+,,,"LSHTM: 59 % for first, 92% for second 93% for third",LSHTM: no waning,,"LSHTM: non-severe Hib pneumonia, severe Hib pneumonia, Hib meningitis and Hib non-pneumonia/non-meningitis (NPNM) in children aged <5 years",LSHTM: country-specific estimates based on Wahl et al.
+3,Human papillomavirus,Two doses for adolescent girls (9–14 years),Harvard: 100% with full dose,Harvard: lifelong with full dose,No,Harvard: cervical cancer incidence ,Harvard: 80%
+,,,LSHTM: 100%,LSHTM: lifelong when given 6 months apart,,LSHTM: cervical cancer cases and deaths,LSHTM: age and country specific
+4,Japanese encephalitisd,Infant dose (<1 year),NUS: 100% (single dose),NUS:  lifelong,No,NUS: JE cases and deaths,NUS: 20-30% for symptomatic cases
+,,,U Notre Dame: 99.3% (single dose),U Notre Dame: Lifelong,,U Notre Dame :JE cases and deaths,U Notre Dame: 
+,,,,,,,32·9% (95% CI: 5·1%-75·0%) 
+5,Measles,"First dose at ≤1 year, second dose at <2 years",LSHTM: 85% when given before 1 year; 95% when given after 1 year; 90% after two doses,"LSHTM, PSU: Lifelong","YES (LSHTM, PSU)",LSHTM: measles cases and deaths,LSHTM:  Age and country specific. These will be changed to time-varying CFRs informed by Portnoy et al. 
+,,,"PSU: 85% when administered at 9 mos, 93% when administered at 12 mos; 99% thereafter",,,PSU: measles cases and deaths,PSU:  Age and country specific. These will be changed to time-varying CFRs informed by Portnoy et al. 
+,,,,,,,
+,,,,,,,
+6,Neisseria meningitidis serogroup A (MenA)e,Infant dose (<1 year),U Cambridge: 90% against disease and carriage,U Cambridge: 10 years,"Yes (U Cambridge, KPW)",U Cambridge: invasive diseases and deaths,U Cambridge: 10%
+,,,"KPW: (first stage) 75% against colonization, 100% against invasive disease; (second stage) 25% against colonization, 90% against disease",KPW: 45 years,,"KPW: colonization, invasive disease and deaths",KPW: age dependent (8.6 -12.2%)
+7,Streptococcus pneumoniae (PCV),Three infant doses (<1 year),JHU: 58%,JHU: until age 5,No,JHU: pneumococcal pneumonia and meningitis cases and deaths ,JHU: N/A. overall <5 mortality envelope and disease specific mortality estimates
+,,,"LSHTM: 29% for first, 58% for second, 58% for third",LSHTM: no  waning,,"LSHTM: non-severe Pneumococcal pneumonia, severe Pneumococcal pneumonia, Pneumococcal meningitis and severe Pneumococcal non-pneumonia/non-meningitis (NPNM) in children aged <5 years, Pneumococcal acute otitis media (AOM)",LSHTM: country-specific estimates based on Wahl et al.
+8,Rotavirus,Two infant doses (<1 year),"LSHTM: varies by number of doses, under-five mortality strata and duration of follow-up",LSHTM: efficacy decreases over time ,Yes (EU),LSHTM: rotavirus disease cases (non-severe and severe),s
+,,,Emory U: varies by number of doses,"Emory U:some develop long-term immunity, others remain susceptible",,Emory U: rotavirus disease cases (non-severe and severe),LSHTM: country-specific estimates based on three sources of international estimates
+,,,,,,,Emory U: country and age specific CFR from Global burden of disease study
+,,,,,,,
+9,Rubella,"First dose at <1 year, second dose at <2 years",PHE: 95% (85-99%),"JHU, PHE: Lifelong","Yes (JHU, PHE)",PHE: congenital rubella synfrome (CRS) cases and deaths,PHE: 30%
+,,,JHU: age dependent with a maximum of 97%,,,JHU: CRS cases and deaths,"JHU: 9.3% for fetal death, 1.4% for children"
+10,Yellow feverf,Infant dose (<1 year),ICL: 97.5% (95% CI: 82.9-99.7%),ICL: Lifelong,No,ICL: incidence of YF infections and deaths,ICL: 47% (95% CI: 31-62%)
+,,,U Notre Dame : 97.5%,U Notre Dame : Lifelong,,U Notre Dame : incidence of YF infections and deaths,U Notre Dame : 47% (95% CI: 31-62%)
