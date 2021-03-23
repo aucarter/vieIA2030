@@ -7,7 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(data.table); library(ggplot2); library(knitr)
+library(data.table); library(ggplot2); library(knitr); library(forcats)
 ```
 
 ```{r, echo = F}
@@ -32,10 +32,11 @@ kable(global_ann)
 ```{r, echo = F}
 disease_year_dt <- dt[, .(deaths_averted = sum(total, na.rm = T)), by = .(disease, year)] 
 my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
+my_colors1[1] <- "hotpink"
 my_colors2<- rev(RColorBrewer::brewer.pal(name = "Paired", n = 3))
 ## By vaccine
 gg <- ggplot(disease_year_dt[year %in% 2000:2030], aes(x = year, y = deaths_averted / 1e6, fill = disease)) +
-    geom_area(color = "white", alpha = 0.8) +
+    geom_bar(position = "stack", stat = "identity") +
     scale_fill_manual(values = my_colors1, name = "Disease") +
     theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
     ggtitle("Global deaths averted") +
@@ -62,30 +63,29 @@ full_dt <- data.table(expand.grid(
 ))
 region_d_dt <- merge(region_d_dt, full_dt, all.y = T)
 region_d_dt[is.na(deaths_averted), deaths_averted := 0]
-my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
-for(r in unique(region_d_dt$region)) {
-    plot_dt <- region_d_dt[region == r]
-    gg <- ggplot(plot_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted , fill = disease)) +
-    geom_area(color = "white", alpha = 0.8) +
-    scale_fill_manual(values = my_colors1, name = "Disease") +
-    theme_bw() + xlab("Year") + ylab("Deaths averted") +
-    ggtitle(r) +
-  scale_x_continuous(breaks = scales::pretty_breaks())
-    print(gg)
-    png(paste0("results/", r, "_by_disease.png"))
-    print(gg)
-    dev.off()
-}
+
+gg <- ggplot(region_d_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted / 1e6 , fill = disease)) +
+geom_bar(position = "stack", stat = "identity") +
+scale_fill_manual(values = my_colors1, name = "Disease") +
+theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
+facet_wrap(~region) +
+scale_x_continuous(breaks = scales::pretty_breaks()) +
+scale_y_continuous(breaks = scales::pretty_breaks())
+print(gg)
+png(paste0("results/region_by_disease.png"))
+print(gg)
+dev.off()
+
 ```
 
 ## Total by year by region
 ```{r, echo = F}
 region_y_dt <- dt[, .(deaths_averted = sum(total)), by = .(region, year)]
-my_colors1 <- RColorBrewer::brewer.pal(name = "Paired", n = 6)
+my_colors3 <- RColorBrewer::brewer.pal(name = "Paired", n = 6)
 
 gg <- ggplot(region_y_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted / 1e6 , fill = region)) +
   geom_area(color = "white", alpha = 0.8) +
-  scale_fill_manual(values = my_colors1, name = "Region") +
+  scale_fill_manual(values = my_colors3, name = "Region") +
   theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
   ggtitle("Deaths averted by region") +
   scale_x_continuous(breaks = scales::pretty_breaks())
@@ -128,7 +128,6 @@ kable(global_ann)
 
 ```{r, echo = F}
 disease_year_dt <- dt[, .(deaths_averted = sum(incremental, na.rm = T)), by = .(disease, year)] 
-my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
 my_colors2<- rev(RColorBrewer::brewer.pal(name = "Paired", n = 3))
 ## By vaccine
 gg <- ggplot(disease_year_dt[year %in% 2000:2030], aes(x = year, y = deaths_averted / 1e6, fill = disease)) +
@@ -156,7 +155,6 @@ full_dt <- data.table(expand.grid(
 ))
 region_d_dt <- merge(region_d_dt, full_dt, all.y = T)
 region_d_dt[is.na(deaths_averted), deaths_averted := 0]
-my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
 for(r in unique(region_d_dt$region)) {
     plot_dt <- region_d_dt[region == r]
     gg <- ggplot(plot_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted , fill = disease)) +
@@ -175,11 +173,11 @@ for(r in unique(region_d_dt$region)) {
 ## Incremental by year by region
 ```{r, echo = F}
 region_y_dt <- dt[, .(deaths_averted = sum(incremental)), by = .(region, year)]
-my_colors1 <- RColorBrewer::brewer.pal(name = "Paired", n = 6)
+
 
 gg <- ggplot(region_y_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted / 1e6 , fill = region)) +
   geom_area(color = "white", alpha = 0.8) +
-  scale_fill_manual(values = my_colors1, name = "Region") +
+  scale_fill_manual(values = my_colors3, name = "Region") +
   theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
   ggtitle("Deaths averted by region") +
   scale_x_continuous(breaks = scales::pretty_breaks())
@@ -211,6 +209,8 @@ kable(d)
 # Income grouping
 ```{r}
 dt <- fread("outputs/detailed_results_income.csv")
+dt[, income_group := factor(income_group, levels = c("Low income", "Lower middle income", "Upper middle income", "High income"))]
+
 ```
 
 ## Total by disease for each income group
@@ -224,37 +224,59 @@ full_dt <- data.table(expand.grid(
 ))
 income_group_d_dt <- merge(income_group_d_dt, full_dt, all.y = T)
 income_group_d_dt[is.na(deaths_averted), deaths_averted := 0]
-my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
-for(r in unique(income_group_d_dt$income_group)) {
-    plot_dt <- income_group_d_dt[income_group == r]
-    gg <- ggplot(plot_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted , fill = disease)) +
-    geom_area(color = "white", alpha = 0.8) +
-    scale_fill_manual(values = my_colors1, name = "Disease") +
-    theme_bw() + xlab("Year") + ylab("Deaths averted") +
-    ggtitle(r) +
-  scale_x_continuous(breaks = scales::pretty_breaks())
-    print(gg)
-    png(paste0("results/", r, "_by_disease.png"))
-    print(gg)
-    dev.off()
-}
+
+gg <- ggplot(income_group_d_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted / 1e6 , fill = disease)) +
+geom_bar(position = "stack", stat = "identity") +
+scale_fill_manual(values = my_colors1, name = "Disease") +
+theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
+facet_wrap(~income_group) +
+scale_x_continuous(breaks = scales::pretty_breaks())
+print(gg)
+png(paste0("results/income_by_disease.png"))
+print(gg)
+dev.off()
+
+gg <- ggplot(income_group_d_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted / 1e6 , fill = disease)) +
+geom_bar(position = "stack", stat = "identity") +
+scale_fill_manual(values = my_colors1, name = "Disease") +
+theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
+facet_wrap(~fct_rev(income_group)) +
+scale_x_continuous(breaks = scales::pretty_breaks())
+print(gg)
+png(paste0("results/income_by_disease_rev.png"))
+print(gg)
+dev.off()
+
 ```
 
 ## Total by year by income
 ```{r, echo = F}
 income_group_y_dt <- dt[, .(deaths_averted = sum(total)), by = .(income_group, year)]
-my_colors1 <- RColorBrewer::brewer.pal(name = "Paired", n = 6)
 
 gg <- ggplot(income_group_y_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted / 1e6 , fill = income_group)) +
-  geom_area(color = "white", alpha = 0.8) +
-  scale_fill_manual(values = my_colors1, name = "Income group") +
+  geom_bar(position = "stack", stat = "identity") +
+  scale_fill_manual(values = my_colors3, name = "Income group") +
   theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
-  ggtitle("Deaths averted by income_group") +
+  ggtitle("Deaths averted by income group") +
   scale_x_continuous(breaks = scales::pretty_breaks())
 print(gg)
 png("results/total_by_income.png")
 print(gg)
 dev.off()
+
+gg <- ggplot(income_group_y_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted / 1e6 , fill = fct_rev(income_group))) +
+  geom_bar(position = "stack", stat = "identity") +
+  scale_fill_manual(values = my_colors3, name = "Income group") +
+  theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
+  ggtitle("Deaths averted by income group") +
+  scale_x_continuous(breaks = scales::pretty_breaks())
+print(gg)
+png("results/total_by_income_rev.png")
+print(gg)
+dev.off()
+
+cast_dt <- dcast(income_group_y_dt[year %in% 2021:2030], income_group ~ year)
+write.csv(cast_dt, "results/total_by_income_table.csv", row.names = F)
 ```
 
 
@@ -269,7 +291,6 @@ full_dt <- data.table(expand.grid(
 ))
 income_group_d_dt <- merge(income_group_d_dt, full_dt, all.y = T)
 income_group_d_dt[is.na(deaths_averted), deaths_averted := 0]
-my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
 for(r in unique(income_group_d_dt$income_group)) {
     plot_dt <- income_group_d_dt[income_group == r]
     gg <- ggplot(plot_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted , fill = disease)) +
@@ -288,11 +309,10 @@ for(r in unique(income_group_d_dt$income_group)) {
 ## Incremental by year by income
 ```{r, echo = F}
 income_group_y_dt <- dt[, .(deaths_averted = sum(incremental)), by = .(income_group, year)]
-my_colors1 <- RColorBrewer::brewer.pal(name = "Paired", n = 6)
 
 gg <- ggplot(income_group_y_dt[year %in% 2021:2030], aes(x = year, y = deaths_averted / 1e6 , fill = income_group)) +
   geom_area(color = "white", alpha = 0.8) +
-  scale_fill_manual(values = my_colors1, name = "Income group") +
+  scale_fill_manual(values = my_colors3, name = "Income group") +
   theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
   ggtitle("Deaths averted by income group") +
   scale_x_continuous(breaks = scales::pretty_breaks())

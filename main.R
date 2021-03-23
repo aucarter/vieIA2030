@@ -39,13 +39,23 @@ scenario_impact$dt[vimc == 1 & gbd == 0, label := "VIMC10 (VIMC locations)"]
 scenario_impact$dt[vimc == 0 & gbd == 0, label := "Imputed VIMC10 (non-VIMC locations)"]
 scenario_impact$dt[gbd == 1, label := "GBD4 (All locations)"]
 out_dt <- merge(
-    scenario_impact$dt[, .(location_id, year, disease, vaccine, activity_type, label, deaths_averted)],
-    loc_table[, .(location_id, location_name, location_iso3)],
+    scenario_impact$dt[, .(location_id, year, disease, vaccine, activity_type, deaths_averted)],
+    loc_table[, .(location_id, location_name, location_iso3, region, income_group, gavi73)],
     by = "location_id"
 )
 out_dt <- out_dt[order(location_name, disease, vaccine, activity_type)]
-out_dt <- out_dt[!is.na(deaths_averted)]
-write.csv(out_dt, "outputs/v02_reference_results.csv", row.names = F)
+out_dt[is.na(deaths_averted), deaths_averted := 0]
+
+cohort_dt <- wpp_input[age == 0, .(nx = sum(nx)), by = .(location_id, year)]
+setnames(cohort_dt, "nx", "cohort_size")
+out_dt <- merge(out_dt, cohort_dt, by = c("location_id", "year"))
+
+total_dt <- wpp_input[, .(nx = sum(nx)), by = .(location_id, year)]
+setnames(total_dt, "nx", "total_pop")
+out_dt <- merge(out_dt, total_dt, by = c("location_id", "year"))
+
+
+write.csv(out_dt, "outputs/reference_results.csv", row.names = F)
 
 ## Plot total deaths averted by vaccine over time
 pdf("plots/averted_by_vaccine.pdf")
@@ -134,8 +144,12 @@ for(r in unique(region_d_dt$region)) {
 dev.off()
 
 ## Impact by region
-no_lin_range <- cov2fvp(gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
-    intro_year = 2025, intro_range = T))
+no_lin_range_cov <- gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
+    intro_year = 2025, intro_range = T)
+scen_dt <- merge(no_lin_range_cov, loc_table[, .(location_id, location_name, location_iso3)], by = "location_id")
+scen_dt <- merge(scen_dt, v_at_table, by = "v_at_id")
+write.csv(scen_dt, "outputs/ia2030_cov_trajectories.csv", row.names = F)
+no_lin_range <- cov2fvp(no_lin_range_cov)
 past_dt <- coverage[year == 2019]
 setnames(past_dt, "coverage", "value")
 cov_dt <- rbind(past_dt, no_lin_range, fill = T)
