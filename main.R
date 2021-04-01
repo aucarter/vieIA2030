@@ -11,35 +11,60 @@ plot_strata_fit(pred_all)
 impact_factors <- calc_impact_factors(pred_all)
 impact_dt <- rake_impact(impact_factors)
 
-## Merge on coverage scenario onto past for full set of FVPs
-past_dt <- coverage[year < 2020 & year >= 2000]
-setnames(past_dt, "coverage", "value")
-future_dt <- gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
-    intro_year = 2025, intro_range = T)
-fvp_future <- cov2fvp(future_dt)
-scenario_dt <- rbind(past_dt, fvp_future)
-
-## Calculate scenario impact and clean up some missing labels
+## Calculate scenario impact 
+scenario_dt <- get_scen_fvps()
 scenario_impact <- calc_scenario_impact(scenario_dt, impact_dt)
-temp_d_v_table <- copy(d_v_table)
-setnames(temp_d_v_table, "disease", "disease2")
-scenario_impact_add <- merge(scenario_impact$dt[is.na(disease)], temp_d_v_table, by = "vaccine", all.x = T)
-scenario_impact_add[, disease := disease2]
-scenario_impact_add[, c("disease2", "d_v_id") := NULL]
-scenario_impact$dt <- rbind(scenario_impact$dt[!is.na(disease)], scenario_impact_add)
 
-## Plot the total by year
-plot(scenario_impact$year_totals$year, scenario_impact$year_totals$total,
-    ylim = c(0, 6e6), type = "l")
+## Generate draws
+# Efficacy
+efficacy_ui
+efficacy_draws <- merge(efficacy_ui, scenario_impact$dt, by = "disease", allow.cartesian = T)
+efficacy_draws[, deaths_averted_draw := deaths_averted * scalar]
+efficacy_draws[, scalar := NULL]
+efficacy_draws_wide <- dcast(efficacy_draws, ... ~ draw, value.var = "deaths_averted_draw")
+
+# VIMC
+vimc_ui
+vimc_draws <- merge(
+    scenario_impact$dt[!(disease %in% efficacy_ui$disease)],
+    vimc_ui[, .(disease, location_id, year, sd)],
+    by = c("disease", "location_id", "year"),
+    all.x = T
+)
+raking_summary <- summarize_raking(impact_dt)
+vimc_draws <- merge(
+    vimc_draws,
+    raking_summary[, .(vaccine, cv)],
+    by = "vaccine",
+    all.x = T
+)
+vimc_draws[is.na(sd), sd := deaths_averted * cv]
+vimc_draws_mat <- t(mapply(rnorm, n = 200,  mean = vimc_draws$deaths_averted, sd = vimc_draws$sd))
+colnames(vimc_draws_mat) <- paste0("draw_", 1:200)
+vimc_draws_wide <- cbind(
+    vimc_draws[, .(disease, location_id, vaccine, activity_type, impact_factor, year, age, fvps, deaths_averted)],
+    vimc_draws_mat
+)
+
+# Combine and rescale to the mean
+draws_dt <- rbind(efficacy_draws_wide, vimc_draws_wide)
+draws_dt[, draw_mean := rowMeans(draws_dt[, grep("draw", names(draws_dt), value = T), with = F])]
+draws_dt[, mean_diff := deaths_averted - draw_mean]
+draws_dt[, grep("draw", names(draws_dt), value = T) := draws_dt[, grep("draw", names(draws_dt), value = T), with = F] + mean_diff]
+draws_dt[, c("draw_mean", "mean_diff") := NULL]
+
+year_total_draws <- draws_dt[, lapply(.SD, sum), by = .(year), .SDcols = paste0("draw_", 1:200)]
+melt_year_total_draws <- melt(year_total_draws, id.vars = "year")
+year_total_summary <- melt_year_total_draws[, .(mean = mean(value), 
+    lower = quantile(value, 0.05), upper = quantile(value, 0.95)),
+    by = year]
+year_total_summary
+scenario_impact$year_totals
+
 
 ## Save for sharing
-scenario_impact$dt[, vimc := ifelse(location_id %in% unique(vimc_impact$location_id), 1, 0)]
-scenario_impact$dt[, gbd := ifelse(vaccine %in% c("DTP3", "BCG"), 1, 0)]
-scenario_impact$dt[vimc == 1 & gbd == 0, label := "VIMC10 (VIMC locations)"]
-scenario_impact$dt[vimc == 0 & gbd == 0, label := "Imputed VIMC10 (non-VIMC locations)"]
-scenario_impact$dt[gbd == 1, label := "GBD4 (All locations)"]
 out_dt <- merge(
-    scenario_impact$dt[, .(location_id, year, disease, vaccine, activity_type, deaths_averted)],
+    draws_dt,
     loc_table[, .(location_id, location_name, location_iso3, region, income_group, gavi73)],
     by = "location_id"
 )
@@ -53,113 +78,28 @@ out_dt <- merge(out_dt, cohort_dt, by = c("location_id", "year"))
 total_dt <- wpp_input[, .(nx = sum(nx)), by = .(location_id, year)]
 setnames(total_dt, "nx", "total_pop")
 out_dt <- merge(out_dt, total_dt, by = c("location_id", "year"))
-
-
+setcolorder(
+    out_dt, 
+    c(
+        "location_name", "location_iso3", "location_id", "year", "disease", 
+        "vaccine", "activity_type", "age", "impact_factor", "fvps", "deaths_averted",
+        "region", "income_group", "gavi73", "cohort_size", "total_pop", paste0("draw_", 1:200)
+    )
+)
 write.csv(out_dt, "outputs/reference_results.csv", row.names = F)
 
-## Plot total deaths averted by vaccine over time
-pdf("plots/averted_by_vaccine.pdf")
-disease_year_dt <- scenario_impact$dt[, .(averted = sum(deaths_averted, na.rm = T)), by = .(disease, year)] 
-my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
-my_colors2<- rev(RColorBrewer::brewer.pal(name = "Paired", n = 3))
-## By vaccine
-gg <- ggplot(disease_year_dt[year %in% 2000:2030], aes(x = year, y = averted / 1e6, fill = disease)) +
-    geom_area(color = "white", alpha = 0.8) +
-    scale_fill_manual(values = my_colors1, name = "Disease") +
-    theme_bw() + xlab("Year") + ylab("Deaths averted (in millions by YoV)") +
-    ggtitle("Deaths averted by year of vaccination for IA2030 coverage scenario")
-gg
-dev.off()
-
-## Plot with VIMC, non-VIMC, and GBD
-pdf("plots/averted_by_imputation_group.pdf")
-label_year_dt <- scenario_impact$dt[, .(averted = sum(deaths_averted, na.rm = T)), by = .(label, year)] 
-gg <- ggplot(label_year_dt[year %in% 2000:2030], aes(x = year, y = averted / 1e6, fill = label)) +
-    geom_area(color = "white", alpha = 0.8) +
-    scale_fill_manual(values = my_colors2, name = "") +
-    theme_bw() + xlab("Year") + ylab("Deaths averted (in millions by YoV)") +
-    theme(legend.position = "bottom") +
-    ggtitle("Deaths averted by year of vaccination for IA2030 coverage scenario")
-gg
-dev.off()
-
-## Plot all locations
-scen_dt <- merge(scenario_impact$dt, loc_table[, .(location_id, location_name)], by = "location_id")
-loc_vacc_year_dt <- scen_dt[, .(averted = sum(deaths_averted, na.rm = T)), by = .(location_name, disease, year)] 
-loc_label_year_dt <- scen_dt[, .(averted = sum(deaths_averted, na.rm = T)), by = .(location_name, label, year)] 
-pdf("plots/deaths_averted_by_location.pdf", height = 8, width = 10)
-for(loc in sort(unique(loc_vacc_year_dt$location_name))) {
-    plot_dt1 <- loc_vacc_year_dt[location_name == loc]
-    plot_dt2 <- loc_label_year_dt[location_name == loc]
-    ## By vaccine
-    gg <- ggplot(plot_dt1[year %in% 2000:2030], aes(x = year, y = averted , fill = disease)) +
-        geom_area(color = "white", alpha = 0.8) +
-        scale_fill_manual(values = my_colors1, name = "Vaccine") +
-        theme_bw() + xlab("Year") + ylab("Deaths averted") +
-        ggtitle(loc)
-    print(gg)
-
-    ## Plot with VIMC, non-VIMC, and GBD
-    gg <- ggplot(plot_dt2[year %in% 2000:2030], aes(x = year, y = averted, fill = label)) +
-        geom_area(color = "white", alpha = 0.8) +
-        scale_fill_manual(values = my_colors2, name = "") +
-        theme_bw() + xlab("Year") + ylab("Deaths averted") +
-        ggtitle(loc)
-    print(gg)
-}
-dev.off()
-
-## Plot by region
-dt <- fread("outputs/v02_reference_results.csv")
-dt <- merge(dt, loc_table[, .(location_id, region)])
-region_dt <- dt[, .(deaths_averted = sum(deaths_averted)), by = .(region, year)]
-pdf("plots/region_plots.pdf")
-gg <- ggplot(region_dt, aes(x = year, y = deaths_averted, color = region)) + 
-    geom_line() + theme_bw() + xlab("Year") + ylab("Deaths averted") +
-    ggtitle("Deaths averted by region")
-print(gg)
-dev.off()
-
-## Plot by disease in each region
-region_d_dt <- dt[, .(deaths_averted = sum(deaths_averted)), by = .(region, year, disease)]
-full_dt <- data.table(expand.grid(
-    region = unique(region_d_dt$region),
-    year = unique(region_d_dt$year),
-    disease = unique(region_d_dt$disease)
-))
-region_d_dt <- merge(region_d_dt, full_dt, all.y = T)
-region_d_dt[is.na(deaths_averted), deaths_averted := 0]
-my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
-pdf("plots/region_disease_plots.pdf")
-for(r in unique(region_d_dt$region)) {
-    plot_dt <- region_d_dt[region == r]
-    gg <- ggplot(plot_dt[year %in% 2000:2030], aes(x = year, y = deaths_averted , fill = disease)) +
-    geom_area(color = "white", alpha = 0.8) +
-    scale_fill_manual(values = my_colors1, name = "Vaccine") +
-    theme_bw() + xlab("Year") + ylab("Deaths averted") +
-    ggtitle(r)
-    print(gg)
-
-}
-dev.off()
+upload_object(out_dt, "ia2030_reference_results")
 
 ## Impact by region
 no_lin_range_cov <- gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
     intro_year = 2025, intro_range = T)
-scen_dt <- merge(no_lin_range_cov, loc_table[, .(location_id, location_name, location_iso3)], by = "location_id")
+scen_dt <- merge(
+    no_lin_range_cov,
+    loc_table[, .(location_id, location_name, location_iso3)],
+    by = "location_id"
+)
 scen_dt <- merge(scen_dt, v_at_table, by = "v_at_id")
 write.csv(scen_dt, "outputs/ia2030_cov_trajectories.csv", row.names = F)
-no_lin_range <- cov2fvp(no_lin_range_cov)
-past_dt <- coverage[year == 2019]
-setnames(past_dt, "coverage", "value")
-cov_dt <- rbind(past_dt, no_lin_range, fill = T)
-scenario_impact <- calc_scenario_impact(cov_dt, impact_dt)
-temp_d_v_table <- copy(d_v_table)
-setnames(temp_d_v_table, "disease", "disease2")
-scenario_impact_add <- merge(scenario_impact$dt[is.na(disease)], temp_d_v_table, by = "vaccine", all.x = T)
-scenario_impact_add[, disease := disease2]
-scenario_impact_add[, c("disease2", "d_v_id") := NULL]
-scenario_impact$dt <- rbind(scenario_impact$dt[!is.na(disease)], scenario_impact_add)
 dt <- scenario_impact$dt
 dt <- merge(dt, loc_table[, .(location_id, region)], by = "location_id")
 baseline_dt <- dt[year == 2019]
@@ -178,20 +118,8 @@ table_totals <- table_dt[, .(total = sum(deaths_averted, na.rm = T),
     ]
 write.csv(table_totals, "outputs/detailed_results.csv", row.names = F)
 
-global_dt <- table_totals[, .(deaths_averted = sum(deaths_averted, na.rm = T)), by = .(year, disease, vaccine, activity_type)]
-global_dt[, region := "Global"]
-region_dt <- table_totals[, .(deaths_averted = sum(deaths_averted, na.rm = T)), by = .(region, year, disease, vaccine, activity_type)]
-all_dt <- rbind(global_dt, region_dt)
-
-write.csv(table_totals, "outputs/results_table_region.csv", row.names = F)
-
 ## 
-no_lin_range <- cov2fvp(gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
-    intro_year = 2025, intro_range = T))
-past_dt <- coverage[year == 2019]
-setnames(past_dt, "coverage", "value")
-cov_dt <- rbind(past_dt, no_lin_range, fill = T)
-dt <- calc_scenario_impact(cov_dt, impact_dt)$dt
+dt <- scenario_impact$dt
 dt <- merge(dt, loc_table[, .(location_id, income_group)], by = "location_id")
 global_dt <- dt[, .(deaths_averted = sum(deaths_averted, na.rm = T)), by = .(year, disease, vaccine, activity_type)]
 global_dt[, income_group := "Global"]
@@ -207,22 +135,8 @@ table_totals <- table_dt[, .(total = sum(deaths_averted, na.rm = T) / 1e5,
     incremental = sum(incremental, na.rm = T) / 1e5), by = income_group]
 write.csv(table_totals, "outputs/results_table_income.csv", row.names = F)
 
-dt[, (deaths_averted)]
-
 
 ## Impact by income
-no_lin_range <- cov2fvp(gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
-    intro_year = 2025, intro_range = T))
-past_dt <- coverage[year == 2019]
-setnames(past_dt, "coverage", "value")
-cov_dt <- rbind(past_dt, no_lin_range, fill = T)
-scenario_impact <- calc_scenario_impact(cov_dt, impact_dt)
-temp_d_v_table <- copy(d_v_table)
-setnames(temp_d_v_table, "disease", "disease2")
-scenario_impact_add <- merge(scenario_impact$dt[is.na(disease)], temp_d_v_table, by = "vaccine", all.x = T)
-scenario_impact_add[, disease := disease2]
-scenario_impact_add[, c("disease2", "d_v_id") := NULL]
-scenario_impact$dt <- rbind(scenario_impact$dt[!is.na(disease)], scenario_impact_add)
 dt <- scenario_impact$dt
 dt <- merge(dt, loc_table[, .(location_id, income_group)], by = "location_id")
 baseline_dt <- dt[year == 2019]
@@ -240,3 +154,4 @@ table_totals <- table_dt[, .(total = sum(deaths_averted, na.rm = T),
         order(income_group, disease, year)
     ]
 write.csv(table_totals, "outputs/detailed_results_income.csv", row.names = F)
+

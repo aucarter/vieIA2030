@@ -87,7 +87,6 @@ plot_age_year <- function(dt, log_transform = F, value_name = "") {
 plot_strata_fit <- function(pred_all) {
     pdf("plots/strata_fit.pdf")
     for (s in unique(pred_all[!(d_v_at_id %in% 20:23)]$d_v_at_id)) {
-        print(s)
         plot_dt <- pred_all[d_v_at_id == s & strata_deaths_averted > 0 & averted > 0]
         min_val <- min(c(plot_dt$strata_deaths_averted, plot_dt$averted))
         s_title <- paste(unlist(d_v_at_table[d_v_at_id  == s, .(vaccine, activity_type)]), collapse = " ")

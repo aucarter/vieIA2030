@@ -161,22 +161,16 @@ get_mx_scen <- function(is, y0, y1, scen, mx, nx) {
     return(mx)
 }
 
-get_scen_coverage <- function(is, y0, y1, scen) {
-    if (scen == "Default") {
-        #TODO: We need to know what the VIMC assumed future coverage is here
-        coverage_dt <- coverage_inputs[location_name == is,
-                                       .(vaccine_id, year, value)] %>%
-            rename(coverage = value)
-    }
-    if (scen == "No vaccination") {
-        coverage_dt <- data.table(expand.grid(
-            vaccine_id = unique(vaccine_table$vaccine_id),
-            year = y0:y1,
-            coverage = 0
-        ))
-    }
+get_scen_fvps <- function() {
+    ## Merge on coverage scenario onto past for full set of FVPs
+    past_dt <- coverage[year < 2020 & year >= 2000]
+    setnames(past_dt, "coverage", "value")
+    future_dt <- gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
+        intro_year = 2025, intro_range = T)
+    fvp_future <- cov2fvp(future_dt)
+    scenario_dt <- rbind(past_dt, fvp_future)
 
-    return(coverage_dt)
+    return(scenario_dt)
 }
 
 get_vimc_deaths_change <- function(is, y0, y1, default_coverage, scen_coverage,

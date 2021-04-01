@@ -8,6 +8,11 @@ non_vimc <- data.table(
     vaccine = c("DTP3", "DTP3", "DTP3", "BCG"),
     activity_type = "routine"
 )
-d_v_at_table <- rbind(vimc, non_vimc)
+rub <- data.table(
+    disease = "Rubella",
+    vaccine = "Rubella",
+    activity_type = "combined"
+)
+d_v_at_table <- rbindlist(list(vimc, non_vimc, rub))
 d_v_at_table[, d_v_at_id := .I]
 usethis::use_data(d_v_at_table, overwrite = TRUE)

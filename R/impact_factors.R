@@ -1,5 +1,5 @@
 calc_impact_factors <- function(dt) {
-    dt <- merge(dt, d_v_at_table)
+    dt <- merge(dt, d_v_at_table, by = "d_v_at_id")
     
     # Routine deaths averted
     routine_averted <- dt[
@@ -14,7 +14,7 @@ calc_impact_factors <- function(dt) {
     ]
     
     total_averted <- rbind(routine_averted, campaign_averted)
-    total_averted <- merge(total_averted, d_v_at_table)
+    total_averted <- merge(total_averted, d_v_at_table, by = "d_v_at_id")
 
     # Totals FVPs
     total_fvps <- coverage[year %in% 2000:2030, .(total_fvps = sum(fvps,  na.rm = T)),
@@ -25,12 +25,14 @@ calc_impact_factors <- function(dt) {
     total_dt <- merge(
         total_averted[total_averted > 0], total_fvps,
         by = c("vaccine", "activity_type", "location_id"),
-        all = T
+        all.x = T
     )
 
     # Collapse Rubella to combined
     rub_dt <- total_dt[vaccine == "Rubella", .(total_fvps = sum(total_fvps, na.rm = T), total_averted = sum(total_averted, na.rm = T)), by = .(vaccine, location_id, disease)]
     rub_dt[, activity_type := "combined"]
+    rub_dt <- merge(rub_dt, v_at_table, by = c("vaccine", "activity_type"))
+    rub_dt <- merge(rub_dt, d_v_at_table, by = c("disease", "vaccine", "activity_type"))
     total_dt <- rbind(total_dt[vaccine != "Rubella"], rub_dt, fill = T)
 
     total_dt[, pred_deaths_averted_rate := total_averted / total_fvps]

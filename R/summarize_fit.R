@@ -14,7 +14,9 @@ summarize_raking <- function(impact_dt) {
         .(  median = median(raking_factor),
             mean = mean(raking_factor),
             min = min(raking_factor),
-            max = max(raking_factor)
+            max = max(raking_factor),
+            sd = sd(raking_factor),
+            cv = sd(raking_factor) / mean(raking_factor)
         ),
         by = .(vaccine, activity_type)]
     return(summary)

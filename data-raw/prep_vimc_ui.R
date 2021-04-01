@@ -8,5 +8,9 @@ vimc_ui <- cross_all_2019_iso %>%
     year = as.integer(year), 
     iqr = deaths_impact_q3 - deaths_impact_q1,
     sd = iqr / diff(qnorm(c(0.25, 0.75)))
-  )
+  ) %>%
+  left_join(loc_table[, .(location_iso3, location_id)], by = "location_iso3") %>%
+  as.data.table(.) %>%
+  select(-location_iso3)
+
 usethis::use_data(vimc_ui, overwrite = TRUE)

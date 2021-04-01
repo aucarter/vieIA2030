@@ -5,7 +5,7 @@ calc_scenario_impact <- function(scenario_dt, impact_dt) {
     dt <- merge(
         impact_dt[, .(location_id, disease, vaccine, activity_type, impact_factor)],
         scenario_dt[fvps > 0, .(location_id, year, age, vaccine, activity_type, fvps)],
-        by = c("location_id", "vaccine", "activity_type"), all.y = T,
+        by = c("location_id", "vaccine", "activity_type"), 
         allow.cartesian = T
     )
     dt[, deaths_averted := fvps * impact_factor]
