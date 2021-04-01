@@ -117,11 +117,16 @@ impact_19 <- calc_scenario_impact(dt19, impact_dt)$year_totals
 
 plot_dt[, total := total - impact_19$total]
 
-pdf("plots/incremental_impact_by_scenario.pdf")
-gg <- ggplot(plot_dt, aes(x = year, y = total / 1e6, color = label)) + geom_line() +
+png("outputs/paper/incremental_impact_by_scenario.png", width = 600)
+gg <- ggplot(plot_dt[year > 2020], aes(x = year, y = total / 1e6, color = label)) + geom_line() +
     theme_bw() + theme(legend.position = "bottom", legend.title = element_blank()) +
     guides(color = guide_legend(nrow = 2)) +
     xlab("Year") + ylab("Incremental deaths averted (in millions by YoV)") +
+    scale_x_continuous(breaks = scales::pretty_breaks()) + ylim(0, 1.6) + 
     ggtitle("Incremental deaths averted by year of vaccination for IA2030 coverage scenarios")
 gg
 dev.off()
+
+plot_dt[, total := round(total  / 1e3)]
+cast_plot_dt <- dcast(plot_dt[year > 2020], year ~ label, value.var = "total")
+write.csv(cast_plot_dt, "outputs/paper/scenario_table.csv", row.names = F)

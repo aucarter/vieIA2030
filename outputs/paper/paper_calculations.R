@@ -116,3 +116,15 @@ total_summary[is.na(mean), c("mean", "lower", "upper") := 0]
 total_summary[, column_text := paste0(round(mean  / 1e6, 1), " (", round(lower / 1e6, 1), "-", round(upper / 1e6, 1), ")")]
 cast_total_summary <- dcast(total_summary, total ~ decade, value.var = "column_text")
 write.csv(cast_total_summary, "outputs/paper/total_decade_summary.csv", row.names = F)
+# Gavi
+gavi73_draws <- dt[, lapply(.SD, sum), by = .(gavi73, decade), .SDcols = paste0("draw_", 1:200)]
+melt_gavi73_draws <- melt(gavi73_draws, id.vars = c("gavi73", "decade"))
+gavi73_summary <- melt_gavi73_draws[, .(mean = mean(value), 
+    lower = quantile(value, 0.05), upper = quantile(value, 0.95)),
+    by = .(gavi73, decade)]
+full_dt <- data.table(expand.grid(gavi73 = unique(gavi73_summary$gavi73), decade = unique(gavi73_summary$decade)))
+gavi73_summary <- merge(full_dt, gavi73_summary, by = c("gavi73", "decade"), all.x = T)
+gavi73_summary[is.na(mean), c("mean", "lower", "upper") := 0]
+gavi73_summary[, column_text := paste0(round(mean  / 1e6, 1), " (", round(lower / 1e6, 1), "-", round(upper / 1e6, 1), ")")]
+cast_gavi73_summary <- dcast(gavi73_summary, gavi73 ~ decade, value.var = "column_text")
+write.csv(cast_gavi73_summary, "outputs/paper/gavi73_decade_summary.csv", row.names = F)
