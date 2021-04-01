@@ -62,3 +62,57 @@ prop <- unlist(gavi73_draws / total_draws)
 gavi73_summary <- data.table(mean = mean(prop), 
     lower = quantile(prop, 0.05), upper = quantile(prop, 0.95))
 write.csv(gavi73_summary, "outputs/paper/gavi73_summary.csv", row.names = F)
+
+## Table 2
+dt[, decade := "2001-2010"]
+dt[year > 2010, decade := "2011-2020"]
+dt[year > 2020, decade := "2021-2030"]
+# Pathogen
+disease_draws <- dt[, lapply(.SD, sum), by = .(disease, decade), .SDcols = paste0("draw_", 1:200)]
+melt_disease_draws <- melt(disease_draws, id.vars = c("disease", "decade"))
+disease_summary <- melt_disease_draws[, .(mean = mean(value), 
+    lower = quantile(value, 0.05), upper = quantile(value, 0.95)),
+    by = .(disease, decade)]
+full_dt <- data.table(expand.grid(disease = unique(disease_summary$disease), decade = unique(disease_summary$decade)))
+disease_summary <- merge(full_dt, disease_summary, by = c("disease", "decade"), all.x = T)
+disease_summary[is.na(mean), c("mean", "lower", "upper") := 0]
+disease_summary[, column_text := paste0(round(mean  / 1e6, 1), " (", round(lower / 1e6, 1), "-", round(upper / 1e6, 1), ")")]
+cast_disease_summary <- dcast(disease_summary, disease ~ decade, value.var = "column_text")
+write.csv(cast_disease_summary, "outputs/paper/disease_decade_summary.csv", row.names = F)
+# Region
+region_draws <- dt[, lapply(.SD, sum), by = .(region, decade), .SDcols = paste0("draw_", 1:200)]
+melt_region_draws <- melt(region_draws, id.vars = c("region", "decade"))
+region_summary <- melt_region_draws[, .(mean = mean(value), 
+    lower = quantile(value, 0.05), upper = quantile(value, 0.95)),
+    by = .(region, decade)]
+full_dt <- data.table(expand.grid(region = unique(region_summary$region), decade = unique(region_summary$decade)))
+region_summary <- merge(full_dt, region_summary, by = c("region", "decade"), all.x = T)
+region_summary[is.na(mean), c("mean", "lower", "upper") := 0]
+region_summary[, column_text := paste0(round(mean  / 1e6, 1), " (", round(lower / 1e6, 1), "-", round(upper / 1e6, 1), ")")]
+cast_region_summary <- dcast(region_summary, region ~ decade, value.var = "column_text")
+write.csv(cast_region_summary, "outputs/paper/region_decade_summary.csv", row.names = F)
+# Income group
+income_group_draws <- dt[, lapply(.SD, sum), by = .(income_group, decade), .SDcols = paste0("draw_", 1:200)]
+melt_income_group_draws <- melt(income_group_draws, id.vars = c("income_group", "decade"))
+income_group_summary <- melt_income_group_draws[, .(mean = mean(value), 
+    lower = quantile(value, 0.05), upper = quantile(value, 0.95)),
+    by = .(income_group, decade)]
+full_dt <- data.table(expand.grid(income_group = unique(income_group_summary$income_group), decade = unique(income_group_summary$decade)))
+income_group_summary <- merge(full_dt, income_group_summary, by = c("income_group", "decade"), all.x = T)
+income_group_summary[is.na(mean), c("mean", "lower", "upper") := 0]
+income_group_summary[, column_text := paste0(round(mean  / 1e6, 1), " (", round(lower / 1e6, 1), "-", round(upper / 1e6, 1), ")")]
+cast_income_group_summary <- dcast(income_group_summary, income_group ~ decade, value.var = "column_text")
+write.csv(cast_income_group_summary, "outputs/paper/income_group_decade_summary.csv", row.names = F)
+# Total
+dt[, total := "Total"]
+total_draws <- dt[, lapply(.SD, sum), by = .(total, decade), .SDcols = paste0("draw_", 1:200)]
+melt_total_draws <- melt(total_draws, id.vars = c("total", "decade"))
+total_summary <- melt_total_draws[, .(mean = mean(value), 
+    lower = quantile(value, 0.05), upper = quantile(value, 0.95)),
+    by = .(total, decade)]
+full_dt <- data.table(expand.grid(total = unique(total_summary$total), decade = unique(total_summary$decade)))
+total_summary <- merge(full_dt, total_summary, by = c("total", "decade"), all.x = T)
+total_summary[is.na(mean), c("mean", "lower", "upper") := 0]
+total_summary[, column_text := paste0(round(mean  / 1e6, 1), " (", round(lower / 1e6, 1), "-", round(upper / 1e6, 1), ")")]
+cast_total_summary <- dcast(total_summary, total ~ decade, value.var = "column_text")
+write.csv(cast_total_summary, "outputs/paper/total_decade_summary.csv", row.names = F)
