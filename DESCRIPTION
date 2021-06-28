@@ -31,7 +31,8 @@ Imports:
     rgeos,
     utils,
     viridis,
-    bigrquery
+    bigrquery,
+    dbplyr
 Suggests: 
     knitr,
     rmarkdown,
