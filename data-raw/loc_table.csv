@@ -93,7 +93,7 @@ location_id,location_name,location_iso3,gbd_alt_name,wpp_name,wpp_location_code,
 30,Cambodia,KHM,Cambodia,Cambodia,116,WPRO,0,1,Cambodia,0
 91,Kiribati,KIR,Kiribati,Kiribati,296,WPRO,0,0,Kiribati,0
 146,Saint Kitts and Nevis,KNA,Saint Kitts and Nevis,NA,NA,PAHO,0,0,Saint Kitts and Nevis,0
-141,Republic of Korea,KOR,South Korea,Republic of Korea,410,EMRO,0,1,South Korea,0
+141,Republic of Korea,KOR,South Korea,Republic of Korea,410,WPRO,0,1,South Korea,0
 92,Kuwait,KWT,Kuwait,Kuwait,414,EMRO,0,0,Kuwait,0
 94,Lao People's Democratic Republic,LAO,Laos,Lao People's Dem. Republic,418,WPRO,0,1,Laos,0
 96,Lebanon,LBN,Lebanon,Lebanon,422,EMRO,0,0,Lebanon,0
@@ -144,7 +144,7 @@ location_id,location_name,location_iso3,gbd_alt_name,wpp_name,wpp_location_code,
 47,Democratic People's Republic of Korea,PRK,North Korea,Dem. People's Rep. of Korea,408,SEARO,0,1,North Korea,0
 139,Portugal,PRT,Portugal,Portugal,620,EURO,0,0,Portugal,0
 135,Paraguay,PRY,Paraguay,Paraguay,600,PAHO,1,0,Paraguay,0
-140,Qatar,QAT,Qatar,Qatar,634,WPRO,0,0,Qatar,0
+140,Qatar,QAT,Qatar,Qatar,634,EMRO,0,0,Qatar,0
 143,Romania,ROU,Romania,Romania,642,EURO,0,0,Romania,0
 144,Russian Federation,RUS,Russia,Russian Federation,643,EURO,0,1,Russia,0
 145,Rwanda,RWA,Rwanda,Rwanda,646,AFRO,0,0,Rwanda,1
