@@ -1,0 +1,211 @@
+"disease","disease_long","year","region","deaths_averted"
+"D","Diphtheria",2019,"AFRO",3301.4610057701
+"D","Diphtheria",2019,"EMRO",1693.53342748743
+"D","Diphtheria",2019,"EURO",328.25379686705
+"D","Diphtheria",2019,"Global",14841.135515672
+"D","Diphtheria",2019,"PAHO",526.753297901762
+"D","Diphtheria",2019,"SEARO",8153.39209031036
+"D","Diphtheria",2019,"WPRO",837.741897335265
+"D","Diphtheria",2020,"AFRO",3345.27074821075
+"D","Diphtheria",2020,"EMRO",1690.04559263665
+"D","Diphtheria",2020,"EURO",321.271274965966
+"D","Diphtheria",2020,"Global",14882.4139693807
+"D","Diphtheria",2020,"PAHO",524.27761436594
+"D","Diphtheria",2020,"SEARO",8175.20646364447
+"D","Diphtheria",2020,"WPRO",826.342275556917
+"HPV","Human papillomavirus",2019,"AFRO",18451.0675732533
+"HPV","Human papillomavirus",2019,"EMRO",0
+"HPV","Human papillomavirus",2019,"EURO",400.129114607737
+"HPV","Human papillomavirus",2019,"Global",22154.4326971791
+"HPV","Human papillomavirus",2019,"PAHO",2623.06277301823
+"HPV","Human papillomavirus",2019,"SEARO",359.911796326338
+"HPV","Human papillomavirus",2019,"WPRO",320.261439973493
+"HPV","Human papillomavirus",2020,"AFRO",116283.901938001
+"HPV","Human papillomavirus",2020,"EMRO",1594.38535717683
+"HPV","Human papillomavirus",2020,"EURO",2915.07319475452
+"HPV","Human papillomavirus",2020,"Global",146550.583680876
+"HPV","Human papillomavirus",2020,"PAHO",9091.08707527714
+"HPV","Human papillomavirus",2020,"SEARO",10576.6294315202
+"HPV","Human papillomavirus",2020,"WPRO",6089.50668414688
+"HepB","Hepatitis B",2019,"AFRO",294799.659679299
+"HepB","Hepatitis B",2019,"EMRO",79050.5249591405
+"HepB","Hepatitis B",2019,"EURO",100592.48931966
+"HepB","Hepatitis B",2019,"Global",1323418.15578752
+"HepB","Hepatitis B",2019,"PAHO",133995.008451961
+"HepB","Hepatitis B",2019,"SEARO",221181.66630302
+"HepB","Hepatitis B",2019,"WPRO",493798.807074436
+"HepB","Hepatitis B",2020,"AFRO",298956.133362476
+"HepB","Hepatitis B",2020,"EMRO",78602.5255035356
+"HepB","Hepatitis B",2020,"EURO",98970.7820320014
+"HepB","Hepatitis B",2020,"Global",1315599.02752461
+"HepB","Hepatitis B",2020,"PAHO",134180.026885036
+"HepB","Hepatitis B",2020,"SEARO",220266.634203166
+"HepB","Hepatitis B",2020,"WPRO",484622.925538391
+"Hib","Haemophilus influenzae type b",2019,"AFRO",96204.5158553038
+"Hib","Haemophilus influenzae type b",2019,"EMRO",29691.182423924
+"Hib","Haemophilus influenzae type b",2019,"EURO",4189.8201437473
+"Hib","Haemophilus influenzae type b",2019,"Global",197365.729269579
+"Hib","Haemophilus influenzae type b",2019,"PAHO",6649.90153782079
+"Hib","Haemophilus influenzae type b",2019,"SEARO",56676.2003423372
+"Hib","Haemophilus influenzae type b",2019,"WPRO",3954.10896644595
+"Hib","Haemophilus influenzae type b",2020,"AFRO",97798.5954789145
+"Hib","Haemophilus influenzae type b",2020,"EMRO",29833.5539976222
+"Hib","Haemophilus influenzae type b",2020,"EURO",4115.65187667004
+"Hib","Haemophilus influenzae type b",2020,"Global",199239.812804237
+"Hib","Haemophilus influenzae type b",2020,"PAHO",6622.40360791626
+"Hib","Haemophilus influenzae type b",2020,"SEARO",56941.315529565
+"Hib","Haemophilus influenzae type b",2020,"WPRO",3928.29231354858
+"JE","Japanese encephalitis",2019,"AFRO",0
+"JE","Japanese encephalitis",2019,"EMRO",0
+"JE","Japanese encephalitis",2019,"EURO",0
+"JE","Japanese encephalitis",2019,"Global",5629.40460569033
+"JE","Japanese encephalitis",2019,"PAHO",0
+"JE","Japanese encephalitis",2019,"SEARO",4328.22539723325
+"JE","Japanese encephalitis",2019,"WPRO",1301.17920845708
+"JE","Japanese encephalitis",2020,"AFRO",0
+"JE","Japanese encephalitis",2020,"EMRO",0
+"JE","Japanese encephalitis",2020,"EURO",0
+"JE","Japanese encephalitis",2020,"Global",5659.63740086783
+"JE","Japanese encephalitis",2020,"PAHO",0
+"JE","Japanese encephalitis",2020,"SEARO",4363.01585463203
+"JE","Japanese encephalitis",2020,"WPRO",1296.6215462358
+"Measles","Measles",2019,"AFRO",757482.085310324
+"Measles","Measles",2019,"EMRO",271406.528693068
+"Measles","Measles",2019,"EURO",68263.4483652506
+"Measles","Measles",2019,"Global",1652594.76347239
+"Measles","Measles",2019,"PAHO",106789.743795076
+"Measles","Measles",2019,"SEARO",328669.547102638
+"Measles","Measles",2019,"WPRO",119983.410206033
+"Measles","Measles",2020,"AFRO",768943.069384227
+"Measles","Measles",2020,"EMRO",272228.731759741
+"Measles","Measles",2020,"EURO",67001.1947988004
+"Measles","Measles",2020,"Global",1662802.49728198
+"Measles","Measles",2020,"PAHO",106384.233455279
+"Measles","Measles",2020,"SEARO",330248.36165444
+"Measles","Measles",2020,"WPRO",117996.906229493
+"MenA","Meningitis A",2019,"AFRO",4264.71479814987
+"MenA","Meningitis A",2019,"EMRO",1516.30474167252
+"MenA","Meningitis A",2019,"EURO",0
+"MenA","Meningitis A",2019,"Global",5781.01953982239
+"MenA","Meningitis A",2019,"PAHO",0
+"MenA","Meningitis A",2019,"SEARO",0
+"MenA","Meningitis A",2019,"WPRO",0
+"MenA","Meningitis A",2020,"AFRO",4367.28882775485
+"MenA","Meningitis A",2020,"EMRO",1539.73261608337
+"MenA","Meningitis A",2020,"EURO",0
+"MenA","Meningitis A",2020,"Global",5907.02144383822
+"MenA","Meningitis A",2020,"PAHO",0
+"MenA","Meningitis A",2020,"SEARO",0
+"MenA","Meningitis A",2020,"WPRO",0
+"P","Pertussis",2019,"AFRO",154212.933775581
+"P","Pertussis",2019,"EMRO",53834.3335729056
+"P","Pertussis",2019,"EURO",11903.0366736492
+"P","Pertussis",2019,"Global",463875.191345889
+"P","Pertussis",2019,"PAHO",17951.6846337282
+"P","Pertussis",2019,"SEARO",197482.582501029
+"P","Pertussis",2019,"WPRO",28490.6201889962
+"P","Pertussis",2020,"AFRO",156354.8695234
+"P","Pertussis",2020,"EMRO",53761.7464668551
+"P","Pertussis",2020,"EURO",11650.4755122404
+"P","Pertussis",2020,"Global",465811.203432966
+"P","Pertussis",2020,"PAHO",17877.8422972128
+"P","Pertussis",2020,"SEARO",198095.384023328
+"P","Pertussis",2020,"WPRO",28070.8856099299
+"PCV","Pneumococcal",2019,"AFRO",88155.9929256716
+"PCV","Pneumococcal",2019,"EMRO",22926.8433621545
+"PCV","Pneumococcal",2019,"EURO",3694.35352071164
+"PCV","Pneumococcal",2019,"Global",136550.397397669
+"PCV","Pneumococcal",2019,"PAHO",6431.75439750513
+"PCV","Pneumococcal",2019,"SEARO",12838.0065861788
+"PCV","Pneumococcal",2019,"WPRO",2503.44660544753
+"PCV","Pneumococcal",2020,"AFRO",89608.0584942312
+"PCV","Pneumococcal",2020,"EMRO",23063.7525840204
+"PCV","Pneumococcal",2020,"EURO",3624.97876974696
+"PCV","Pneumococcal",2020,"Global",138004.527303448
+"PCV","Pneumococcal",2020,"PAHO",6409.38684152443
+"PCV","Pneumococcal",2020,"SEARO",12810.2770350735
+"PCV","Pneumococcal",2020,"WPRO",2488.07357885179
+"Rota","Rotavirus",2019,"AFRO",17142.8865376207
+"Rota","Rotavirus",2019,"EMRO",5571.51088740419
+"Rota","Rotavirus",2019,"EURO",401.283260387363
+"Rota","Rotavirus",2019,"Global",31018.139362667
+"Rota","Rotavirus",2019,"PAHO",1866.52204307144
+"Rota","Rotavirus",2019,"SEARO",5983.91563890657
+"Rota","Rotavirus",2019,"WPRO",52.0209952767709
+"Rota","Rotavirus",2020,"AFRO",17435.6629015288
+"Rota","Rotavirus",2020,"EMRO",5601.76611947532
+"Rota","Rotavirus",2020,"EURO",398.723861721717
+"Rota","Rotavirus",2020,"Global",31389.4364821054
+"Rota","Rotavirus",2020,"PAHO",1857.96540623018
+"Rota","Rotavirus",2020,"SEARO",6043.57551103544
+"Rota","Rotavirus",2020,"WPRO",51.7426821139977
+"Rubella","Rubella",2019,"AFRO",4470.09207230193
+"Rubella","Rubella",2019,"EMRO",2952.94939551693
+"Rubella","Rubella",2019,"EURO",6635.56145286412
+"Rubella","Rubella",2019,"Global",45087.2520821959
+"Rubella","Rubella",2019,"PAHO",11752.7120790204
+"Rubella","Rubella",2019,"SEARO",13599.4027256211
+"Rubella","Rubella",2019,"WPRO",5676.53435687145
+"Rubella","Rubella",2020,"AFRO",4539.83119739885
+"Rubella","Rubella",2020,"EMRO",2909.07623470241
+"Rubella","Rubella",2020,"EURO",6544.4982155528
+"Rubella","Rubella",2020,"Global",44991.1546837046
+"Rubella","Rubella",2020,"PAHO",11730.6929613634
+"Rubella","Rubella",2020,"SEARO",13667.1919454493
+"Rubella","Rubella",2020,"WPRO",5599.86412923783
+"T","Tetanus",2019,"AFRO",11259.1454317358
+"T","Tetanus",2019,"EMRO",5525.7266553722
+"T","Tetanus",2019,"EURO",1196.79389913274
+"T","Tetanus",2019,"Global",42115.5202821703
+"T","Tetanus",2019,"PAHO",2078.78623860366
+"T","Tetanus",2019,"SEARO",18908.0075241911
+"T","Tetanus",2019,"WPRO",3147.06053313484
+"T","Tetanus",2020,"AFRO",11421.3868966133
+"T","Tetanus",2020,"EMRO",5519.39254804861
+"T","Tetanus",2020,"EURO",1173.111900919
+"T","Tetanus",2020,"Global",42254.8472989003
+"T","Tetanus",2020,"PAHO",2069.48050992625
+"T","Tetanus",2020,"SEARO",18970.6573967984
+"T","Tetanus",2020,"WPRO",3100.81804659476
+"TB","Tuberculosis",2019,"AFRO",44306.2001969227
+"TB","Tuberculosis",2019,"EMRO",12052.1806864565
+"TB","Tuberculosis",2019,"EURO",1384.28090782126
+"TB","Tuberculosis",2019,"Global",115979.810470211
+"TB","Tuberculosis",2019,"PAHO",2501.8524251502
+"TB","Tuberculosis",2019,"SEARO",51374.7187200486
+"TB","Tuberculosis",2019,"WPRO",4360.57753381207
+"TB","Tuberculosis",2020,"AFRO",44909.9011019248
+"TB","Tuberculosis",2020,"EMRO",12069.8934549684
+"TB","Tuberculosis",2020,"EURO",1351.05012360403
+"TB","Tuberculosis",2020,"Global",116657.181011115
+"TB","Tuberculosis",2020,"PAHO",2488.7749532494
+"TB","Tuberculosis",2020,"SEARO",51532.1121252945
+"TB","Tuberculosis",2020,"WPRO",4305.4492520742
+"TOT","Total",2019,"AFRO",1628370.66080635
+"TOT","Total",2019,"EMRO",486221.618805103
+"TOT","Total",2019,"EURO",198989.450454699
+"TOT","Total",2019,"Global",4195497.25050754
+"TOT","Total",2019,"PAHO",297934.174707328
+"TOT","Total",2019,"SEARO",919555.57672784
+"TOT","Total",2019,"WPRO",664425.76900622
+"TOT","Total",2020,"AFRO",1750420.56484744
+"TOT","Total",2020,"EMRO",488414.602234865
+"TOT","Total",2020,"EURO",198066.811560977
+"TOT","Total",2020,"Global",4330931.77798556
+"TOT","Total",2020,"PAHO",303962.010282147
+"TOT","Total",2020,"SEARO",931690.361173948
+"TOT","Total",2020,"WPRO",658377.427886175
+"YF","Yellow Fever",2019,"AFRO",134319.905644417
+"YF","Yellow Fever",2019,"EMRO",0
+"YF","Yellow Fever",2019,"EURO",0
+"YF","Yellow Fever",2019,"Global",139086.298678889
+"YF","Yellow Fever",2019,"PAHO",4766.39303447115
+"YF","Yellow Fever",2019,"SEARO",0
+"YF","Yellow Fever",2019,"WPRO",0
+"YF","Yellow Fever",2020,"AFRO",136456.594992764
+"YF","Yellow Fever",2020,"EMRO",0
+"YF","Yellow Fever",2020,"EURO",0
+"YF","Yellow Fever",2020,"Global",141182.433667529
+"YF","Yellow Fever",2020,"PAHO",4725.83867476535
+"YF","Yellow Fever",2020,"SEARO",0
+"YF","Yellow Fever",2020,"WPRO",0
