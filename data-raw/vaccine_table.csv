@@ -1,15 +1,17 @@
-﻿vaccine_short,vaccine_long,cause_name
-HepB,Hepatitis B,Hepatitis B
-HPV,Human papillomavrius,NA
-Rubella,Rubella,NA
-Rota,Rotavirus,NA
-Measles,Measles,Measles
-PCV,Pneumococcal,NA
-Hib,Haemophilus influenzae type b,NA
-YF,Yellow Fever,NA
-MenA,Meningitis A,NA
-JE,Japanese encephalitis,NA
-D,Diphtheria,Diphtheria
-P,Pertussis,Pertussis
-T,Tetanus,Tetanus
-BCG,Bacille Calmette-Guerin,Tuberculosis
+﻿vaccine,vaccine_long
+HepB,Hepatitis B
+HepB_BD,Hepatitis B (birth-dose)
+HPV,Human papillomavirus
+Rubella,Rubella
+RCV2,Rubella-containing-vaccine (second-dose)
+Rota,Rotavirus
+Measles,Measles
+MCV1,Measles-containing-vaccine (first-dose)
+MCV2,Measles-containing-vaccine (second-dose)
+PCV3,Pneumococcal (third-dose)
+Hib3,Haemophilus influenzae type b (third-dose)
+YF,Yellow Fever
+MenA,Meningitis A
+JE,Japanese encephalitis
+DTP3,Diphtheria-tetanus-pertussis (third-dose)
+BCG,Bacille Calmette-Guerin

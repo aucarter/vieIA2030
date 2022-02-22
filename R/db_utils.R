@@ -1,14 +1,18 @@
 open_connection <- function() {
-    my_db <- DBI::dbConnect(RSQLite::SQLite(), dbname = "vieIA2030.db")
+    bigrquery::bq_auth(path = "gcs_creds.json")
+    my_db <- DBI::dbConnect(
+        bigrquery::bigquery(),
+        project = "vaccine-impact",
+        dataset = "data"
+    )
 
     return(my_db)
 }
 
 #' Generates the SQLite database with input data
 gen_db <- function() {
-    if (!file.exists("vieIA2030.db")) {
-        message("No database found -- building now")
-
+    response <- menu(c("Yes", "No"), title = "Delete and rebuild database?")
+    if (response == 1) {
         message("   - Prepping vaccine coverage...")
         source("data-raw/coverage.R")
 
@@ -29,7 +33,6 @@ gen_db <- function() {
     }
 }
 
-
 list_db_tables <- function() {
     mydb <- open_connection()
     tables <- DBI::dbListTables(mydb)
@@ -47,22 +50,22 @@ db_pull <- function(table, iso3_list = NULL, append_names = F) {
     mydb <- open_connection()
     dt <- as.data.table(
         tbl(mydb, table) %>%
-        filter(location_id %in% loc_ids) %>%
+        # filter(location_id %in% loc_ids) %>%
         collect()
     )
     DBI::dbDisconnect(mydb)
-    if(append_names) {
-        if("location_id" %in% names(dt)) {
-                        left_join(
+    if (append_names) {
+        if ("location_id" %in% names(dt)) {
+            dt <- left_join(
                 dt,
-                loc_table[, .(location_id, location_iso3)],
+                loc_table[, .(location_id, location_iso3, location_name)],
                 by = "location_id"
             )
         }
         if ("vaccine_id" %in% names(dt)) {
             dt <- left_join(
-                dt, 
-                vaccine_table[, .(vaccine_id, vaccine_short)], 
+                dt,
+                vaccine_table[, .(vaccine_id, vaccine_short)],
                 by = "vaccine_id"
             )
         }
@@ -71,12 +74,20 @@ db_pull <- function(table, iso3_list = NULL, append_names = F) {
     return(dt)
 }
 
-load_table_list <- function(table_list) {
-    unloaded_data <- setdiff(table_list, ls())
+load_tables <- function(table_list) {
+    unloaded_data <- setdiff(table_list, ls(envir = .GlobalEnv))
     if (length(unloaded_data) > 0) {
         temp <- lapply(unloaded_data, function(table) {
             dt <- db_pull(table)
             assign(table, dt, envir = .GlobalEnv)
         })
     }
+}
+
+upload_object <- function(object, name) {
+    file <- paste0(name, ".csv")
+    func_path <- system.file("upload_file.py", package = "vieIA2030")
+    write.csv(object, file, row.names = F)
+    system(paste("python3", func_path, file, name))
+    file.remove(file)
 }

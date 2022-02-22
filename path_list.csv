@@ -1,0 +1,22 @@
+﻿No,Pathogen,Universal vaccine a,Immunization schedule (in the models),Models
+,,,,
+1,Hepatitis B virus,Yes,Birth dose and three infant doses (<1 year),Center for Disease Analysis (dynamic); Imperial College London (dynamic); independent model developed by Goldstein and colleagues15 (static) 
+2,Haemophilus influenzae type B,Yes,Three infant doses (<1 year),Johns Hopkins University (static); LSHTM (static) 
+,,,,
+3,Human papillomavirus,Yes,Two doses for adolescent girls (9–14 years),Harvard School of Public Health (static); LSHTM (static)
+4,Japanese encephalitisd,No,One infant dose (<1 year),National University of Singapore (dynamic); University of Notre Dame (dynamic) 
+5,Measles,Yes,"First dose at ≤1 year, second dose at <2 years",LSHTM (dynamic); Pennsylvania State University (dynamic) 
+6,Neisseria meningitidis serogroup A (MenA)e,No,One infant dose (<1 year),University of Cambridge (dynamic); Kaiser Permanente Washington (dynamic) 
+,,,,
+7,Streptococcus pneumoniae (PCV),Yes,Three infant doses (<1 year),Johns Hopkins University (static); LSHTM (static) 
+8,Rotavirus,Yes,Two infant doses (<1 year),Emory University (dynamic); LSHTM (static) 
+,,,,
+9,Rubella,Yes,"First dose at <1 year, second dose at <2 years",Johns Hopkins University (dynamic); Public Health England (dynamic) 
+,,,,
+10,Yellow feverf,No,One infant dose (<1 year),Imperial College London (static); University of Notre Dame (static) 
+,,,,
+11,Diphtheria,Yes,Three infant doses (<1 year),Data from Global Burden of Disease study
+,,,,
+12,Pertussis,Yes,Three infant doses (<1 year),Data from Global Burden of Disease study
+13,Tetanus,Yes,Three infant doses (<1 year),Data from Global Burden of Disease study
+14,TB(BCG),Yes (only in countries specified),Birth dose,Data from Global Burden of Disease study

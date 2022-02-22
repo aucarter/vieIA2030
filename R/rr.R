@@ -1,178 +1,169 @@
 check_rr <- function(dt) {
-    # Check for missingness
-    if (any(is.na(dt$rr))) {
-        missing_locs <- unique(dt[is.na(rr)]$location_id)
-        missing_names <- loc_table[location_id %in% missing_locs]$location_name
-        warning(paste(
-            "Missing relative-risk for",
-            paste(missing_names, collapse = ", ")
-        ))
-        dt <- dt[!is.na(rr)]
+    # Look for missing coverage where deaths averted are non-zero
+    if (nrow(dt[coverage == 0 & strata_deaths_averted > 0]) > 0) {
+        prop <- round(nrow(dt[coverage == 0 & strata_deaths_averted > 0]) /
+            nrow(dt[strata_deaths_averted > 0]) * 100, 2)
+        warning("Missing coverage in ", prop,
+                "% of location-age-years with deaths averted")
     }
-
     # Check for non-sensical numbers
-    if (any(range(dt$rr) < 0 | range(dt$rr) > 1)) {
-        prop <- round(nrow(dt[rr < 0 | rr > 1]) / nrow(dt) * 100, 2)
+    if (any(range(dt[!is.na(rr)]$rr) < 0 | range(dt[!is.na(rr)]$rr) > 1)) {
+        prop <- round(nrow(dt[coverage > 0 & (rr < 0 | rr > 1)]) /
+                      nrow(dt) * 100, 2)
         warning(paste0(
-            "Over 1 or less than 0 mortality reduction in ", prop, 
+            "Over 1 or less than 0 mortality reduction in ", prop,
             "% of location-age-years"))
     }
 }
 
-vimc_rr <- function(alpha) {
-    # Load data
-    load_table_list(c("vimc_impact", "all_deaths", "coverage_inputs"))
-    # Calculate both-sexes deaths
-    deaths <- all_deaths[, .(deaths_obs = sum(deaths)),
-                         by = .(age, year, location_id)]
-    # Merge on VIMC impact estimates + coverage and calculate relative-risk
-    dt <- left_join(
-            vimc_impact[year %in% 2000:2019],
-            deaths,
-            by = c("age", "year", "location_id")
-        ) %>%
-        rename(vaccine_deaths_averted = value) %>%
-        left_join(
-            coverage_inputs[, .(location_id, year, vaccine_id, value)],
-            by = c("location_id", "year", "vaccine_id")
-        ) %>%
-        rename(coverage = value) %>%
-        mutate(rr = (deaths_obs - (vaccine_deaths_averted *
+vimc_rr <- function(dt, alpha) {
+    out_dt <- copy(dt)
+    out_dt[coverage > 0, rr := (deaths_obs - (strata_deaths_averted *
             (1 - coverage ^ alpha) / coverage ^ alpha)) /
-            (deaths_obs + vaccine_deaths_averted))
-
-    if(nrow(dt[coverage == 0 & vaccine_deaths_averted > 0]) > 0) {
-        prop <- round(nrow(dt[coverage == 0 & vaccine_deaths_averted > 0]) / 
-            nrow(dt[vaccine_deaths_averted > 0]) * 100, 2)
-        warning("Missing coverage in ", prop, "% of location-age-years with deaths averted")
-    }
-
-    out_dt <- dt %>%
-        select(c(location_id, age, year, vaccine_id, deaths_obs,
-                 vaccine_deaths_averted, coverage, rr))
-    
-    check_rr(out_dt)
-
-    return(out_dt)
+            (deaths_obs + strata_deaths_averted)]
+    return(out_dt[])
 }
 
-gbd_rr <- function(alpha, beta) {
+gbd_rr <- function(dt, alpha, beta) {
+    out_dt <- copy(dt)
+    out_dt[coverage > 0, deaths_no := strata_deaths /
+            (1 - beta * efficacy * coverage ^ alpha)]
+    out_dt[coverage > 0, rr :=
+            (deaths_obs - strata_deaths + (1 - beta * efficacy) * deaths_no) /
+            (deaths_obs - strata_deaths + deaths_no)]
+    out_dt[, deaths_no := NULL]
+
+    return(out_dt[])
+}
+
+prep_rr <- function(strata, strata_params) {
+    v <- d_v_at_table[d_v_at_id == strata]$vaccine
+    d <- d_v_at_table[d_v_at_id == strata]$disease
+    at <- d_v_at_table[d_v_at_id == strata]$activity_type
+    v_at <- v_at_table[vaccine == v & activity_type == at]$v_at_id
+    vimc <- disease_table[disease == d]$vimc
     # Load data
-    load_table_list(c("all_deaths", "coverage_inputs", "gbd_vaccine_deaths"))
-    # Merge on VIMC impact estimates + coverage and calculate mortality reduction
-    dt <- left_join(
-        gbd_vaccine_deaths,
-        all_deaths,
-        by = c("age", "year", "location_id", "sex_id")
+    if (vimc) {
+        load_tables(c("vimc_impact", "all_deaths", "coverage"))
+        dt <- copy(vimc_impact)
+        setnames(dt, "deaths_averted", "strata_deaths_averted")
+        dt[, c("sex_id", "strata_deaths") := .(3, NA)]
+        # Calculate both-sexes deaths
+        deaths <- copy(all_deaths)[, .(deaths_obs = sum(deaths)),
+                         by = .(age, year, location_id)]
+        deaths[, sex_id := 3]
+    } else {
+        load_tables(c("gbd_strata_deaths", "all_deaths", "coverage"))
+        dt <- copy(gbd_strata_deaths)
+        setnames(dt, "value", "strata_deaths")
+        dt[, strata_deaths_averted := NA]
+        deaths <- copy(all_deaths)
+        setnames(deaths, "deaths", "deaths_obs")
+    }
+    # All-cause deaths
+    dt <- merge(
+        dt[d_v_at_id == strata],
+        deaths,
+        by = c("age", "year", "location_id", "sex_id"),
+        all =  T
     )
-    # Collapse sex
-    dt <- dt[, .(vaccine_deaths = sum(value), deaths_obs = sum(deaths)),
-        by = .(location_id, year, age, vaccine_id)]
-    # Merge observed coverage and efficiency
-    dt <- dt %>%
-        left_join(
-            coverage_inputs[, .(location_id, year, vaccine_id, value)],
-            by = c("location_id", "year", "vaccine_id")
-        ) %>%
-        left_join(efficacy[, .(mean, vaccine_id)], by = "vaccine_id") %>%
-        rename(efficacy = mean) %>%
-        rename(coverage = value)
-    # Set a cap on BCG effect at age 15
-    dt[vaccine_id == 14 & age >= 15, coverage := 0]
-
+    dt[, d_v_at_id := strata]
+    # Coverage
+    tot_cov <- total_coverage(coverage[v_at_id == v_at & year %in% 2000:2030])
+    #TODO: This collapsing of sex should go away
+    cov_dt <- tot_cov[, .(coverage = mean(value)),
+        by = .(location_id, year, age)]
+    cov_dt[, sex_id := 3]
+    if (!vimc) {
+        cov_dt <- rbindlist(lapply(1:2, function(s) {
+            copy(cov_dt)[, sex_id := s]
+        }))
+    }
+    dt <- merge(dt, cov_dt, by = c("location_id", "year", "age", "sex_id"),
+            all = T
+        )
+    # Efficacy
+    dt[, efficacy := ifelse(vimc, NA, efficacy[vaccine == v]$mean)]
     # Calcualte RR
-    dt <- dt %>%
-        mutate(deaths_no = vaccine_deaths / (1 - beta * efficacy * coverage ^ alpha)) %>%
-        mutate(rr = (deaths_obs - vaccine_deaths + (1 - beta * efficacy) * deaths_no) /
-            (deaths_obs - vaccine_deaths + deaths_no))
+    if (vimc) {
+        dt <- vimc_rr(dt, strata_params$alpha)
+    } else {
+        dt <- gbd_rr(dt, strata_params$alpha, strata_params$beta)
 
-    out_dt <- dt %>%
-        select(c(location_id, age, year, vaccine_id, deaths_obs,
-                 vaccine_deaths, coverage, rr))
-    
+    }
+    out_dt <- dt[, .(location_id, age, year, d_v_at_id, deaths_obs,
+                 strata_deaths_averted, strata_deaths, coverage, rr)]
+    # Check
     check_rr(out_dt)
-
     return(out_dt)
 }
 
 merge_rr_covariates <- function(dt) {
-    dt <- right_join(
-            dt,
-            gbd_cov,
-            by = c("location_id",  "year")
-        ) %>%
-        left_join(
-            vaccine_table[, .(vaccine_id, vaccine_short)],
-            by = "vaccine_id"
-        )
+    # Expand to all locations, years, and ages
+    full_dt <- data.table(expand.grid(
+        location_id = unique(loc_table$location_id),
+        age = 0:95,
+        year = 2000:2095
+    ))
+    dt <- merge(full_dt, dt, by = c("location_id", "age", "year"), all.x = T)
+    # Add mortality
+    load_tables("wpp_input")
+    mx_dt <- wpp_input[, .(mx = mean(mx)), by = .(location_id, year, age)]
+    dt <- merge(dt, mx_dt, by = c("location_id", "age", "year"), all.x = T)
+    # Add GBD covariates(SDI and HAQi)
+    dt <- merge(dt, gbd_cov, by = c("location_id",  "year"), all.x = T)
     return(dt)
 }
 
-impute_vacc_rr <- function(vacc, dt) {
-    print(vacc)
-    fit <- glm(
-        rr ~ haqi + sdi + year + 
-             splines::bs(age, knots = c(2, 5, 10, 25)),
-        data = dt[vaccine_short == vacc & rr < 1 & rr > 0],
-        family = "binomial"
-    )
-    pred_dt <- merge(
-        gbd_cov[, idx := .I],
-        CJ(
-            age = seq(
-                min(dt[vaccine_short == vacc]$age),
-                max(dt[vaccine_short == vacc]$age)
-            ),
-            idx = 1:nrow(gbd_cov)
-        ),
-        by = "idx"
-    )[, idx := NULL]
-    # Merge on coverage
-    pred_dt <- merge(
-        pred_dt, 
-        coverage_inputs[
-            vaccine_id == vaccine_table[vaccine_short == vacc]$vaccine_id,
-            .(year, location_id, value)
-        ],
-        by = c("year", "location_id"), all.x = T
-    )
-    setnames(pred_dt, "value", "coverage")
-    # Merge on deaths
-    deaths <- all_deaths[, .(deaths_obs = sum(deaths)),
-                    by = .(age, year, location_id)]
-    pred_dt <- merge(pred_dt, deaths, by = c("age", "year", "location_id"))
-    # Set a cap on BCG effect at age 15
-    if(vacc == "BCG") {
-        pred_dt[age >= 15, coverage := 0]
-    }
-    pred_dt[, pred := predict(fit, pred_dt)]
-    pred_dt[, pred_rr := exp(pred) / (exp(pred) + 1)]
-    pred_dt[, pred := NULL]
-    pred_dt[, vaccine_short := vacc]
-    out_dt <- merge(
-        pred_dt,
-        dt[, .(location_id, age, year, vaccine_short, rr, vaccine_deaths_averted)],
-        by = c("location_id", "year", "age", "vaccine_short"),
-        all.x = T
-    )
+get_averted_deaths <- function(deaths_obs, coverage, rr, alpha) {
+    averted_deaths <- deaths_obs * (
+            coverage ^ alpha * (1 - rr) / (1 - coverage ^ alpha * (1 - rr))
+        )
 
-    return(out_dt)
+    return(averted_deaths)
 }
 
-impute_rr <- function(alpha, beta) {
-    vimc_dt <- vimc_rr(alpha)
-    gbd_dt <- gbd_rr(alpha, beta)
-    dt <- rbind(vimc_dt, gbd_dt, fill = T)
+impute_strata_rr <- function(strata, params) {
+    message(paste("Imputing relative risk in strata:", strata))
+    strata_params <- params[[as.character(strata)]]
+    dt <- prep_rr(strata, strata_params)
     dt <- merge_rr_covariates(dt)
+    if(nrow(dt[rr < 1 & rr > 0]) == 0) {
+        return(data.table())
+    }
+    fit <- glm(
+        rr ~ haqi + sdi + year + mx +
+             splines::bs(age, knots = strata_params$age_knots),
+        data = dt[rr < 1 & rr > 0],
+        family = "binomial"
+    )
+    dt[, pred := predict(fit, dt)]
+    dt[, pred_rr := ifelse( # for floating point precision
+        pred > 0,
+        1 / (1 + exp(-pred)),
+        exp(pred) / (exp(pred) + 1))]
+    dt[, c("pred", "haqi", "sdi", "mx") := NULL]
+    dt[, d_v_at_id := strata]
 
-    ## Simple model for VIMC imputation
+    dt[, averted := get_averted_deaths(
+        deaths_obs, coverage, pred_rr, strata_params$alpha)]
+
+    return(dt)
+}
+
+impute_all_rr <- function(params, routine_only = TRUE) {
+    if (routine_only) {
+        s_list <- d_v_at_table[activity_type == "routine"]$d_v_at_id
+    } else {
+        s_list <- as.integer(names(params))
+    }
     pred_all <- rbindlist(
         lapply(
-            unique(dt[!is.na(vaccine_short)]$vaccine_short),
-            impute_vacc_rr,
-            dt
-        )
+            s_list,
+            impute_strata_rr,
+            params
+        ),
+        fill = T
     )
-
     return(pred_all)
 }

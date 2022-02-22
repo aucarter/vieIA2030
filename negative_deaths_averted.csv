@@ -1,0 +1,16 @@
+"d_v_at_id","disease","vaccine","activity_type","min_age","max_age","min_deaths_averted","num_neg_deaths_averted"
+3,"HepB","HepB","routine",20,85,-38,4526
+4,"HepB","HepB_BD","routine",1,85,-1,144
+5,"Hib","Hib3","routine",2,4,-110,289
+6,"JE","JE","campaign",0,27,-6,262
+7,"JE","JE","routine",0,28,-4,270
+8,"Measles","MCV1","routine",4,63,-4791,18400
+9,"Measles","MCV2","routine",0,42,-1329,3915
+10,"Measles","Measles","campaign",0,53,-5493,3696
+11,"MenA","MenA","campaign",0,19,-32,68
+12,"MenA","MenA","routine",0,59,-59,306
+13,"PCV","PCV3","routine",2,4,-88,251
+14,"Rota","Rota","routine",3,4,-79,176
+15,"Rubella","RCV2","routine",15,36,-13,62
+16,"Rubella","Rubella","campaign",15,49,-3817,1394
+17,"Rubella","Rubella","routine",15,44,-81,404

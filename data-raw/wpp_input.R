@@ -383,21 +383,27 @@ wpp_input <- wpp_input %>%
   ) %>%
   select(-c("location_name", "location_iso3")) %>%
   filter(!is.na(nx))
-
-# Calculate both-sexes deaths
-temp_wpp_input <- merge(wpp_input, loc_table)
-deaths <- get_all_deaths(2000, 2030, temp_wpp_input)
-deaths <- merge(deaths, loc_table[, .(location_iso3, location_id)])
-deaths[, c("location_name", "location_iso3") := NULL]
-setnames(deaths, "year_id", "year")
-deaths <- merge(
-  deaths, 
+wpp_input <- merge(
+  wpp_input,
   data.table("sex_name" = c("Male", "Female"), sex_id = 1:2),
   by = "sex_name"
 )
-deaths[, sex_name := NULL]
+wpp_input[, sex_name := NULL]
+setnames(wpp_input, "year_id", "year")
+wpp_input[, age := as.integer(age)]
+wpp_input[, year := as.integer(year)]
+wpp_input[, nx := as.integer(nx)]
+wpp_input <- wpp_input[order(location_id, year, age, sex_id),
+                 .(location_id, year, age, sex_id, nx, mx, fx, mig)]
 
-mydb <- open_connection()
-DBI::dbWriteTable(mydb, "wpp_input", wpp_input, overwrite = TRUE)
-DBI::dbWriteTable(mydb, "all_deaths", deaths, overwrite = TRUE)
-DBI::dbDisconnect(mydb)
+# Calculate both-sexes deaths
+temp_wpp_input <- merge(wpp_input, loc_table)
+deaths <- get_all_deaths(2000, 2095, temp_wpp_input)
+deaths <- merge(deaths, loc_table[, .(location_iso3, location_id)])
+deaths[, c("location_name", "location_iso3") := NULL]
+deaths[, year := as.integer(year)]
+deaths <- deaths[order(location_id, year, age, sex_id),
+                 .(location_id, year, age, sex_id, deaths)]
+
+upload_object(wpp_input, "wpp_input")
+upload_object(deaths, "all_deaths")

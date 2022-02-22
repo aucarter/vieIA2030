@@ -5,3 +5,5 @@ supp_data
 .DS_Store
 vieIA2030.db
 .Rhistory
+gcs_creds.json
+reference_results.csv

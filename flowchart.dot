@@ -1,0 +1,81 @@
+digraph flowchart { 
+  graph [fontsize = 20, fontname = Helvetica]
+  node [style = filled, fontsize = 14, fontname = Helvetica]
+  
+  # Legend
+  subgraph cluster_legend {
+    label = "Legend";
+    shape = rectangle;
+    fillcolor = lightgray;
+    ranksep = 0.05;
+    Input [shape = cylinder, fillcolor = aquamarine3, pos = "34, 34!"];
+    Process [shape = rectangle, fillcolor = coral];
+    Output [shape = parallelogram, fillcolor = burlywood3];
+    Input -> Process -> Output [style = invis];
+  }
+
+  # Inputs
+  node [shape = cylinder, fillcolor = aquamarine3]
+  "WPP demography"; "WUENIC coverage"; "VIMC coverage"; "VIMC impact\nby period";
+  "GBD cause-specific\nmortality"; "GBD SDI + HAQ Index"; 
+  "DTP3 IA2030 targets"; "VIMC impact by\n year of vaccination"
+
+  # Processes
+  node [shape = rectangle, fillcolor = coral]
+  "PP" [label = "Population projection"]; "Coverage distribution";
+  "Relative-risk calculation"; "Vaccine-specific\nrelative-risk models"; "Reference projection";
+  "Scale to align\nwith VIMC"; "IA2030 projection"; "Apply alignment scalars";
+  "Interpolation to DTP3 target"; "Directly model impact by YoV"
+
+  # Outputs
+  node [shape = parallelogram, fillcolor = burlywood3]
+  "Calibrated demography"; "Reference coverage"; "Relative-risks"; "Imputed relative-risks";
+  "Reference impact"; "IA2030 impact";"Aligned reference impact";
+  "Alignment scalars"; "Aligned IA2030 impact"; "IA2030 coverage scenario";
+  "Impact factors for\nVIMC vaccines"
+
+  # Edges
+  "WPP demography"->"PP" "PP"->"Calibrated demography"
+
+  "WUENIC coverage"->"Coverage distribution"
+  "VIMC coverage"->"Coverage distribution"
+  "Coverage distribution"->"Reference coverage"
+
+  "VIMC impact\nby period"->"Relative-risk calculation"
+  "GBD cause-specific\nmortality"->"Relative-risk calculation"
+  "Reference coverage"->"Relative-risk calculation"
+  "Calibrated demography"->"Relative-risk calculation"
+  "Relative-risk calculation"->"Relative-risks"
+
+  "GBD SDI + HAQ Index"->"Vaccine-specific\nrelative-risk models"
+  "Relative-risks"->"Vaccine-specific\nrelative-risk models"
+  "Calibrated demography"->"Vaccine-specific\nrelative-risk models"
+  "Vaccine-specific\nrelative-risk models"->"Imputed relative-risks"
+
+  "Imputed relative-risks"->"Reference projection"
+  "Reference coverage"->"Reference projection"
+  "Calibrated demography"->"Reference projection"
+  "Reference projection"->"Reference impact"
+
+  "Reference impact"->"Scale to align\nwith VIMC"
+  "VIMC impact by\n year of vaccination"->"Scale to align\nwith VIMC"
+  "Impact factors for\nVIMC vaccines"->"Scale to align\nwith VIMC"
+  "Scale to align\nwith VIMC"->"Aligned reference impact"
+  "Scale to align\nwith VIMC"->"Alignment scalars"
+
+  "DTP3 IA2030 targets"->"Interpolation to DTP3 target"
+  "Interpolation to DTP3 target"->"IA2030 coverage scenario"
+
+  "Imputed relative-risks"->"IA2030 projection"
+  "IA2030 coverage scenario"->"IA2030 projection"
+  "Calibrated demography"->"IA2030 projection"
+  "IA2030 projection"->"IA2030 impact"
+
+  "IA2030 impact"->"Apply alignment scalars"
+  "Alignment scalars"->"Apply alignment scalars"
+  "Apply alignment scalars"->"Aligned IA2030 impact"
+  
+  "GBD SDI + HAQ Index"->"Directly model impact by YoV"
+  "VIMC impact by\n year of vaccination"->"Directly model impact by YoV"
+  "Directly model impact by YoV"->"Impact factors for\nVIMC vaccines"
+}

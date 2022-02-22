@@ -1,106 +1,157 @@
 ### Fit a model for VIMC mortality reduction
-
 devtools::load_all()
-## Build database if necessary
-gen_db()
 
-## Predict all and investigate results
-b <- 0.8
-a <- 0.5
-pred_all <- impute_rr(alpha = a, beta = b)
+## Predict all and plot results
+params <- jsonlite::fromJSON("params.json")
+pred_all <- impute_all_rr(params, routine_only = T)
+fit_summary <- summarize_fit(pred_all)
+plot_strata_fit(pred_all)
 
-## Add future coverage by fixing at 2019 levels
-last_dt <- copy(pred_all[year == 2019,
-                         .(age, location_id, vaccine_short, coverage)])
-future_dt <- rbindlist(lapply(2020:2030, function(y) {
-    dt <- copy(last_dt)
-    dt[, year := y]
-}))
-setnames(future_dt, "coverage", "scen_coverage")
-scen_dt <- merge(pred_all, future_dt, 
-    by = c("year", "age", "location_id", "vaccine_short"), all.x = T)
-scen_dt[!is.na(scen_coverage), coverage := scen_coverage]
-future_deaths <- all_deaths[year > 2019, .(deaths_obs_future = sum(deaths)),
-                         by = .(age, year, location_id)]
-scen_dt <- merge(scen_dt, future_deaths, 
-    by = c("year", "age", "location_id"), all.x = T)
-scen_dt[!is.na(deaths_obs_future), deaths_obs := deaths_obs_future]
-scen_dt[, averted := get_averted_scen(deaths_obs, coverage, pred_rr, a)]
-scen_dt[, vimc := ifelse(location_id %in% unique(vimc_impact$location_id), 1, 0)]
-scen_dt[, gbd := ifelse(vaccine_short %in% c("D", "T", "P", "BCG"), 1, 0)]
-scen_dt[vimc == 1 & gbd == 0, label := "VIMC10 (VIMC locations)"]
-scen_dt[vimc == 0 & gbd == 0, label := "Imputed VIMC10 (non-VIMC locations)"]
-scen_dt[gbd == 1, label := "GBD4 (All locations)"]
+## Calculate impact factors and rake to VIMC
+impact_factors <- calc_impact_factors(pred_all)
+impact_dt <- rake_impact(impact_factors)
 
-## Plot total deaths averted by vaccine over time
-vacc_year_dt <- scen_dt[, .(averted = sum(averted, na.rm = T)), by = .(vaccine_short, year)] 
-my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue"))
-my_colors2<- rev(RColorBrewer::brewer.pal(name = "Paired", n = 3))
-## By vaccine
-gg <- ggplot(vacc_year_dt[year %in% 2000:2030], aes(x = year, y = averted / 1e6, fill = vaccine_short)) +
-    geom_area(color = "white", alpha = 0.8) +
-    scale_fill_manual(values = my_colors1, name = "Vaccine") +
-    theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") 
-gg
+## Calculate scenario impact 
+scenario_dt <- get_scen_fvps()
+scenario_impact <- calc_scenario_impact(scenario_dt, impact_dt)
 
-## Plot with VIMC, non-VIMC, and GBD
-label_year_dt <- scen_dt[, .(averted = sum(averted, na.rm = T)), by = .(label, year)] 
-gg <- ggplot(label_year_dt[year %in% 2000:2030], aes(x = year, y = averted / 1e6, fill = label)) +
-    geom_area(color = "white", alpha = 0.8) +
-    scale_fill_manual(values = my_colors2, name = "") +
-    theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") 
-gg
+## Generate draws
+# Efficacy
+efficacy_ui
+efficacy_draws <- merge(efficacy_ui, scenario_impact$dt, by = "disease", allow.cartesian = T)
+efficacy_draws[, deaths_averted_draw := deaths_averted * scalar]
+efficacy_draws[, scalar := NULL]
+efficacy_draws_wide <- dcast(efficacy_draws, ... ~ draw, value.var = "deaths_averted_draw")
 
-## Plot all locations
-scen_dt <- merge(scen_dt, loc_table[, .(location_id, location_name)], by = "location_id")
-loc_vacc_year_dt <- scen_dt[, .(averted = sum(averted, na.rm = T)), by = .(location_name, vaccine_short, year)] 
-loc_label_year_dt <- scen_dt[, .(averted = sum(averted, na.rm = T)), by = .(location_name, label, year)] 
-pdf("plots/deaths_averted_by_location.pdf", height = 8, width = 10)
-for(loc in sort(unique(loc_vacc_year_dt$location_name))) {
-    plot_dt1 <- loc_vacc_year_dt[location_name == loc]
-    plot_dt2 <- loc_label_year_dt[location_name == loc]
-    ## By vaccine
-    gg <- ggplot(plot_dt1[year %in% 2000:2030], aes(x = year, y = averted , fill = vaccine_short)) +
-        geom_area(color = "white", alpha = 0.8) +
-        scale_fill_manual(values = my_colors1, name = "Vaccine") +
-        theme_bw() + xlab("Year") + ylab("Deaths averted") +
-        ggtitle(loc)
-    print(gg)
+# VIMC
+vimc_ui
+vimc_draws <- merge(
+    scenario_impact$dt[!(disease %in% efficacy_ui$disease)],
+    vimc_ui[, .(disease, location_id, year, sd)],
+    by = c("disease", "location_id", "year"),
+    all.x = T
+)
+raking_summary <- summarize_raking(impact_dt)
+vimc_draws <- merge(
+    vimc_draws,
+    raking_summary[, .(vaccine, cv)],
+    by = "vaccine",
+    all.x = T
+)
+vimc_draws[is.na(sd), sd := deaths_averted * cv]
+vimc_draws_mat <- t(mapply(rnorm, n = 200,  mean = vimc_draws$deaths_averted, sd = vimc_draws$sd))
+colnames(vimc_draws_mat) <- paste0("draw_", 1:200)
+vimc_draws_wide <- cbind(
+    vimc_draws[, .(disease, location_id, vaccine, activity_type, impact_factor, year, age, fvps, deaths_averted)],
+    vimc_draws_mat
+)
 
-    ## Plot with VIMC, non-VIMC, and GBD
-    gg <- ggplot(plot_dt2[year %in% 2000:2030], aes(x = year, y = averted, fill = label)) +
-        geom_area(color = "white", alpha = 0.8) +
-        scale_fill_manual(values = my_colors2, name = "") +
-        theme_bw() + xlab("Year") + ylab("Deaths averted") +
-        ggtitle(loc)
-    print(gg)
-}
-dev.off()
+# Combine and rescale to the mean
+draws_dt <- rbind(efficacy_draws_wide, vimc_draws_wide)
+draws_dt[, draw_mean := rowMeans(draws_dt[, grep("draw", names(draws_dt), value = T), with = F])]
+draws_dt[, mean_diff := deaths_averted - draw_mean]
+draws_dt[, grep("draw", names(draws_dt), value = T) := draws_dt[, grep("draw", names(draws_dt), value = T), with = F] + mean_diff]
+draws_dt[, c("draw_mean", "mean_diff") := NULL]
 
-## VIMC locations map
-map_locations(unique(vimc_impact$location_iso3), "VIMC Locations")
+year_total_draws <- draws_dt[, lapply(.SD, sum), by = .(year), .SDcols = paste0("draw_", 1:200)]
+melt_year_total_draws <- melt(year_total_draws, id.vars = "year")
+year_total_summary <- melt_year_total_draws[, .(mean = mean(value), 
+    lower = quantile(value, 0.05), upper = quantile(value, 0.95)),
+    by = year]
+year_total_summary
+scenario_impact$year_totals
 
-## Optimal alpha investigation
-alpha_vals <- seq(0.1, 1, 0.1)
-plot_alpha <- function(alpha_vals) {
-    dt <- data.table(expand.grid(x = seq(0, 1, 0.01), alpha = alpha_vals))
-    dt[, y := x ** alpha]
-    gg <- ggplot(dt, aes(x = x, y = y, color = as.factor(alpha))) + 
-        geom_line() + theme_bw() + coord_equal()
-    print(gg)
-}
-plot_alpha(alpha_vals)
-diag_list <- lapply(alpha_vals, function(a) {
-    pred_all <- impute_rr(alpha = a, beta = b)
-    pred_all[, sq_error := (pred_rr - rr)**2]
-    mse <- mean(pred_all$sq_error, na.rm = T)
-    # pred_all[is.na(rr), rr := pred_rr]
-    pred_all[, averted := get_averted_scen(deaths_obs, coverage, pred_rr, a)]
-    # pred_all[!is.na(vaccine_deaths_averted), averted := vaccine_deaths_averted]
-    pred_all[, averted_diff := abs(vaccine_deaths_averted - averted)]
-    tot_averted_error <- sum(pred_all$averted_diff, na.rm = T)
-    return(list(mse, tot_averted_error))
-})
-plot(alpha_vals, unlist(lapply(diag_list, `[[`, 1)))
-plot(alpha_vals, unlist(lapply(diag_list, `[[`, 2)), type = "l", 
-    xlab = "alpha", ylab = "Total error")
+
+## Save for sharing
+out_dt <- merge(
+    draws_dt,
+    loc_table[, .(location_id, location_name, location_iso3, region, income_group, gavi73)],
+    by = "location_id"
+)
+out_dt <- out_dt[order(location_name, disease, vaccine, activity_type)]
+out_dt[is.na(deaths_averted), deaths_averted := 0]
+
+cohort_dt <- wpp_input[age == 0, .(nx = sum(nx)), by = .(location_id, year)]
+setnames(cohort_dt, "nx", "cohort_size")
+out_dt <- merge(out_dt, cohort_dt, by = c("location_id", "year"))
+
+total_dt <- wpp_input[, .(nx = sum(nx)), by = .(location_id, year)]
+setnames(total_dt, "nx", "total_pop")
+out_dt <- merge(out_dt, total_dt, by = c("location_id", "year"))
+setcolorder(
+    out_dt, 
+    c(
+        "location_name", "location_iso3", "location_id", "year", "disease", 
+        "vaccine", "activity_type", "age", "impact_factor", "fvps", "deaths_averted",
+        "region", "income_group", "gavi73", "cohort_size", "total_pop", paste0("draw_", 1:200)
+    )
+)
+write.csv(out_dt, "outputs/reference_results.csv", row.names = F)
+
+upload_object(out_dt, "ia2030_reference_results")
+
+## Impact by region
+no_lin_range_cov <- gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
+    intro_year = 2025, intro_range = T)
+scen_dt <- merge(
+    no_lin_range_cov,
+    loc_table[, .(location_id, location_name, location_iso3)],
+    by = "location_id"
+)
+scen_dt <- merge(scen_dt, v_at_table, by = "v_at_id")
+write.csv(scen_dt, "outputs/ia2030_cov_trajectories.csv", row.names = F)
+dt <- scenario_impact$dt
+dt <- merge(dt, loc_table[, .(location_id, region)], by = "location_id")
+baseline_dt <- dt[year == 2019]
+setnames(baseline_dt, "deaths_averted", "baseline_deaths_averted")
+baseline_dt[, year := NULL]
+table_dt <- merge(dt[year %in% 2021:2030], baseline_dt,
+    by = c("location_id", "region", "disease", "vaccine", "activity_type"),
+    all.x = T)
+table_dt[is.na(baseline_deaths_averted), baseline_deaths_averted := 0]
+table_dt[is.na(deaths_averted), deaths_averted := 0]
+table_dt[activity_type %in% c("routine", "combined"), 
+    incremental := deaths_averted - baseline_deaths_averted]
+table_totals <- table_dt[, .(total = sum(deaths_averted, na.rm = T),
+    incremental = sum(incremental, na.rm = T)), by = .(region, disease, year)][
+        order(region, disease, year)
+    ]
+write.csv(table_totals, "outputs/detailed_results.csv", row.names = F)
+
+## 
+dt <- scenario_impact$dt
+dt <- merge(dt, loc_table[, .(location_id, income_group)], by = "location_id")
+global_dt <- dt[, .(deaths_averted = sum(deaths_averted, na.rm = T)), by = .(year, disease, vaccine, activity_type)]
+global_dt[, income_group := "Global"]
+income_group_dt <- dt[, .(deaths_averted = sum(deaths_averted, na.rm = T)), by = .(income_group, year, disease, vaccine, activity_type)]
+all_dt <- rbind(global_dt, income_group_dt)
+baseline_dt <- all_dt[year == 2019]
+setnames(baseline_dt, "deaths_averted", "baseline_deaths_averted")
+baseline_dt[, year := NULL]
+table_dt <- merge(all_dt[year %in% 2021:2030], baseline_dt,
+    by = c("income_group", "disease", "vaccine", "activity_type"), all.x = T)
+table_dt[, incremental := deaths_averted - baseline_deaths_averted]
+table_totals <- table_dt[, .(total = sum(deaths_averted, na.rm = T) / 1e5,
+    incremental = sum(incremental, na.rm = T) / 1e5), by = income_group]
+write.csv(table_totals, "outputs/results_table_income.csv", row.names = F)
+
+
+## Impact by income
+dt <- scenario_impact$dt
+dt <- merge(dt, loc_table[, .(location_id, income_group)], by = "location_id")
+baseline_dt <- dt[year == 2019]
+setnames(baseline_dt, "deaths_averted", "baseline_deaths_averted")
+baseline_dt[, year := NULL]
+table_dt <- merge(dt[year %in% 2021:2030], baseline_dt,
+    by = c("location_id", "income_group", "disease", "vaccine", "activity_type"),
+    all.x = T)
+table_dt[is.na(baseline_deaths_averted), baseline_deaths_averted := 0]
+table_dt[is.na(deaths_averted), deaths_averted := 0]
+table_dt[activity_type %in% c("routine", "combined"), 
+    incremental := deaths_averted - baseline_deaths_averted]
+table_totals <- table_dt[, .(total = sum(deaths_averted, na.rm = T),
+    incremental = sum(incremental, na.rm = T)), by = .(income_group, disease, year)][
+        order(income_group, disease, year)
+    ]
+write.csv(table_totals, "outputs/detailed_results_income.csv", row.names = F)
+

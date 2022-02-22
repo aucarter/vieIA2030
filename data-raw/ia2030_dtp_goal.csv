@@ -1,0 +1,195 @@
+﻿location_iso3,location_name,value
+AFG,Afghanistan,0.83
+ALB,Albania,0.99
+DZA,Algeria,0.93
+AND,Andorra,0.99
+AGO,Angola,0.83
+ATG,Antigua and Barbuda,0.95
+ARG,Argentina,0.91
+ARM,Armenia,0.93
+AUS,Australia,0.96
+AUT,Austria,0.90
+AZE,Azerbaijan,0.95
+BHS,Bahamas,0.91
+BHR,Bahrain,0.99
+BGD,Bangladesh,0.98
+BRB,Barbados,0.94
+BLR,Belarus,0.99
+BEL,Belgium,0.98
+BLZ,Belize,0.98
+BEN,Benin,0.89
+BTN,Bhutan,0.97
+BOL,Bolivia (Plurinational State of),0.86
+BIH,Bosnia and Herzegovina,0.89
+BWA,Botswana,0.96
+BRA,Brazil,0.85
+BRN,Brunei Darussalam,0.99
+BGR,Bulgaria,0.95
+BFA,Burkina Faso,0.94
+BDI,Burundi,0.95
+CPV,Cabo Verde,0.98
+KHM,Cambodia,0.95
+CMR,Cameroon,0.85
+CAN,Canada,0.94
+CAF,Central African Republic,0.82
+TCD,Chad,0.81
+CHL,Chile,0.96
+CHN,China,0.99
+COL,Colombia,0.95
+COM,Comoros,0.93
+COG,Congo,0.89
+COK,Cook Islands,0.98
+CRI,Costa Rica,0.97
+CIV,Côte d’Ivoire,0.94
+HRV,Croatia,0.95
+CUB,Cuba,0.99
+CYP,Cyprus,0.97
+CZE,Czechia,0.97
+PRK,Democratic People’s Republic of Korea,0.98
+COD,Democratic Republic of the Congo,0.82
+DNK,Denmark,0.99
+DJI,Djibouti,0.90
+DMA,Dominica,0.99
+DOM,Dominican Republic,0.94
+ECU,Ecuador,0.92
+EGY,Egypt,0.97
+SLV,El Salvador,0.89
+GNQ,Equatorial Guinea,0.86
+ERI,Eritrea,0.97
+EST,Estonia,0.94
+SWZ,Eswatini,0.93
+ETH,Ethiopia,0.86
+FJI,Fiji,0.99
+FIN,Finland,0.94
+FRA,France,0.96
+GAB,Gabon,0.84
+GMB,Gambia,0.92
+GEO,Georgia,0.94
+DEU,Germany,0.94
+GHA,Ghana,0.99
+GRC,Greece,0.99
+GRD,Grenada,0.93
+GTM,Guatemala,0.91
+GIN,Guinea,0.80
+GNB,Guinea-Bissau,0.92
+GUY,Guyana,0.99
+HTI,Haiti,0.83
+HND,Honduras,0.92
+HUN,Hungary,0.99
+ISL,Iceland,0.94
+IND,India,0.94
+IDN,Indonesia,0.90
+IRN,Iran (Islamic Republic of),0.99
+IRQ,Iraq,0.92
+IRL,Ireland,0.95
+ISR,Israel,0.98
+ITA,Italy,0.97
+JAM,Jamaica,0.97
+JPN,Japan,0.98
+JOR,Jordan,0.94
+KAZ,Kazakhstan,0.97
+KEN,Kenya,0.94
+KIR,Kiribati,0.97
+KWT,Kuwait,0.94
+KGZ,Kyrgyzstan,0.95
+LAO,Lao People’s Democratic Republic,0.81
+LVA,Latvia,0.99
+LBN,Lebanon,0.92
+LSO,Lesotho,0.91
+LBR,Liberia,0.93
+LBY,Libya,0.84
+LTU,Lithuania,0.93
+LUX,Luxembourg,0.99
+MDG,Madagascar,0.89
+MWI,Malawi,0.97
+MYS,Malaysia,0.98
+MDV,Maldives,0.99
+MLI,Mali,0.88
+MLT,Malta,0.99
+MHL,Marshall Islands,0.93
+MRT,Mauritania,0.91
+MUS,Mauritius,0.97
+MEX,Mexico,0.89
+FSM,Micronesia (Federated States of ),0.94
+MCO,Monaco,0.99
+MNG,Mongolia,0.98
+MNE,Montenegro,0.92
+MAR,Morocco,0.99
+MOZ,Mozambique,0.92
+MMR,Myanmar,0.93
+NAM,Namibia,0.91
+NRU,Nauru,0.96
+NPL,Nepal,0.95
+NLD,Netherlands,0.95
+NZL,New Zealand,0.95
+NIC,Nicaragua,0.98
+NER,Niger,0.92
+NGA,Nigeria,0.81
+NIU,Niue,0.99
+MKD,North Macedonia,0.94
+NOR,Norway,0.97
+OMN,Oman,0.99
+PAK,Pakistan,0.88
+PLW,Palau,0.97
+PAN,Panama,0.93
+PNG,Papua New Guinea,0.71
+PRY,Paraguay,0.92
+PER,Peru,0.93
+PHL,Philippines,0.82
+POL,Poland,0.96
+PRT,Portugal,0.99
+QAT,Qatar,0.98
+KOR,Republic of Korea,0.99
+MDA,Republic of Moldova,0.94
+ROU,Romania,0.92
+RUS,Russian Federation,0.98
+RWA,Rwanda,0.98
+KNA,Saint Kitts and Nevis,0.96
+LCA,Saint Lucia,0.94
+VCT,Saint Vincent and The Grenadines,0.97
+WSM,Samoa,0.89
+SMR,San Marino,0.93
+STP,Sao Tome and Principe,0.97
+SAU,Saudi Arabia,0.98
+SEN,Senegal,0.95
+SRB,Serbia,0.97
+SYC,Seychelles,0.99
+SLE,Sierra Leone,0.98
+SGP,Singapore,0.97
+SVK,Slovakia,0.97
+SVN,Slovenia,0.96
+SLB,Solomon Islands,0.95
+SOM,Somalia,0.77
+ZAF,South Africa,0.87
+SSD,South Sudan,0.75
+ESP,Spain,0.97
+LKA,Sri Lanka,0.99
+SDN,Sudan,0.95
+SUR,Suriname,0.86
+SWE,Sweden,0.99
+CHE,Switzerland,0.97
+SYR,Syrian Arab Republic,0.83
+TJK,Tajikistan,0.98
+THA,Thailand,0.97
+TLS,Timor-Leste,0.91
+TGO,Togo,0.91
+TON,Tonga,0.99
+TTO,Trinidad and Tobago,0.94
+TUN,Tunisia,0.93
+TUR,Turkey,0.99
+TKM,Turkmenistan,0.99
+TUV,Tuvalu,0.94
+UGA,Uganda,0.94
+UKR,Ukraine,0.90
+ARE,United Arab Emirates,0.99
+GBR,United Kingdom of Great Britain and Northern Ireland,0.94
+TZA,United Republic of Tanzania,0.94
+USA,United States of America,0.96
+URY,Uruguay,0.94
+UZB,Uzbekistan,0.98
+VUT,Vanuatu,0.93
+VEN,Venezuela (Bolivarian Republic of),0.88
+VNM,Viet Nam,0.93
+YEM,Yemen,0.86
+ZMB,Zambia,0.93
+ZWE,Zimbabwe,0.93

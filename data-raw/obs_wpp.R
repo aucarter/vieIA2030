@@ -2,7 +2,7 @@ file <- system.file("extdata", "obs_wpp_demo.csv", package = "vieIA2030")
 obs_wpp  <- fread(file) %>%
   filter(!(variant == "Medium variant" & year == 2020)) %>%
   select(-c(variant)) %>%
-  filter(year %in% 1980:2095) %>%
+  filter(year %in% 2000:2095) %>%
   rename(wpp_location_code = location_code) %>%
   right_join(loc_table, by = "wpp_location_code") %>%
   select(-c(wpp_location_code)) %>%
@@ -15,6 +15,4 @@ obs_wpp  <- fread(file) %>%
   ) %>%
   select(-c(gbd_alt_name, wpp_name, location_name, location_iso3))
 
-mydb <- open_connection()
-DBI::dbWriteTable(mydb, "obs_wpp", obs_wpp, overwrite = TRUE)
-DBI::dbDisconnect(mydb)
+upload_object(obs_wpp, "obs_wpp")
