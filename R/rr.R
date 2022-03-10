@@ -111,6 +111,9 @@ merge_rr_covariates <- function(dt) {
     mx_dt <- wpp_input[, .(mx = mean(mx)), by = .(location_id, year, age)]
     dt <- merge(dt, mx_dt, by = c("location_id", "age", "year"), all.x = T)
     # Add GBD covariates(SDI and HAQi)
+    # gbd_cov_add <- gbd_cov_ui[, c("location_id", "year", "sdi", paste0("haqi_", draw))]
+    # setnames(gbd_cov_add, paste0("haqi_", draw), "haqi")
+    # dt <- merge(dt, gbd_cov_add, by = c("location_id",  "year"), all.x = T)
     dt <- merge(dt, gbd_cov, by = c("location_id",  "year"), all.x = T)
     return(dt)
 }
@@ -123,32 +126,42 @@ get_averted_deaths <- function(deaths_obs, coverage, rr, alpha) {
     return(averted_deaths)
 }
 
+inv_logit <- function(x) {
+    pos_index <- x > 0
+    pos_index[is.na(pos_index)] <- T
+    x[pos_index] <- 1 / (1 + exp(-x[pos_index]))
+    x[!pos_index] <- exp(x[!pos_index]) / (exp(x[!pos_index]) + 1)
+    return(x)
+}
+
 impute_strata_rr <- function(strata, params) {
     message(paste("Imputing relative risk in strata:", strata))
     strata_params <- params[[as.character(strata)]]
     dt <- prep_rr(strata, strata_params)
     dt <- merge_rr_covariates(dt)
-    if(nrow(dt[rr < 1 & rr > 0]) == 0) {
+    dt <- dt[coverage != 0 & !is.na(coverage)]
+    if (nrow(dt[rr < 1 & rr > 0]) == 0) {
         return(data.table())
     }
     fit <- glm(
         rr ~ haqi + sdi + year + mx +
-             splines::bs(age, knots = strata_params$age_knots),
+            splines::bs(age, knots = strata_params$age_knots),
         data = dt[rr < 1 & rr > 0],
         family = "binomial"
     )
-    dt[, pred := predict(fit, dt)]
-    dt[, pred_rr := ifelse( # for floating point precision
-        pred > 0,
-        1 / (1 + exp(-pred)),
-        exp(pred) / (exp(pred) + 1))]
-    dt[, c("pred", "haqi", "sdi", "mx") := NULL]
+    fit_idx <- which(!is.na(coef(fit)))
+    betas <- MASS::mvrnorm(200, coef(fit)[fit_idx], vcov(fit)[fit_idx, fit_idx])
+    X <- cbind(rep(1, nrow(dt)), dt$haqi, dt$sdi, dt$year, dt$mx, splines::bs(dt$age, knots = strata_params$age_knots))[, fit_idx]
+    pred <- X %*% t(betas)
+    pred_rr <- inv_logit(pred)
+    averted <- get_averted_deaths(dt$deaths_obs, dt$coverage, pred_rr, 
+        strata_params$alpha)
+    colnames(averted) <- paste0("averted_", 1:200)
+    dt[, c("haqi", "sdi", "mx") := NULL]
     dt[, d_v_at_id := strata]
-
-    dt[, averted := get_averted_deaths(
-        deaths_obs, coverage, pred_rr, strata_params$alpha)]
-
-    return(dt)
+    out_dt <- cbind(dt, averted)
+    saveRDS(out_dt, file = file.path("averted_pred", paste0(strata, ".rds")))
+    return(NULL)
 }
 
 impute_all_rr <- function(params, routine_only = TRUE) {
@@ -157,13 +170,10 @@ impute_all_rr <- function(params, routine_only = TRUE) {
     } else {
         s_list <- as.integer(names(params))
     }
-    pred_all <- rbindlist(
-        lapply(
-            s_list,
-            impute_strata_rr,
-            params
-        ),
-        fill = T
+    lapply(
+        s_list,
+        impute_strata_rr,
+        params
     )
-    return(pred_all)
+    return(NULL)
 }

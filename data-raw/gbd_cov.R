@@ -41,8 +41,22 @@ dt <- dt[-state_idx]
 gbd_haqi <- merge(loc_table, dt, all.x = T, by = "location_name")
 setnames(gbd_haqi, c("year_id", "val"), c("year", "haqi"))
 
-## Ignore uncertainty (for now)
-gbd_haqi[, c("upper", "lower") := NULL]
+# Create uncertainty scalars
+norm_diff <- diff(qnorm(c(0.025, 0.975)))
+gbd_haqi[, sd := (upper - lower) / norm_diff]
+qsamp <- runif(200)
+n_locs <- length(unique(gbd_haqi$location_id))
+n_years <- length(unique(gbd_haqi$year))
+draw_dt <- rbindlist(lapply(1:200, function(d) {
+    qsamp <- rep(runif(n_locs), each = n_years)
+    val <- qnorm(qsamp, gbd_haqi$val, gbd_haqi$sd)
+    data.table(location_id = gbd_haqi$location_id, year = gbd_haqi$year, draw = d, haqi = val)
+}))
+cast_dt <- dcast(draw_dt, location_id + year ~ draw, value.var = "haqi")
+rel_ui_dt <- cbind(cast_dt[, .(location_id, year)],
+    sweep(cast_dt[, 3:202], 1, gbd_haqi$val, '/'))
+
+gbd_haqi[, c("upper", "lower", "sd") := NULL]
 gbd_haqi[, haqi := haqi / 100]
 
 gbd_cov <- merge(
@@ -96,5 +110,16 @@ forecast_gbd_cov <- function(gbd_cov, years_back = 5, plot = F) {
 }
 
 gbd_cov <- forecast_gbd_cov(gbd_cov, years_back = 5, plot = T)
-
 usethis::use_data(gbd_cov, overwrite = TRUE)
+# Add uncertainty
+gbd_cov_ui <- rbindlist(lapply(unique(gbd_cov$location_id), function(l) {
+    l_dt <- gbd_cov[location_id == l]
+    ui_dt <- rel_ui_dt[location_id == l, 3:202]
+    impute_n <- nrow(l_dt) - nrow(ui_dt)
+    ui_dt <- ui_dt[c(1:(nrow(ui_dt) - 1), rep(nrow(ui_dt), impute_n + 1)),]
+    haqi_vals <- sweep(ui_dt, 1, l_dt$sdi, '*')
+    colnames(haqi_vals) <- paste0("haqi_", 1:200)
+    out_dt <- cbind(l_dt[, .(location_id, year, sdi)], haqi_vals)
+}))
+
+usethis::use_data(gbd_cov_ui, overwrite = TRUE)

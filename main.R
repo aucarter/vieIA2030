@@ -3,9 +3,9 @@ devtools::load_all()
 
 ## Predict all and plot results
 params <- jsonlite::fromJSON("params.json")
-pred_all <- impute_all_rr(params, routine_only = T)
-fit_summary <- summarize_fit(pred_all)
-plot_strata_fit(pred_all)
+pred_all <- impute_all_rr(params[20:23], routine_only = T)
+# fit_summary <- summarize_fit(pred_all)
+# plot_strata_fit(pred_all)
 
 ## Calculate impact factors and rake to VIMC
 impact_factors <- calc_impact_factors(pred_all)

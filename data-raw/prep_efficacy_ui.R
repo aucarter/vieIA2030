@@ -1,3 +1,4 @@
+set.seed(1)
 obj <- function(par, data) {
     a = exp(par[1])
     b = exp(par[2])
