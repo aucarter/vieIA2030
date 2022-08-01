@@ -1,0 +1,10 @@
+[x] Confirm draws are accessible for each input
+    [x] Vaccine efficacy
+    [x] GBD deaths
+    [x] VIMC deaths averted
+    [x] HAQI
+[] Generate draws from normal distribution
+[] Set run_num and organize the relevant inputs
+[] Run for each run_num
+[] Scale to match the previous means
+[] Organize the output to match previous
