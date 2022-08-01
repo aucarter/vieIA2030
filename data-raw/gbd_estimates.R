@@ -7,7 +7,7 @@ convert_single_year <- function(gbd_dt) {
     )
     out_dt <- merge(gbd_dt, conv_table, by = "age", allow.cartesian = T)
     out_dt[, age := age_new]
-    out_dt[, value := value / n]
+    out_dt[, c("value", "lower", "upper") := .(value / n, lower / n, upper / n)]
     out_dt[, c("age_new", "n") := NULL]
 
     return(out_dt[])
@@ -21,4 +21,14 @@ gbd_estimates <- gbd_estimates[
     .(location_id, disease, sex_id, age, year, value)
 ]
 gbd_estimates <- merge(gbd_estimates, d_v_at_table, by = "disease")
-upload_object(gbd_estimates, "gbd_strata_deaths")
+# upload_object(gbd_estimates, "gbd_strata_deaths")
+
+load(system.file("extdata", "gbd19_estimates.RData", package = "vieIA2030"))
+gbd_estimates <- convert_single_year(gbd_estimates)
+gbd_estimates_ui <- gbd_estimates[
+    order(location_id, disease, sex_id, age, year),
+    .(location_id, disease, sex_id, age, year, value, lower, upper)
+]
+gbd_estimates_ui[, sd := (upper - lower) / diff(qnorm(c(0.025, 0.975)))]
+gbd_estimates <- merge(gbd_estimates, d_v_at_table, by = "disease")
+upload_object(gbd_estimates_ui, "gbd_strata_deaths_ui")
