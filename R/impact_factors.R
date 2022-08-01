@@ -2,7 +2,7 @@ calc_impact_factors <- function(dt) {
     dt <- merge(dt, d_v_at_table, by = "d_v_at_id")
     files <- list.files("averted_pred", full.names = T)
     total_averted <- rbindlist(lapply(files, function(f) {
-        i_dt <-readRDS(f)
+        i_dt <- readRDS(f)
         i_dt[(year - age) %in% 2000:2030,
             lapply(.SD, sum), by = .(location_id, d_v_at_id), 
             .SDcols = paste0("averted_", 1:200)
