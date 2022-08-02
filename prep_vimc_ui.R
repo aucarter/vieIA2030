@@ -1,7 +1,6 @@
-vimc_ui[, cv := ifelse(deaths_impact_mean == 0, 0, sd / deaths_impact_mean)]
 rm(vimc_impact)
 load_tables(c("vimc_impact"))
-vimc_impact <- merge(vimc_impact[deaths_averted != 0], d_v_at_table[, .(d_v_at_id, disease)], by = )
+vimc_impact <- merge(vimc_impact, d_v_at_table[, .(d_v_at_id, disease)])
 tot_vimc_impact <- vimc_impact[, .(tot_deaths_averted = sum(abs(deaths_averted), na.rm = T)), by = .(disease, location_id, year)]
 vimc_merged <- merge(
     vimc_impact,
@@ -27,9 +26,7 @@ if (unique(vimc_w_ui[is.na(sd)]$disease) != "Rubella" |
     vimc_w_ui[is.na(sd), sd := abs(deaths_averted)]
 }
 
-vimc_draws <- gen_draws(vimc_w_ui[deaths_averted != 0]$deaths_averted, vimc_w_ui[deaths_averted != 0]$sd, 200)
-
-
+vimc_draws <- gen_draws(vimc_w_ui$deaths_averted, vimc_w_ui$sd, 200)
 
 vimc_draws_wide <- cbind(
     vimc_w_ui[, .(disease, location_id, d_v_at_id, year, age)],
