@@ -24,7 +24,7 @@ for(i in 1:4) {
     add_dt <- data.table(
         disease = efficacy[i]$disease,
         draw = paste0("draw_", 1:200),
-        scalar = rbeta(200, opt_pars[1], opt_pars[2]) / (opt_pars[1] / (opt_pars[1] + opt_pars[2]))
+        scalar = rbeta(200, opt_pars[1], opt_pars[2])
     )
     efficacy_ui <- rbind(efficacy_ui, add_dt)
 
