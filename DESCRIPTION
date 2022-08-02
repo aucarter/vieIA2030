@@ -32,7 +32,8 @@ Imports:
     utils,
     viridis,
     bigrquery,
-    dbplyr
+    dbplyr,
+    parallel
 Suggests: 
     knitr,
     rmarkdown,
