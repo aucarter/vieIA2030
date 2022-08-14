@@ -101,11 +101,8 @@ prep_hpv_data <- function() {
     dt[, coverage := as.numeric(value_no_pct) / 100]
     dt <- dt[, .(location_iso3, sex_id, year, vaccine, coverage)]
     # Give the same coverage level to age 8 through 13
-    dt <- rbindlist(lapply(8:13, function(a) {
-        copy_dt <- copy(dt)
-        copy_dt[, age := a]
-    }))
-    dt[, activity_type := "campaign"]
+    dt[, age := 9]
+    dt[, activity_type := "routine"]
 
     return(dt)
 }
