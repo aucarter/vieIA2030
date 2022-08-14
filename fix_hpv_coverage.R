@@ -36,4 +36,4 @@ upload_cov <- rbind(
 )
 upload_cov[, location_iso3 := NULL]
 
-upload_object(coverage, "coverage")
+upload_object(upload_cov, "coverage")
