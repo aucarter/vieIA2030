@@ -1,28 +1,18 @@
-calc_impact_factors <- function(dt) {
-    dt <- merge(dt, d_v_at_table, by = "d_v_at_id")
-    files <- list.files("averted_pred", full.names = T)
-    total_averted <- rbindlist(lapply(files, function(f) {
-        i_dt <- readRDS(f)
-        i_dt[(year - age) %in% 2000:2030,
-            lapply(.SD, sum), by = .(location_id, d_v_at_id), 
-            .SDcols = paste0("averted_", 1:200)
-        ]
-    }))
-        
-    # Routine deaths averted
-    routine_averted <- dt[
-        (year - age) %in% 2000:2030 & activity_type == "routine",
-        .(total_averted = sum(averted, na.rm = T)), by = .(location_id, d_v_at_id)
-    ]
+calc_impact_factors <- function(pred_all) {
+#  # Routine deaths averted
+#     routine_averted <- dt[
+#         (year - age) %in% 2000:2030 & activity_type == "routine",
+#         .(total_averted = sum(averted, na.rm = T)), by = .(location_id, d_v_at_id)
+#     ]
 
-    # Campaign deaths averted
-    campaign_averted <- dt[
-        year %in% 2000:2030 & activity_type == "campaign",
-        .(total_averted = sum(averted, na.rm = T)), by = .(location_id, d_v_at_id)
-    ]
+#     # Campaign deaths averted
+#     campaign_averted <- dt[
+#         year %in% 2000:2030 & activity_type == "campaign",
+#         .(total_averted = sum(averted, na.rm = T)), by = .(location_id, d_v_at_id)
+#     ]
     
-    total_averted <- rbind(routine_averted, campaign_averted)
-    total_averted <- merge(total_averted, d_v_at_table, by = "d_v_at_id")
+    # total_averted <- rbind(routine_averted, campaign_averted)
+    total_averted <- merge(pred_all, d_v_at_table, by = "d_v_at_id")
 
     # Totals FVPs
     total_fvps <- coverage[year %in% 2000:2030, .(total_fvps = sum(fvps,  na.rm = T)),
@@ -45,13 +35,7 @@ calc_impact_factors <- function(dt) {
     total_dt <- total_dt[!is.na(v_at_id)]
 
     total_dt[, pred_deaths_averted_rate := total_averted / total_fvps]
-
-    pred_deaths_averted_rates <- sweep(total_dt[, paste0("averted_", 1:200)], 1, total_dt$total_fvps, "/")
-    pred_deaths_averted_rate <- rowMeans(pred_deaths_averted_rates, na.rm = T)
-    colnames(pred_deaths_averted_rates) <- paste0("pred_deaths_averted_rate_", 1:200)
-    impact_factors <- cbind(total_dt[, .(location_id, vaccine, activity_type, disease)], pred_deaths_averted_rates)
-    impact_factors <- cbind(impact_factors, pred_deaths_averted_rate)
-    return(impact_factors[])
+    return(total_dt[])
 }
 
 rake_impact <- function(impact_factors) {

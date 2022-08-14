@@ -36,36 +36,40 @@ gbd_rr <- function(dt, alpha, beta) {
     return(out_dt[])
 }
 
-prep_rr <- function(strata, strata_params) {
+prep_rr <- function(strata, strata_params, draws) {
     v <- d_v_at_table[d_v_at_id == strata]$vaccine
     d <- d_v_at_table[d_v_at_id == strata]$disease
     at <- d_v_at_table[d_v_at_id == strata]$activity_type
     v_at <- v_at_table[vaccine == v & activity_type == at]$v_at_id
     vimc <- disease_table[disease == d]$vimc
     # Load data
+    load_tables(c("all_deaths", "coverage"))
     if (vimc) {
-        load_tables(c("vimc_impact", "all_deaths", "coverage"))
-        dt <- copy(vimc_impact)
-        setnames(dt, "deaths_averted", "strata_deaths_averted")
+        dt <- vimc_draws_wide[d_v_at_id == strata,  
+            c("disease", "location_id", "d_v_at_id", "age", "year",
+                paste0("draw_", draws$strata_deaths_averted)),
+            with = F]
+        setnames(dt, paste0("draw_", draws$strata_deaths_averted), "strata_deaths_averted")
         dt[, c("sex_id", "strata_deaths") := .(3, NA)]
         # Calculate both-sexes deaths
         deaths <- copy(all_deaths)[, .(deaths_obs = sum(deaths)),
                          by = .(age, year, location_id)]
         deaths[, sex_id := 3]
     } else {
-        load_tables(c("gbd_strata_deaths", "all_deaths", "coverage"))
-        dt <- copy(gbd_strata_deaths)
-        setnames(dt, "value", "strata_deaths")
+        dt <- gbd_draws_wide[disease == d,  
+            c("disease", "location_id", "age", "sex_id", "year",
+                paste0("draw_", draws$strata_deaths)),
+            with = F]
+        setnames(dt, paste0("draw_", draws$strata_deaths), "strata_deaths")
         dt[, strata_deaths_averted := NA]
         deaths <- copy(all_deaths)
         setnames(deaths, "deaths", "deaths_obs")
     }
     # All-cause deaths
     dt <- merge(
-        dt[d_v_at_id == strata],
+        dt,
         deaths,
-        by = c("age", "year", "location_id", "sex_id"),
-        all =  T
+        by = c("age", "year", "location_id", "sex_id")
     )
     dt[, d_v_at_id := strata]
     # Coverage
@@ -79,11 +83,9 @@ prep_rr <- function(strata, strata_params) {
             copy(cov_dt)[, sex_id := s]
         }))
     }
-    dt <- merge(dt, cov_dt, by = c("location_id", "year", "age", "sex_id"),
-            all = T
-        )
+    dt <- merge(dt, cov_dt, by = c("location_id", "year", "age", "sex_id"))
     # Efficacy
-    dt[, efficacy := ifelse(vimc, NA, efficacy[vaccine == v]$mean)]
+    dt[, efficacy := ifelse(vimc, NA, efficacy_ui[disease == d & draw == paste0("draw_", draws$efficacy)]$scalar)]
     # Calcualte RR
     if (vimc) {
         dt <- vimc_rr(dt, strata_params$alpha)
@@ -119,10 +121,12 @@ merge_rr_covariates <- function(dt) {
 }
 
 get_averted_deaths <- function(deaths_obs, coverage, rr, alpha) {
-    averted_deaths <- deaths_obs * (
-            coverage ^ alpha * (1 - rr) / (1 - coverage ^ alpha * (1 - rr))
-        )
-
+    if (rr < 1){
+        averted_fraction  <- coverage ^ alpha * (1 - rr) / (1 - coverage ^ alpha * (1 - rr))
+    } else {
+        averted_fraction <- -1 * coverage * (rr - 1) / ( 1 + coverage * (rr - 1))
+    }
+    averted_deaths <- deaths_obs * averted_fraction
     return(averted_deaths)
 }
 
@@ -134,12 +138,15 @@ inv_logit <- function(x) {
     return(x)
 }
 
-impute_strata_rr <- function(strata, params) {
+impute_strata_rr <- function(strata, params, run) {
+    if (!is.na(run)) {
+        draws <- draw_idx[run_num == run]
+    }
     message(paste("Imputing relative risk in strata:", strata))
     strata_params <- params[[as.character(strata)]]
-    dt <- prep_rr(strata, strata_params)
+    dt <- prep_rr(strata, strata_params, draws)
     dt <- merge_rr_covariates(dt)
-    dt <- dt[coverage != 0 & !is.na(coverage)]
+    # dt <- dt[coverage != 0 & !is.na(coverage)]
     if (nrow(dt[rr < 1 & rr > 0]) == 0) {
         return(data.table())
     }
@@ -150,21 +157,27 @@ impute_strata_rr <- function(strata, params) {
         family = "binomial"
     )
     fit_idx <- which(!is.na(coef(fit)))
-    betas <- MASS::mvrnorm(200, coef(fit)[fit_idx], vcov(fit)[fit_idx, fit_idx])
-    X <- cbind(rep(1, nrow(dt)), dt$haqi, dt$sdi, dt$year, dt$mx, splines::bs(dt$age, knots = strata_params$age_knots))[, fit_idx]
-    pred <- X %*% t(betas)
-    pred_rr <- inv_logit(pred)
-    averted <- get_averted_deaths(dt$deaths_obs, dt$coverage, pred_rr, 
-        strata_params$alpha)
-    colnames(averted) <- paste0("averted_", 1:200)
+    betas <- MASS::mvrnorm(200, coef(fit)[fit_idx], vcov(fit)[fit_idx, fit_idx])[draws$betas,]
+    # Merge on HAQI draw
+    dt <- merge(
+        dt,
+        gbd_cov_ui[, c("location_id", "year", paste0("haqi_", draws$haqi)), with = F],
+        by = c("location_id", "year")
+    )
+    setnames(dt, paste0("haqi_", draws$haqi), "haqi_draw")
+    X <- cbind(rep(1, nrow(dt)), dt$haqi_draw, dt$sdi, dt$year, dt$mx, 
+        splines::bs(dt$age, knots = strata_params$age_knots))[, fit_idx]
+    pred <- X %*% betas
+    dt[, pred_rr := inv_logit(pred)]
     dt[, c("haqi", "sdi", "mx") := NULL]
     dt[, d_v_at_id := strata]
-    out_dt <- cbind(dt, averted)
-    saveRDS(out_dt, file = file.path("averted_pred", paste0(strata, ".rds")))
+    dt[, averted := get_averted_deaths(
+        deaths_obs, coverage, pred_rr, strata_params$alpha)]
+    saveRDS(dt, file = file.path("averted_pred", paste0(strata, "_", run, ".rds")))
     return(NULL)
 }
 
-impute_all_rr <- function(params, routine_only = TRUE) {
+impute_all_rr <- function(params, routine_only = TRUE, run = 1) {
     if (routine_only) {
         s_list <- intersect(
             as.integer(names(params)),
@@ -173,10 +186,12 @@ impute_all_rr <- function(params, routine_only = TRUE) {
     } else {
         s_list <- as.integer(names(params))
     }
-    lapply(
+    parallel::mclapply(
         s_list,
         impute_strata_rr,
-        params
+        params,
+        run,
+        mc.cores = parallel::detectCores()
     )
     return(NULL)
 }

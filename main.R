@@ -1,13 +1,41 @@
 ### Fit a model for VIMC mortality reduction
 devtools::load_all()
-
 ## Predict all and plot results
 params <- jsonlite::fromJSON("params.json")
-pred_all <- impute_all_rr(params[20:23], routine_only = T)
+
+# LHS
+n_draws <- 200
+input_names <- c("efficacy", "strata_deaths_averted", "haqi", "strata_deaths",
+    "betas")
+draw_idx <- data.table::data.table(
+    round(lhs::randomLHS(n_draws, length(input_names)) * n_draws + 0.5)
+)
+names(draw_idx) <- input_names
+run_num <- 1:n_draws
+# TODO: Make this a function rather than putting into global env
+draw_idx <<- cbind(run_num, draw_idx)
+
+for (i in 1:max(draw_idx$run_num)) {
+    message("Run #:", i)
+    pred_all <- impute_all_rr(params, routine_only = T, run = i)
+}
+
 # fit_summary <- summarize_fit(pred_all)
 # plot_strata_fit(pred_all)
 
 ## Calculate impact factors and rake to VIMC
+pred_all <- rbindlist(parallel::mclapply(list.files("averted_pred"), function(f) {
+    split <- strsplit(f, "_")[[1]]
+    id <- as.integer(split[1])
+    draw <- as.integer(gsub(".rds", "", split[2]))
+    dt <- readRDS(file.path("averted_pred", f))
+    dt <- dt[(year - age) %in% 2000:2030, .(total_averted = sum(averted)), 
+        by = .(location_id)]
+    dt[, draw := draw]
+    dt[, d_v_at_id := id]
+    return(dt[, .(location_id, draw, d_v_at_id, total_averted)])
+}, mc.cores = parallel::detectCores()))
+
 impact_factors <- calc_impact_factors(pred_all)
 impact_dt <- rake_impact(impact_factors)
 
