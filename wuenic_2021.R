@@ -55,7 +55,6 @@ dt <- merge(
     results_dt[year %in% 2019:2021, .(location_iso3, year, disease, vaccine, age, impact_factor, fvps, deaths_averted, cohort_size)], 
     by = c("location_iso3", "year", "vaccine"),
     all.y = T)
-dt[location_iso3 %in% special_antigens, cohort_size := target_pop]
 dt[, observed_fvps := observed_coverage * cohort_size]
 dt[, observed_deaths_averted := impact_factor * observed_fvps]
 dt[, lapply(.SD, sum, na.rm = T), by = .(year), .SDcols = c("deaths_averted", "observed_deaths_averted")]
