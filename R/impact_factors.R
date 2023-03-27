@@ -26,12 +26,14 @@ calc_impact_factors <- function(pred_all) {
         all.x = T
     )
 
-    # # Collapse Rubella to combined
-    # rub_dt <- total_dt[vaccine == "Rubella", .(total_fvps = sum(total_fvps, na.rm = T), total_averted = sum(total_averted, na.rm = T)), by = .(vaccine, location_id, disease)]
-    # rub_dt[, activity_type := "combined"]
-    # rub_dt <- merge(rub_dt, v_at_table, by = c("vaccine", "activity_type"))
-    # rub_dt <- merge(rub_dt, d_v_at_table, by = c("disease", "vaccine", "activity_type"))
-    # total_dt <- rbind(total_dt[vaccine != "Rubella"], rub_dt, fill = T)
+    # Collapse Rubella to combined
+    rub_dt <- total_dt[vaccine == "Rubella", 
+        .(total_fvps = sum(total_fvps, na.rm = T), total_averted = sum(total_averted, na.rm = T)), 
+        by = .(vaccine, location_id, disease, draw)]
+    rub_dt[, activity_type := "combined"]
+    rub_dt <- merge(rub_dt, v_at_table, by = c("vaccine", "activity_type"))
+    rub_dt <- merge(rub_dt, d_v_at_table, by = c("disease", "vaccine", "activity_type"))
+    total_dt <- rbind(total_dt[vaccine != "Rubella"], rub_dt, fill = T)
     total_dt <- total_dt[!is.na(v_at_id)]
 
     total_dt[, pred_deaths_averted_rate := total_averted / total_fvps]

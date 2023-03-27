@@ -1,9 +1,17 @@
 gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
                              no_covid_effect = 2022, intro_year = 2025,
-                             intro_range = T) {
+                             intro_range = T, new_data = F) {
     # Load 2019 coverage
-    load_tables("coverage")
-    cov_dt <- coverage[year == 2019]
+    if (new_data) {
+        # Put in the new coverage estimates here
+        cov_dt <- coverage_21[year == 2019]
+        setnames(cov_dt, "observed_coverage", "coverage")
+        cov_dt[, fvps := NA]
+    } else {
+        load_tables("coverage")
+        cov_dt <- coverage[year == 2019]
+    }
+
 
     # Iterate through each vaccine (except HPV which is special)
     vaccs <- setdiff(unique(v_at_table[activity_type == "routine"]$v_at_id), 2)
@@ -166,7 +174,7 @@ get_scen_fvps <- function() {
     past_dt <- coverage[year < 2020 & year >= 2000]
     setnames(past_dt, "coverage", "value")
     future_dt <- gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
-        intro_year = 2025, intro_range = T)
+        intro_year = 2025, intro_range = T, new_data = T)
     fvp_future <- cov2fvp(future_dt)
     scenario_dt <- rbind(past_dt, fvp_future)
 

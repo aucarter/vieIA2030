@@ -15,7 +15,9 @@ run_num <- 1:n_draws
 # TODO: Make this a function rather than putting into global env
 draw_idx <<- cbind(run_num, draw_idx)
 
-for (i in 1:max(draw_idx$run_num)) {
+vimc_draws_wide <- readRDS("temp/vimc_draws.rds")
+
+for (i in 89:max(draw_idx$run_num)) {
     message("Run #:", i)
     pred_all <- impute_all_rr(params, routine_only = T, run = i)
 }
@@ -24,17 +26,20 @@ for (i in 1:max(draw_idx$run_num)) {
 # plot_strata_fit(pred_all)
 
 ## Calculate impact factors and rake to VIMC
-pred_all <- rbindlist(parallel::mclapply(list.files("averted_pred"), function(f) {
-    split <- strsplit(f, "_")[[1]]
-    id <- as.integer(split[1])
-    draw <- as.integer(gsub(".rds", "", split[2]))
-    dt <- readRDS(file.path("averted_pred", f))
-    dt <- dt[(year - age) %in% 2000:2030, .(total_averted = sum(averted)), 
-        by = .(location_id)]
-    dt[, draw := draw]
-    dt[, d_v_at_id := id]
-    return(dt[, .(location_id, draw, d_v_at_id, total_averted)])
-}, mc.cores = parallel::detectCores()))
+pred_all <- rbindlist(
+    parallel::mclapply(list.files("averted_pred", pattern = "rds"), function(f) {
+        split <- strsplit(f, "_")[[1]]
+        id <- as.integer(split[1])
+        print(id)
+        draw <- as.integer(gsub(".rds", "", split[2]))
+        dt <- readRDS(file.path("averted_pred", f))
+        dt <- dt[(year - age) %in% 2000:2030, .(total_averted = sum(averted, na.rm = T)), 
+            by = .(location_id)]
+        dt[, draw := draw]
+        dt[, d_v_at_id := id]
+        return(dt[, .(location_id, draw, d_v_at_id, total_averted)])
+    }, mc.cores = parallel::detectCores())
+, fill = T)
 
 impact_factors <- calc_impact_factors(pred_all)
 impact_dt <- rake_impact(impact_factors)

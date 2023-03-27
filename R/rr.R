@@ -50,11 +50,17 @@ prep_rr <- function(strata, strata_params, draws) {
                 paste0("draw_", draws$strata_deaths_averted)),
             with = F]
         setnames(dt, paste0("draw_", draws$strata_deaths_averted), "strata_deaths_averted")
-        dt[, c("sex_id", "strata_deaths") := .(3, NA)]
-        # Calculate both-sexes deaths
-        deaths <- copy(all_deaths)[, .(deaths_obs = sum(deaths)),
-                         by = .(age, year, location_id)]
-        deaths[, sex_id := 3]
+        if(v_at != 2) {
+            dt[, c("sex_id", "strata_deaths") := .(3, NA)]
+             # Calculate both-sexes deaths
+            deaths <- copy(all_deaths)[, .(deaths_obs = sum(deaths)),
+                            by = .(age, year, location_id)]
+            deaths[, sex_id := 3]
+        } else {
+            dt[, c("sex_id", "strata_deaths") := .(2, NA)]
+            deaths <- copy(all_deaths)
+            setnames(deaths, "deaths", "deaths_obs")
+        }
     } else {
         dt <- gbd_draws_wide[disease == d,  
             c("disease", "location_id", "age", "sex_id", "year",
@@ -69,21 +75,27 @@ prep_rr <- function(strata, strata_params, draws) {
     dt <- merge(
         dt,
         deaths,
-        by = c("age", "year", "location_id", "sex_id")
+        by = c("age", "year", "location_id", "sex_id"), all.y = T
     )
     dt[, d_v_at_id := strata]
     # Coverage
     tot_cov <- total_coverage(coverage[v_at_id == v_at & year %in% 2000:2030])
     #TODO: This collapsing of sex should go away
-    cov_dt <- tot_cov[, .(coverage = mean(value)),
-        by = .(location_id, year, age)]
-    cov_dt[, sex_id := 3]
-    if (!vimc) {
-        cov_dt <- rbindlist(lapply(1:2, function(s) {
-            copy(cov_dt)[, sex_id := s]
-        }))
+    if(v_at != 2) {
+        cov_dt <- tot_cov[, .(coverage = mean(value)),
+            by = .(location_id, year, age)]
+        cov_dt[, sex_id := 3]
+        if (!vimc) {
+            cov_dt <- rbindlist(lapply(1:2, function(s) {
+                    copy(cov_dt)[, sex_id := s]
+                }))
+        }
+    } else {
+        cov_dt <- tot_cov[sex_id == 2]
+        setnames(cov_dt, "value", "coverage")
     }
-    dt <- merge(dt, cov_dt, by = c("location_id", "year", "age", "sex_id"))
+
+    dt <- merge(dt, cov_dt, by = c("location_id", "year", "age", "sex_id"), all.y = T)
     # Efficacy
     dt[, efficacy := ifelse(vimc, NA, efficacy_ui[disease == d & draw == paste0("draw_", draws$efficacy)]$scalar)]
     # Calcualte RR
