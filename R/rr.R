@@ -152,6 +152,7 @@ impute_strata_rr <- function(strata, params) {
 }
 
 impute_all_rr <- function(params, routine_only = TRUE) {
+  browser()
     if (routine_only) {
         s_list <- d_v_at_table[activity_type == "routine"]$d_v_at_id
     } else {

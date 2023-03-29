@@ -3,7 +3,7 @@ devtools::load_all()
 
 ## Predict all and plot results
 params <- jsonlite::fromJSON("params.json")
-pred_all <- impute_all_rr(params, routine_only = T)
+pred_all <- impute_all_rr(params, routine_only = T)  # See rr.R
 fit_summary <- summarize_fit(pred_all)
 plot_strata_fit(pred_all)
 
