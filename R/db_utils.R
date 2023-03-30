@@ -21,7 +21,7 @@ load_tables <- function(...) {
   for (table in tables_to_load) {
     
     # Pull data from database
-    dt <- db_pull(table)
+    dt = db_pull(table)
     
     # Assign to global environment
     assign(table, dt, envir = .GlobalEnv)
@@ -37,23 +37,27 @@ load_tables <- function(...) {
 db_pull <- function(table, iso3_list = NULL, append_names = F) {
   
   # Location IDs - either or all a specified subset
-  if (!is.null(iso3_list)) {
-    loc_ids <- loc_table[location_iso3 %in% iso3_list]$location_id
-  } else {
-    loc_ids <- loc_table$location_id
-  }
+  # if (!is.null(iso3_list)) {
+  #   loc_ids <- loc_table[location_iso3 %in% iso3_list]$location_id
+  # } else {
+  #   loc_ids <- loc_table$location_id
+  # }
   
   # Open database connection
-  mydb <- open_connection()
+  db_con <- open_connection()
+  
+  # Pull the desired table from the database
+  dt = tbl(db_con, table) %>%
+    collect() %>%
+    quiet() %>%
+    # filter(location_id %in% loc_ids) %>%
+    as.data.table()
+  
+  # Close database connection
+  DBI::dbDisconnect(db_con)
   
   browser()
   
-  dt <- as.data.table(
-    tbl(mydb, table) %>%
-      # filter(location_id %in% loc_ids) %>%
-      collect()
-  )
-  DBI::dbDisconnect(mydb)
   if (append_names) {
     if ("location_id" %in% names(dt)) {
       dt <- left_join(
@@ -80,19 +84,16 @@ db_pull <- function(table, iso3_list = NULL, append_names = F) {
 # ---------------------------------------------------------
 open_connection <- function() {
   
+  # Fetch token defined in gcs_creds.json file to authorise database query
   bigrquery::bq_auth(path = "gcs_creds.json")
   
-  browser()
+  # Create a database connecion
+  db_con = DBI::dbConnect(bigrquery::bigquery(),
+                          project = "vaccine-impact",
+                          dataset = "data")
   
-  my_db <- DBI::dbConnect(
-    bigrquery::bigquery(),
-    project = "vaccine-impact",
-    dataset = "data"
-  )
-  
-  return(my_db)
+  return(db_con)
 }
-
 
 # ---------------------------------------------------------
 # Generates the SQLite database with input data
@@ -134,13 +135,20 @@ upload_object <- function(object, name) {
 }
 
 # ---------------------------------------------------------
-# Helper function (?) to list available database tables
+# Helper function to list available database tables
 # Called by: none
 # ---------------------------------------------------------
 list_db_tables <- function() {
-  mydb <- open_connection()
-  tables <- DBI::dbListTables(mydb)
-  DBI::dbDisconnect(mydb)
+  
+  # Open database connection
+  db_con <- open_connection()
+  
+  # Return tables accessible through this connection
+  tables <- DBI::dbListTables(db_con)
+  
+  # Close the connection
+  DBI::dbDisconnect(db_con)
   
   return(tables)
 }
+
