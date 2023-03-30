@@ -11,17 +11,19 @@
 # ---------------------------------------------------------
 impute_all_rr <- function(params, routine_only = TRUE) {
   
+  message("* Imputing relative risk")
+  
   # IDs of stratas to impute
   if (routine_only) {
-    s_list <- d_v_at_table[activity_type == "routine"]$d_v_at_id
+    strata_ids <- d_v_at_table[activity_type == "routine"]$d_v_at_id
   } else {
-    s_list <- as.integer(names(params))
+    strata_ids <- as.integer(names(params))
   }
   
   # Impute all stratas and bind into single datatable
   pred_all <- rbindlist(
     lapply(
-      s_list,
+      strata_ids,
       impute_strata_rr,
       params
     ),
@@ -39,7 +41,7 @@ impute_all_rr <- function(params, routine_only = TRUE) {
 # ---------------------------------------------------------
 impute_strata_rr <- function(strata, params) {
   
-  message("Imputing relative risk in strata: ", strata)
+  message(" - Strata: ", strata)
   
   # Details of this strata to be imputed
   strata_params <- params[[as.character(strata)]]
@@ -97,15 +99,18 @@ prep_rr <- function(strata, strata_params) {
   if (v_at != strata)
     stop("Yep, previous line necessary")
   
-  # Is this disease reported by VIMC?
-  vimc <- disease_table[disease == d]$vimc
+  # Is this disease reported by VIMC? Otherwise GBD
+  vimc <- disease_table[disease == d]$vimc == 1
   
   # ---- Load data ----
   
-  browser()
-  
+  # For VIMC diseases
   if (vimc) {
-    load_tables(c("vimc_impact", "all_deaths", "coverage"))  # See yov_model.R
+    
+    load_tables("vimc_impact", "all_deaths", "coverage")  # See db_utils.R
+    
+    browser()
+    
     dt <- copy(vimc_impact)
     setnames(dt, "deaths_averted", "strata_deaths_averted")
     dt[, c("sex_id", "strata_deaths") := .(3, NA)]
@@ -113,8 +118,14 @@ prep_rr <- function(strata, strata_params) {
     deaths <- copy(all_deaths)[, .(deaths_obs = sum(deaths)),
                                by = .(age, year, location_id)]
     deaths[, sex_id := 3]
-  } else {
-    load_tables(c("gbd_strata_deaths", "all_deaths", "coverage"))  # See yov_model.R
+  }
+  
+  # For GBD diseases
+  if (!vimc) {
+    
+    browser()
+    
+    load_tables(c("gbd_strata_deaths", "all_deaths", "coverage"))  # See db_utils.R
     dt <- copy(gbd_strata_deaths)
     setnames(dt, "value", "strata_deaths")
     dt[, strata_deaths_averted := NA]
@@ -244,7 +255,7 @@ merge_rr_covariates <- function(dt) {
   ))
   dt <- merge(full_dt, dt, by = c("location_id", "age", "year"), all.x = T)
   # Add mortality
-  load_tables("wpp_input")  # See yov_model.R
+  load_tables("wpp_input")  # See db_utils.R
   mx_dt <- wpp_input[, .(mx = mean(mx)), by = .(location_id, year, age)]
   dt <- merge(dt, mx_dt, by = c("location_id", "age", "year"), all.x = T)
   # Add GBD covariates(SDI and HAQi)

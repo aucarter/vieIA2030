@@ -6,8 +6,8 @@
 devtools::load_all()
 library(data.table);library(lme4); library(ggplot2); library(mgcv)
 
-vimc_dt <- db_pull("vimc_impact")  
-gbd_dt <- db_pull("gbd_strata_deaths")
+vimc_dt <- db_pull("vimc_impact")  # Short hand for load_tables?
+gbd_dt <- db_pull("gbd_strata_deaths")  # Short hand for load_tables?
 gbd_dt <- gbd_dt[, .(deaths_averted = sum(value)), by = .(location_id, d_v_at_id, age, year)]
 
 dt <- rbind(vimc_dt, gbd_dt)
