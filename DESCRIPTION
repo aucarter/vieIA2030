@@ -18,6 +18,7 @@ Imports:
     DT,
     RSQLite,
     dplyr,
+    magrittr,
     highcharter,
     shiny,
     tidyr,

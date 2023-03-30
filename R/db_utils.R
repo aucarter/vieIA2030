@@ -47,7 +47,7 @@ db_pull <- function(table, iso3_list = NULL, append_names = F) {
   db_con <- open_connection()
   
   # Pull the desired table from the database
-  dt = tbl(db_con, table) %>%
+  db_dt = tbl(db_con, table) %>%
     collect() %>%
     quiet() %>%
     # filter(location_id %in% loc_ids) %>%
@@ -58,24 +58,21 @@ db_pull <- function(table, iso3_list = NULL, append_names = F) {
   
   browser()
   
+  # Check if we want to append location and/or vaccine details
   if (append_names) {
-    if ("location_id" %in% names(dt)) {
-      dt <- left_join(
-        dt,
-        loc_table[, .(location_id, location_iso3, location_name)],
-        by = "location_id"
-      )
-    }
-    if ("vaccine_id" %in% names(dt)) {
-      dt <- left_join(
-        dt,
-        vaccine_table[, .(vaccine_id, vaccine_short)],
-        by = "vaccine_id"
-      )
-    }
+    
+    # Details we may wish to append
+    location_dt = loc_table[, .(location_id, location_iso3, location_name)]
+    vaccine_dt  = vaccine_table[, .(vaccine_id, vaccine, vaccine_long)]  # NOTE: can't see where vaccine_short is defined
+    
+    if ("location_id" %in% names(db_dt))
+      db_dt %<>% left_join(location_dt, by = "location_id")
+    
+    if ("vaccine_id" %in% names(db_dt))
+      db_dt %<>% left_join(vaccine_dt, by = "vaccine_id")
   }
   
-  return(dt)
+  return(db_dt)
 }
 
 # ---------------------------------------------------------
