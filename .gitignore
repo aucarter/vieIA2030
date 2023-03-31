@@ -1,6 +1,7 @@
 inst/doc
 docs
 docs/
+cache/
 supp_data
 .DS_Store
 vieIA2030.db
