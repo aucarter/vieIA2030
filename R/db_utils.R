@@ -20,11 +20,15 @@ load_tables <- function(...) {
   # Loop through tables to load
   for (table in tables_to_load) {
     
-    # Pull data from database
-    dt = db_pull(table)
+    # Either load from cache...
+    db_dt = cache_load(o, table)
+    
+    # ... or pull from database
+    if (is.null(db_dt))
+      db_dt = db_pull(table)
     
     # Assign to global environment
-    assign(table, dt, envir = .GlobalEnv)
+    assign(table, db_dt, envir = .GlobalEnv)
   }
   
   browser()
@@ -35,6 +39,8 @@ load_tables <- function(...) {
 # Called by: load_tables(), numerous other funcions
 # ---------------------------------------------------------
 db_pull <- function(table, iso3_list = NULL, append_names = F) {
+  
+  message("  > Loading table '", table, "' from database")
   
   # Location IDs - either or all a specified subset
   # if (!is.null(iso3_list)) {
@@ -56,7 +62,8 @@ db_pull <- function(table, iso3_list = NULL, append_names = F) {
   # Close database connection
   DBI::dbDisconnect(db_con)
   
-  browser()
+  # Save the datatable in cache
+  cache_save(o, table, db_dt)
   
   # Check if we want to append location and/or vaccine details
   if (append_names) {
@@ -92,10 +99,7 @@ open_connection <- function() {
   return(db_con)
 }
 
-# ---------------------------------------------------------
-# Generates the SQLite database with input data
-# Called by: ?
-# ---------------------------------------------------------
+#' Generates the SQLite database with input data
 gen_db <- function() {
   response <- menu(c("Yes", "No"), title = "Delete and rebuild database?")
   if (response == 1) {
@@ -147,5 +151,56 @@ list_db_tables <- function() {
   DBI::dbDisconnect(db_con)
   
   return(tables)
+}
+
+# ---------------------------------------------------------
+# Store recently pulled database table in data cache
+# Called by: db_pull()
+# ---------------------------------------------------------
+cache_save = function(o, table, db_dt) {
+  
+  # Store datatable along with timestamp so we know when it was pulled
+  cache_info = list(db_dt = db_dt, timestamp = Sys.time())
+  
+  # Save list to file in cache dir
+  saveRDS(cache_info, file = paste0(o$pth$cache, table, ".rds"))
+}
+
+# ---------------------------------------------------------
+# Attempt to load database table from cache (conditions must be met)
+# Called by: load_tables()
+# ---------------------------------------------------------
+cache_load = function(o, table) {
+  
+  # NOTE: See force_db_pull and cache_hour_limit limit in options.R
+  
+  # Initiate trivial output
+  db_dt = NULL
+  
+  # Path to (possibly) cached file
+  cache_pth = paste0(o$pth$cache, table, ".rds")
+  
+  # Only continue if not forcing and cache exists
+  if (!o$force_db_pull && file.exists(cache_pth)) {
+    
+    message("  > Loading table '", table, "' from cache")
+    
+    # Load cached table from file
+    cache_info = readRDS(paste0(o$pth$cache, table, ".rds"))
+    
+    # Time limit for this cached table to remain valid for loading
+    cache_limit = cache_info$timestamp + lubridate::hours(o$cache_hour_limit)
+    
+    # Assign datatable if within the time limit
+    if (Sys.time() < cache_limit) {
+      db_dt = cache_info$db_dt
+      
+      # Otherwise inform user that we'll need a new database pull
+    } else {
+      message("  ! Cache time limit exceeded - fresh database pull required")
+    }
+  }
+  
+  return(db_dt)  
 }
 

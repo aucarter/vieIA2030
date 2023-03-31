@@ -3,6 +3,14 @@
 #' @rawNamespace import(dplyr, except = c(last, first, between))
 NULL
 
+# for assignment pipe operator
+#' @importFrom magrittr "%<>%"
+NULL
+
+# helpful date functions
+#' @import lubridate
+NULL
+
 # data.table is generally careful to minimize the scope for namespace
 # conflicts (i.e., functions with the same name as in other packages);
 # a more conservative approach using @importFrom should be careful to

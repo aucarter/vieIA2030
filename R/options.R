@@ -25,7 +25,7 @@ set_options = function(do_step = NA, quiet = FALSE) {
   o = list(do_step = do_step)
   
   # Detect user - required for checking cluster jobs
-  o$user = Sys.info()[["user"]]
+  # o$user = Sys.info()[["user"]]
   
   # Name of analysis to run (cannot contain period symbol)
   o$analysis_name = "v01"
@@ -52,10 +52,13 @@ set_options = function(do_step = NA, quiet = FALSE) {
                        hospital_admissions = "Weekly new hospital admissions per 100k", 
                        icu_admissions      = "Weekly new ICU admissions per 100k")
   
-  # Use R or python backend for parsing yaml files
-  #
-  # NOTE: Python package can handle anchors and aliases
-  o$read_yaml_engine = "python" # OPTIONS: "R" or "python"
+  # ---- Data cache ----
+  
+  # Force a fresh database pull even if cache loading available
+  o$force_db_pull = FALSE
+  
+  # Only load from cache if pulled within the last n hours
+  o$cache_hour_limit = 168  # 168 hours = 1 week
   
   # ---- Uncertainty settings ----
   

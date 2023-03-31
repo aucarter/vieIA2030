@@ -23,7 +23,7 @@ set_dirs = function(o) {
   
   # Path to cluster log files and data cache
   # out$log   = file.path(pth$code, "log")
-  # out$cache = file.path(pth$code, "cache")
+  out$cache = file.path(pth$code, "cache")
   
   # ---- Input and configuration files ----
   

@@ -20,19 +20,23 @@ impute_all_rr <- function(params, routine_only = TRUE) {
     strata_ids <- as.integer(names(params))
   }
   
-  # Impute all stratas and bind into single datatable
-  pred_all <- rbindlist(
-    lapply(
-      strata_ids,
-      impute_strata_rr,
-      params
-    ),
-    fill = T
-  )
+  
+  
+  strata_ids = strata_ids[1]
+  
+  
+  # Initiate list
+  pred_list = list()
+  
+  # Impute the relative risk of each strata
+  for (strata in strata_ids)
+    pred_list[[strata_id]] = impute_strata_rr(strata, params)
   
   browser()
   
-  return(pred_all)
+  pred_dt = rbindlist(pred_list, fill = TRUE)
+  
+  return(pred_dt)
 }
 
 # ---------------------------------------------------------
