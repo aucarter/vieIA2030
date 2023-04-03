@@ -17,12 +17,12 @@ message("Running VIE IA2030 pipeline")
 # Set options (see options.R)
 o = set_options(do_step = 1)
 
-# Step 1) xxxx
-run_step1(o)  # See step1.R
+# Step 1) Calculate and impute relative risk
+impute_all_rr(o)  # See rr.R
 
-# # Step 2) Run all scenarios
-# run_scenarios(o)  # See scenarios.R
-# 
+# Step 2) Run all scenarios
+plot_results(o)  # See scenarios.R
+
 # # Step 3) Operate on array scenarios
 # run_arrays(o)  # See array.R
 # 
