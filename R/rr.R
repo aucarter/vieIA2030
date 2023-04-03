@@ -7,7 +7,7 @@
 
 # ---------------------------------------------------------
 # Parent function to impute relative risk for all disease-vaccine combinations
-# Called by: main.R (and other launch-style scripts)
+# Called by: launch.R, main.R (and other launch-style scripts)
 # ---------------------------------------------------------
 impute_all_rr <- function(params, routine_only = TRUE) {
   
@@ -108,51 +108,99 @@ prep_rr <- function(strata, strata_params) {
   
   # ---- Load data ----
   
+  # Load coverage and all cause death data
+  load_tables("coverage", "all_deaths")  # See db_utils.R
+  
+  # TODO: Can we filter for strata here already?
+  # TODO: Consistent order of columns and sorting (location_id, year, age, sex_id, ...)?
+  
   # For VIMC diseases
   if (vimc) {
     
-    load_tables("vimc_impact", "all_deaths", "coverage")  # See db_utils.R
+    # Load vaccine impact from VIMC
+    load_tables("vimc_impact")  # See db_utils.R
     
-    browser()
+    # Vaccine impact datatable - using VIMC estimates
+    dt = copy(vimc_impact) %>%
+      filter(d_v_at_id == strata) %>%  # Only this strata
+      mutate(strata_deaths = NA, 
+             sex_id        = 3) %>%  # ID of both genders combined
+      select(location_id, year, age, sex_id, strata_deaths, 
+             strata_deaths_averted = deaths_averted)
     
-    dt <- copy(vimc_impact)
-    setnames(dt, "deaths_averted", "strata_deaths_averted")
-    dt[, c("sex_id", "strata_deaths") := .(3, NA)]
-    # Calculate both-sexes deaths
-    deaths <- copy(all_deaths)[, .(deaths_obs = sum(deaths)),
-                               by = .(age, year, location_id)]
-    deaths[, sex_id := 3]
+    # Sum deaths across each gender (datatable summarising much quicker)
+    deaths = copy(all_deaths)[, .(deaths_obs = sum(deaths)), 
+                              by = .(location_id, year, age)] %>%
+      mutate(sex_id = 3, .before = deaths_obs)  # ID of both genders combined
   }
   
   # For GBD diseases
   if (!vimc) {
     
+    # Load vaccine impact from GBD
+    load_tables("gbd_strata_deaths")  # See db_utils.R
+    
     browser()
     
-    load_tables(c("gbd_strata_deaths", "all_deaths", "coverage"))  # See db_utils.R
     dt <- copy(gbd_strata_deaths)
     setnames(dt, "value", "strata_deaths")
     dt[, strata_deaths_averted := NA]
+    
+    # # Vaccine impact datatable - using VIMC estimates
+    # dt = copy(gbd_strata_deaths) %>%
+    #   rename(strata_deaths_averted = deaths_averted) %>%
+    #   mutate(strata_deaths = NA, 
+    #          sex_id        = 3)  # ID of both genders combined
+    
     deaths <- copy(all_deaths)
     setnames(deaths, "deaths", "deaths_obs")
   }
   
-  browser()
-  
   # All-cause deaths
-  dt <- merge(
-    dt[d_v_at_id == strata],
-    deaths,
-    by = c("age", "year", "location_id", "sex_id"),
-    all =  T
-  )
-  dt[, d_v_at_id := strata]
+  # dt2 <- merge(
+  #   dt[d_v_at_id == strata],
+  #   deaths,
+  #   by = c("age", "year", "location_id", "sex_id"),
+  #   all =  T
+  # )
+  # dt2[, d_v_at_id := strata]
+  
+  # Merge vaccine impact deaths with all cause observed deaths
+  dt %<>% 
+    right_join(deaths, by = c("location_id", "year", "age", "sex_id")) %>%
+    mutate(d_v_at_id = strata, .after = location_id) %>%
+    arrange(location_id, year, age)
   
   # ---- Coverage ----
+
+  # xxxx
+  tot_cov = coverage %>%
+    filter(v_at_id == v_at, # TODO: Or just v_at_id == strata?
+           year %in% o$analysis_years) %>%
+    total_coverage()  # See total_coverage.R
+  
+  # xxxx
+  tot_cov2 = coverage %>%
+    filter(v_at_id == v_at, # TODO: Or just v_at_id == strata?
+           year %in% o$analysis_years) %>%
+    total_coverage2()  # See total_coverage.R
+  
+  
+  check_dt = tot_cov2 %>%
+    mutate(activity_type = unique(all_data$activity_type)) %>%
+    select(age, year, value2 = value, sex_id, location_id, activity_type, vaccine) %>%
+    left_join(tot_cov, by = c("age", "year", "sex_id", "location_id", "activity_type", "vaccine")) %>%
+    mutate(diff_value = abs(value - value2)) %>%
+    filter(diff_value > 1e-8)
+  
+  
+    
+  tot_cov2 <- total_coverage(coverage[v_at_id == v_at & year %in% 2000:2030])
+  
   
   browser()
   
-  tot_cov <- total_coverage(coverage[v_at_id == v_at & year %in% 2000:2030])  # See total_coverage.R & impact_factors.R
+  
   #TODO: This collapsing of sex should go away
   cov_dt <- tot_cov[, .(coverage = mean(value)),
                     by = .(location_id, year, age)]

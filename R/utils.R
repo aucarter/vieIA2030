@@ -8,7 +8,7 @@ NULL
 NULL
 
 # helpful date functions
-#' @import lubridate
+#' @importFrom lubridate hours
 NULL
 
 # data.table is generally careful to minimize the scope for namespace

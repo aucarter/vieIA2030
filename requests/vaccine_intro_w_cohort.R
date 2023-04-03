@@ -1,5 +1,5 @@
     # Load 2019 coverage
-    load_tables(c("coverage_inputs", "wpp_input"))
+    load_tables("coverage_inputs", "wpp_input")
     cov_dt <- coverage_inputs[year == 2019]
     baby_dt <- wpp_input[year == 2019 & age == 0, .(nx = sum(nx)), by = .(location_id)]
     dt <- merge(cov_dt, baby_dt, by = "location_id")

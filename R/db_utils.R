@@ -30,8 +30,6 @@ load_tables <- function(...) {
     # Assign to global environment
     assign(table, db_dt, envir = .GlobalEnv)
   }
-  
-  browser()
 }
 
 # ---------------------------------------------------------
@@ -40,7 +38,7 @@ load_tables <- function(...) {
 # ---------------------------------------------------------
 db_pull <- function(table, iso3_list = NULL, append_names = F) {
   
-  message("  > Loading table '", table, "' from database")
+  message("  > Loading table from database: ", table)
   
   # Location IDs - either or all a specified subset
   # if (!is.null(iso3_list)) {
@@ -72,9 +70,11 @@ db_pull <- function(table, iso3_list = NULL, append_names = F) {
     location_dt = loc_table[, .(location_id, location_iso3, location_name)]
     vaccine_dt  = vaccine_table[, .(vaccine_id, vaccine, vaccine_long)]  # NOTE: can't see where vaccine_short is defined
     
+    # Append location details
     if ("location_id" %in% names(db_dt))
       db_dt %<>% left_join(location_dt, by = "location_id")
     
+    # Append vaccine details
     if ("vaccine_id" %in% names(db_dt))
       db_dt %<>% left_join(vaccine_dt, by = "vaccine_id")
   }
@@ -99,7 +99,9 @@ open_connection <- function() {
   return(db_con)
 }
 
+# ---------------------------------------------------------
 #' Generates the SQLite database with input data
+# ---------------------------------------------------------
 gen_db <- function() {
   response <- menu(c("Yes", "No"), title = "Delete and rebuild database?")
   if (response == 1) {
@@ -183,7 +185,7 @@ cache_load = function(o, table) {
   # Only continue if not forcing and cache exists
   if (!o$force_db_pull && file.exists(cache_pth)) {
     
-    message("  > Loading table '", table, "' from cache")
+    message("  > Loading table from cache: ", table)
     
     # Load cached table from file
     cache_info = readRDS(paste0(o$pth$cache, table, ".rds"))

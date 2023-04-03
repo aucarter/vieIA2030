@@ -13,6 +13,7 @@
 
 # ---------------------------------------------------------
 # Set model options and assumptions
+# Called by: launch.R
 # ---------------------------------------------------------
 set_options = function(do_step = NA, quiet = FALSE) {
   
@@ -27,11 +28,22 @@ set_options = function(do_step = NA, quiet = FALSE) {
   # Detect user - required for checking cluster jobs
   # o$user = Sys.info()[["user"]]
   
-  # Name of analysis to run (cannot contain period symbol)
+  # ---- Analysis settings ----
+  
+  # Name of analysis to run
   o$analysis_name = "v01"
   
-  # Set analysis name and create output directory system
+  # Create output directory system
   o = set_dirs(o)  # See directories.R
+  
+  # ---- Data settings ----
+  
+  # Years to analyse
+  o$analysis_years = 2000 : 2030  # Vaccine deployed across these dates
+  
+  # Year and age ranges stored in coverage database
+  o$data_years = 2000 : 2039  # Vaccine effect calculated across these dates
+  o$data_ages  = 0 : 95
   
   # ---- Data references ----
   
@@ -166,6 +178,7 @@ set_options = function(do_step = NA, quiet = FALSE) {
 
 # ---------------------------------------------------------
 # Override options set in my_options file
+# Called by: set_options()
 # ---------------------------------------------------------
 override_options = function(o, quiet = FALSE) {
   
