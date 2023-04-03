@@ -84,24 +84,62 @@ plot_age_year <- function(dt, log_transform = F, value_name = "") {
     print(gg)
 }
 
+# ---------------------------------------------------------
+# xxxxxxx
+# ---------------------------------------------------------
 plot_strata_fit <- function(pred_all) {
-    pdf("plots/strata_fit.pdf")
-    for (s in unique(pred_all[!(d_v_at_id %in% 20:23)]$d_v_at_id)) {
-        plot_dt <- pred_all[d_v_at_id == s & strata_deaths_averted > 0 & averted > 0]
-        min_val <- min(c(plot_dt$strata_deaths_averted, plot_dt$averted))
-        s_title <- paste(unlist(d_v_at_table[d_v_at_id  == s, .(vaccine, activity_type)]), collapse = " ")
-        gg <- ggplot(plot_dt, aes(x = strata_deaths_averted, y = averted, color = age + 1)) +
-            geom_point(size = 0.2, alpha = 0.5) +
-                    viridis::scale_color_viridis(
-                    option = "viridis",
-                    direction = -1,
-                    trans = "log10") +
-            geom_abline(slope = 1) + expand_limits(x = min_val, y = min_val) +
-            scale_x_continuous(trans='log10') +
-            scale_y_continuous(trans='log10') +
-            coord_fixed() + ggtitle(s_title) + theme_bw() +
-            xlab("Observed") + ylab("Predicted")
-        print(gg)
-    }
-    dev.off()
+    
+    # Prepare datatable for plotting
+    plot_dt = pred_all %>%
+        filter(strata_deaths_averted > 0, 
+               averted > 0) %>%
+        left_join(d_v_at_table, by = "d_v_at_id") %>%
+        mutate(strata = paste0(vaccine, ": ", activity_type))
+    
+    min_val <- min(c(plot_dt$strata_deaths_averted, plot_dt$averted))
+    
+    # Single plot with multiple facets
+    g = ggplot(plot_dt, aes(x = strata_deaths_averted, y = averted, color = age)) +
+        geom_point(size = 0.5, alpha = 0.5) +
+        facet_wrap(~strata) + 
+        viridis::scale_color_viridis(
+            option = "viridis",
+            direction = -1,
+            trans = "log10") +
+        geom_abline(slope = 1) + 
+        expand_limits(x = min_val, y = min_val) +
+        scale_x_continuous(trans='log10') +
+        scale_y_continuous(trans='log10') +
+        coord_fixed() + theme_bw() +
+        xlab("Observed") + ylab("Predicted")
+    
+    # Save figure to file
+    fig_save(o, g, "strata_fit")
 }
+
+# ---------------------------------------------------------
+# Save a ggplot figure to file with default settings
+# ---------------------------------------------------------
+fig_save = function(o, g, ..., path = "results", width = o$save_width, height = o$save_height) {
+    
+    # Collapse inputs into vector of strings
+    fig_name_parts = unlist(list(...))
+    
+    # Construct file name to concatenate with file path
+    save_name = paste(fig_name_parts, collapse = " - ")
+    
+    # Repeat the saving process for each image format in figure_format
+    for (fig_format in o$figure_format) {
+        save_pth  = paste0(o$pth[[path]], save_name, ".", fig_format)
+        
+        # Save figure (size specified in options.R)
+        ggsave(save_pth, 
+               plot   = g, 
+               device = fig_format, 
+               dpi    = o$save_resolution, 
+               width  = width, 
+               height = height, 
+               units  = o$save_units)
+    }
+}
+

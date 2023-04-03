@@ -72,8 +72,8 @@ set_dirs = function(o) {
   # Path to test run files
   out$testing = file.path(pth_output, "0_testing")
   
-  # Path to calibration files
-  out$fitting     = file.path(pth_output, "1_calibration", o$analysis_name)
+  # Path to relative risk files
+  out$rel_risk    = file.path(pth_output, "1_relative_risk", o$analysis_name)
   # out$fit_samples = file.path(out$fitting, "fit_samples")
   
   # Paths to scenario files
