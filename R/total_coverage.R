@@ -1,7 +1,8 @@
 ###########################################################
 # TOTAL COVERAGE
 #
-# xxxxxxx
+# Determine effective vaccine coverage for each cohort per year, 
+# possible over different vaccine activities (eg routine & campaign).
 #
 ###########################################################
 

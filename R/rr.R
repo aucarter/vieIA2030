@@ -171,37 +171,41 @@ prep_rr <- function(strata, strata_params) {
     mutate(d_v_at_id = strata, .after = location_id) %>%
     arrange(location_id, year, age)
   
-  # ---- Coverage ----
+  # ---- Total vaccine coverage by cohort ----
+  
+  # @Austin: I think total_coverage() should be handling the different activities. 
+  # Meaning we shouldn't first filter by v_at_id. Thoughts?
 
   # xxxx
-  tot_cov = coverage %>%
+  # tot_cov = 
+  x = coverage %>%
     filter(v_at_id == v_at, # TODO: Or just v_at_id == strata?
-           year %in% o$analysis_years) %>%
-    total_coverage()  # See total_coverage.R
+           year %in% o$analysis_years)
   
-  # xxxx
-  tot_cov2 = coverage %>%
-    filter(v_at_id == v_at, # TODO: Or just v_at_id == strata?
-           year %in% o$analysis_years) %>%
-    total_coverage2()  # See total_coverage.R
+  tictoc::tic("v1")
+  tot_cov = x %>% total_coverage()  # See total_coverage.R
+  time_clock1 = tictoc::toc()
   
+  tictoc::tic("v2")
+  tot_cov2 = x %>% total_coverage2()  # See total_coverage.R
+  time_clock2 = tictoc::toc()
   
   check_dt = tot_cov2 %>%
-    mutate(activity_type = unique(all_data$activity_type)) %>%
-    select(age, year, value2 = value, sex_id, location_id, activity_type, vaccine) %>%
-    left_join(tot_cov, by = c("age", "year", "sex_id", "location_id", "activity_type", "vaccine")) %>%
+    mutate(activity_type = at) %>%
+    rename(value2 = value) %>%
+    left_join(tot_cov) %>%
     mutate(diff_value = abs(value - value2)) %>%
     filter(diff_value > 1e-8)
   
+  if (nrow(check_dt) > 0)
+    stop("Discrepancy between v1 and v2 functions")
   
-    
-  tot_cov2 <- total_coverage(coverage[v_at_id == v_at & year %in% 2000:2030])
+  # Gender-related coverage issues...
   
+  # @Austin: This feels like a big assumption, especially for vaccines like HPV, could we get
+  # gender-specific outcomes from VIMC? Perhaps this is what you meant by your TODO comment?
   
-  browser()
-  
-  
-  #TODO: This collapsing of sex should go away
+  # TODO: This collapsing of sex should go away
   cov_dt <- tot_cov[, .(coverage = mean(value)),
                     by = .(location_id, year, age)]
   cov_dt[, sex_id := 3]
@@ -211,10 +215,14 @@ prep_rr <- function(strata, strata_params) {
       copy(cov_dt)[, sex_id := s]
     }))
   }
+  
+  # Join coverage details to effect datatable
   dt <- merge(dt, cov_dt, by = c("location_id", "year", "age", "sex_id"),
-              all = T
-  )
-  # Efficacy
+              all = T)
+  
+  # ---- Efficacy ----
+  
+  # Efficacy: placeholder for VIMC, mean effect for non-VIMC vaccines
   dt[, efficacy := ifelse(vimc, NA, efficacy[vaccine == v]$mean)]
   
   # ---- Calcualte relative risk ----
@@ -225,6 +233,8 @@ prep_rr <- function(strata, strata_params) {
     dt <- gbd_rr(dt, strata_params$alpha, strata_params$beta)
     
   }
+  
+  browser()
   
   out_dt <- dt[, .(location_id, age, year, d_v_at_id, deaths_obs,
                    strata_deaths_averted, strata_deaths, coverage, rr)]
@@ -243,7 +253,38 @@ prep_rr <- function(strata, strata_params) {
 # ---------------------------------------------------------
 vimc_rr <- function(dt, alpha) {
   
-  browser()
+  # Relative risk tends to 1 as coverage tends to 1, can be negative
+  #
+  # rr = (o - (a * (1 - c ^ alpha) / c ^ alpha)) / (o + a)
+  #
+  # where:
+  #   o = deaths observed
+  #   a = deaths averted from vaccine
+  #   c = coverage
+  
+  obs   = 100
+  avert = 9
+  
+  plot_list = list()
+  
+  for (cov in seq(0, 1, by = 0.01)) {
+    
+    denom = (1 - cov) / cov
+    effect = avert * denom
+    
+    rr = (obs - effect) / (obs + avert)
+    
+    message("rr = ", round(rr, 3), " (cov = ", cov, ")")
+    
+    plot_list[[paste0("c", cov)]] = data.table(cov, denom, effect, rr)
+  }
+  
+  plot_df = rbindlist(plot_list) %>%
+    tidyr::pivot_longer(cols = -cov) %>%
+    as.data.table()
+  
+  g = ggplot(plot_df, aes(x = cov, y = value, colour = name)) + 
+    geom_line()
   
   out_dt <- copy(dt)
   out_dt[coverage > 0, rr := (deaths_obs - (strata_deaths_averted *

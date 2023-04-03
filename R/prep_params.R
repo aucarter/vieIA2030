@@ -1,3 +1,11 @@
+###########################################################
+# PREPARE PARAMETERS
+#
+# @ Austin: why are alpha and beta always 1? Starting point for
+# some sort of fitting?
+# 
+###########################################################
+
 prep_params <- function() {
     params_list <- lapply(d_v_at_table$d_v_at_id, function(id) {
         list(
@@ -10,3 +18,4 @@ prep_params <- function() {
     names(params_list) <- d_v_at_table$d_v_at_id
     jsonlite::write_json(params_list, "params.json", pretty = T)
 }
+
