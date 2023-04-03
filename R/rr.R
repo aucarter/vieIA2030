@@ -262,30 +262,6 @@ vimc_rr <- function(dt, alpha) {
   #   a = deaths averted from vaccine
   #   c = coverage
   
-  obs   = 100
-  avert = 9
-  
-  plot_list = list()
-  
-  for (cov in seq(0, 1, by = 0.01)) {
-    
-    denom = (1 - cov) / cov
-    effect = avert * denom
-    
-    rr = (obs - effect) / (obs + avert)
-    
-    message("rr = ", round(rr, 3), " (cov = ", cov, ")")
-    
-    plot_list[[paste0("c", cov)]] = data.table(cov, denom, effect, rr)
-  }
-  
-  plot_df = rbindlist(plot_list) %>%
-    tidyr::pivot_longer(cols = -cov) %>%
-    as.data.table()
-  
-  g = ggplot(plot_df, aes(x = cov, y = value, colour = name)) + 
-    geom_line()
-  
   out_dt <- copy(dt)
   out_dt[coverage > 0, rr := (deaths_obs - (strata_deaths_averted *
                                               (1 - coverage ^ alpha) / coverage ^ alpha)) /
