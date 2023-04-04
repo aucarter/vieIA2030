@@ -12,6 +12,8 @@
 # ---------------------------------------------------------
 total_coverage2 <- function(coverage) {
     
+    # TODO: Apply with dtplyr to achieve full effect...
+    
     # Coverage data of all activities for this vaccine
     all_data = coverage %>%
         left_join(v_at_table, by = "v_at_id") %>%

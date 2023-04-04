@@ -5,22 +5,30 @@
 #
 ###########################################################
 
-run_step2 = function(o) {
+run_step2 = function() {
+  
+  
+  do_plots = FALSE
+  
+  
+  
   
   # Only continue if specified by do_step
   if (!is.element(2, o$do_step)) return()
   
+  load_tables("coverage")  # Needed by calc_impact_factors()
+  
   # Load relative risk calculations and predictions from step 1
-  pred_all = try_load(o$pth$rel_risk, "relative_risk")  # See auxiliary.R
+  rr_dt = try_load(o$pth$rel_risk, "relative_risk")
   
-  # fit_summary <- summarize_fit(pred_all)  # ?? Where is this used ??
-  
-  plot_strata_fit(pred_all)
+  # fit_summary <- summarize_fit(rr_dt)  # ?? Where is this used ??
+  if (do_plots)
+    plot_strata_fit(rr_dt)
   
   browser()
   
   ## Calculate impact factors and rake to VIMC
-  impact_factors <- calc_impact_factors(pred_all)
+  impact_factors <- calc_impact_factors(rr_dt)  # See impact_factors.R
   impact_dt <- rake_impact(impact_factors)
   
   ## Calculate scenario impact 

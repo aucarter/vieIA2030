@@ -1,4 +1,5 @@
 calc_impact_factors <- function(dt) {
+    
     dt <- merge(dt, d_v_at_table, by = "d_v_at_id")
     
     # Routine deaths averted
