@@ -1,3 +1,10 @@
+###########################################################
+# PLOTTING
+#
+# xxxxx
+#
+###########################################################
+
 #' Plot coverage for a specific location
 #' @param dt A data.table with coverage data
 #' @return A plot of the coverage data
@@ -5,16 +12,16 @@
 #' @export
 plot.coverage <- function(x, ...) {
     gg <- ggplot2::ggplot(
-            x,
-            ggplot2::aes(
-                x = year,
-                y = value,
-                color = vaccine_short,
-                linetype = as.factor(sex_id)
-            )
-        ) +
+        x,
+        ggplot2::aes(
+            x = year,
+            y = value,
+            color = vaccine_short,
+            linetype = as.factor(sex_id)
+        )
+    ) +
         ggplot2::geom_line()
-
+    
     return(gg)
 }
 
@@ -32,8 +39,7 @@ scatter_rr <- function(dt, x_var) {
 }
 
 launch_shiny <- function() {
-    wpp_input <<- db_pull("wpp_input")
-    obs_wpp <<- db_pull("obs_wpp")
+    load_tables("wpp_input", "obs_wpp")
     shiny::runApp(system.file("shiny", package = "vieIA2030"))
 }
 
@@ -55,7 +61,7 @@ map_locations <- function(locations, title) {
         ),
         returnclass = "sf"
     )
-
+    
     world$present <- ifelse(world$iso_a3 %in% locations, 1, NA)
     gg <- ggplot2::ggplot(data = world) +
         ggplot2::geom_sf(ggplot2::aes(fill = as.factor(present))) +
@@ -87,40 +93,53 @@ plot_age_year <- function(dt, log_transform = F, value_name = "") {
 # ---------------------------------------------------------
 # xxxxxxx
 # ---------------------------------------------------------
-plot_strata_fit <- function(pred_all) {
+plot_strata_fit <- function(rr_dt) {
     
     # Prepare datatable for plotting
-    plot_dt = pred_all %>%
-        filter(strata_deaths_averted > 0, 
-               averted > 0) %>%
+    plot_dt = rr_dt %>%
+        rename(truth   = strata_deaths_averted, 
+               predict = averted) %>%
+        filter(truth   > 0, 
+               predict > 0) %>%
         left_join(d_v_at_table, by = "d_v_at_id") %>%
         mutate(strata = paste0(vaccine, ": ", activity_type))
     
-    min_val <- min(c(plot_dt$strata_deaths_averted, plot_dt$averted))
+    # Maximum value in each strata (truth or predict)
+    blank_dt = plot_dt %>%
+        mutate(max_value = ceiling(pmax(truth, predict))) %>%
+        group_by(strata) %>%
+        summarise(max_value = max(max_value)) %>%
+        ungroup() %>%
+        tidyr::expand_grid(type = c("truth", "predict")) %>%
+        tidyr::pivot_wider(names_from  = type, 
+                           values_from = max_value) %>%
+        as.data.table()
     
     # Single plot with multiple facets
-    g = ggplot(plot_dt, aes(x = strata_deaths_averted, y = averted, color = age)) +
-        geom_point(size = 0.5, alpha = 0.5) +
-        facet_wrap(~strata) + 
-        viridis::scale_color_viridis(
-            option = "viridis",
-            direction = -1,
-            trans = "log10") +
-        geom_abline(slope = 1) + 
-        expand_limits(x = min_val, y = min_val) +
-        scale_x_continuous(trans='log10') +
-        scale_y_continuous(trans='log10') +
-        coord_fixed() + theme_bw() +
-        xlab("Observed") + ylab("Predicted")
+    #
+    # NOTE: Removed the log10 scaling
+    g = ggplot(plot_dt, aes(x = truth, y = predict)) +
+        geom_point(aes(color = age), size = 0.5, alpha = 0.5) +
+        geom_blank(data = blank_dt) +  # For square axes
+        geom_abline(slope = 1) +  # To see quality of predict = truth
+        facet_wrap(~strata, scales = "free")
+    
+    # Use a nice colour scheme
+    g = g + viridis::scale_color_viridis(option = "viridis")
+    
+    # Prettify
+    g = g + theme_bw() +
+        xlab("Truth") + 
+        ylab("Predicted")
     
     # Save figure to file
-    fig_save(o, g, "strata_fit")
+    fig_save(g, "strata_fit")
 }
 
 # ---------------------------------------------------------
 # Save a ggplot figure to file with default settings
 # ---------------------------------------------------------
-fig_save = function(o, g, ..., path = "results", width = o$save_width, height = o$save_height) {
+fig_save = function(g, ..., path = "results", width = o$save_width, height = o$save_height) {
     
     # Collapse inputs into vector of strings
     fig_name_parts = unlist(list(...))

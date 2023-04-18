@@ -15,21 +15,21 @@ source("dependencies.R")
 message("Running VIE IA2030 pipeline")
 
 # Set options (see options.R)
-o = set_options(do_step = 1)
+o = set_options(do_step = 4)
 
 # Other possible pre-steps: Generate database
 
 # Step 1) Calculate and impute relative risk
-impute_all_rr()  # See rr.R
+run_relative_risk()  # See relative_risk.R
 
-# Step 2) xxx
-run_step2()  # See step2.R
+# Step 2) Impact factors
+run_impact_factors()  # See impact_factors.R
 
-# # Step 3) Operate on array scenarios
-# run_arrays(o)  # See array.R
-# 
-# # Step 4) Plot results
-# run_results(o)  # See results.R
+# Step 3) Generate uncertainty draws
+run_uncertainty()  # See uncertainty.R
+
+# Step 4) Produce results
+run_results()  # See results.R
 
 # Finish up
 message("* Finished!")

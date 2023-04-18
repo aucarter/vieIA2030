@@ -36,10 +36,11 @@ set_options = function(do_step = NA, quiet = FALSE) {
   # Create output directory system
   o = set_dirs(o)  # See directories.R
   
-  # ---- Data settings ----
+  # ---- Time settings ----
   
   # Years to analyse
   o$analysis_years = 2000 : 2030  # Vaccine deployed across these dates
+  o$future_years   = 2021 : 2030  # Cohort years
   
   # Year and age ranges stored in coverage database
   o$data_years = 2000 : 2039  # Vaccine effect calculated across these dates
@@ -70,7 +71,7 @@ set_options = function(do_step = NA, quiet = FALSE) {
   o$force_db_pull = FALSE
   
   # Only load from cache if pulled within the last n hours
-  o$cache_hour_limit = 168  # 168 hours = 1 week
+  o$cache_hour_limit = 168 * 52  # 168 hours = 1 week
   
   # ---- Uncertainty settings ----
   
@@ -161,6 +162,9 @@ set_options = function(do_step = NA, quiet = FALSE) {
   # Flags for custom figures
   o$plot_custom      = TRUE  # Run my_results.R (if it exists)
   o$plot_manuscript  = TRUE  # Run manuscript.R (if it exists)
+  
+  # Other results
+  o$do_markdown = TRUE  # Full markdown results document
   
   # ---- Override options ----
   

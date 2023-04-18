@@ -18,18 +18,18 @@ set_dirs = function(o) {
   # Initiate file path lists
   pth = out = list()
   
-  # We've already moved to code directory
-  pth$code = getwd()
+  # We've already moved to main directory
+  pth$main = getwd()
   
   # Path to cluster log files and data cache
-  # out$log   = file.path(pth$code, "log")
-  out$cache = file.path(pth$code, "cache")
+  out$code  = file.path(pth$main, "R")
+  out$cache = file.path(pth$main, "cache")
   
   # ---- Input and configuration files ----
   
   # Parent path of all input files
-  pth$input  = file.path(pth$code, "input")
-  # pth$config = file.path(pth$code, "config")
+  pth$input  = file.path(pth$main, "input")
+  # pth$config = file.path(pth$main, "config")
   
   # Paths to model configuration files
   # pth$states    = file.path(pth$config, "model_states.yaml")
@@ -56,34 +56,26 @@ set_dirs = function(o) {
   # if (grepl("\\.", o$analysis_name))
   #   stop("Analysis name should not contain any period characters")
   
-  # ---- Model parameter files ----
-  
-  # # Default model parameters
-  # pth$params_default = file.path(pth$config, "default.yaml")
-  # 
-  # # User-specified model parameters for this analysis
-  # pth$params_user = file.path(pth$input, paste0(o$analysis_name, ".yaml"))
-  
   # ---- Output directories ----
   
   # Parent path of all output files
-  pth_output = file.path(pth$code, "output")
+  pth_output = file.path(pth$main, "output")
   
   # Path to test run files
   out$testing = file.path(pth_output, "0_testing")
   
   # Path to relative risk files
-  out$rel_risk    = file.path(pth_output, "1_relative_risk", o$analysis_name)
+  out$relative_risk = file.path(pth_output, "1_relative_risk", o$analysis_name)
   # out$fit_samples = file.path(out$fitting, "fit_samples")
   
   # Paths to scenario files
-  pth_scenarios   = file.path(pth_output, "2_scenarios", o$analysis_name)
+  out$impact_factors = file.path(pth_output, "2_impact_factors", o$analysis_name)
   # out$scenarios   = file.path(pth_scenarios, "scenarios")
   # out$simulations = file.path(pth_scenarios, "simulations")
   # out$uncertainty = file.path(pth_scenarios, "uncertainty")
   
   # Path to predictor models for LHC scenarios
-  pth_arrays     = file.path(pth_output, "3_arrays", o$analysis_name)
+  out$uncertainty = file.path(pth_output, "3_uncertainty", o$analysis_name)
   # out$array_info = file.path(pth_arrays, "array_info")
   # out$parents    = file.path(pth_arrays, "grid_parents")  # TODO: Pre-summarise grid parents
   # out$endpoints  = file.path(pth_arrays, "lhc_endpoints")

@@ -1,8 +1,10 @@
-inst/doc
-docs
-docs/
 cache/
-supp_data
+docs/
+data/
+output/
+outputs/
+plots/
+results/
 .DS_Store
 vieIA2030.db
 .Rhistory
