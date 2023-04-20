@@ -31,6 +31,8 @@ NULL
 
 # for static plots
 #' @import ggplot2
+#' @import scales
+#' @import pals
 NULL
 
 # based on devtools::check() recommendations

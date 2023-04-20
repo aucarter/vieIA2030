@@ -109,18 +109,13 @@ set_options = function(do_step = NA, quiet = FALSE) {
   
   # # Lower bound of age groups for plotting - bounded above by maximum age
   # o$plot_ages = c(0, 18, 60)  # Captures 3 age groups as per ECDC request
-  # 
-  # # Colour packages and palettes for scenarios, metrics, and cantons (see colour_scheme in myRfunctions.R)
-  # o$palette_scenario = "pals::cols25"
-  # o$palette_metric   = "pals::kovesi.rainbow"
-  # 
-  # # Colour packages and palettes for groupings (see colour_scheme in myRfunctions.R)
-  # o$palette_age     = "brewer::set2"
-  # o$palette_variant = "brewer::set3"
-  # o$palette_priority_group = "brewer::accent"
-  # o$palette_vaccine_type   = "brewer::dark2"
-  # o$palette_vaccine_doses  = "pals::kovesi.rainbow"
-  # 
+  
+  # Colour packages and palettes (see colour_scheme in auxiliary.R)
+  o$palette_disease = "pals::kovesi.rainbow"  # ~15 values
+  o$palette_region  = "brewer::paired"  # 6 values
+  o$palette_income  = "brewer::dark2"  # 4 values
+  o$palette_gavi    = "brewer::greys"  # 2 values (yes or no)
+  
   # # Define some nice properties for baseline metric plots
   # o$baseline_name   = "Baseline scenario"
   # o$baseline_colour = "grey50"  # Light grey
@@ -128,6 +123,9 @@ set_options = function(do_step = NA, quiet = FALSE) {
   # # Grey colour for current date dashed line
   # o$data_colour = "#555555"  # Dark grey
   # o$dash_colour = "#808080"  # Even darker grey
+  
+  # Font sizes: title, axis, tick, strip, legend, key
+  o$font_size = c(34, 28, 16, 24, 20, 18)
 
   # Saved figure size
   o$save_width  = 14

@@ -34,6 +34,8 @@ run_results = function() {
   )
   scen_dt <- merge(scen_dt, v_at_table, by = "v_at_id")
   write.csv(scen_dt, "outputs/ia2030_cov_trajectories.csv", row.names = F)
+  
+  
   dt <- scenario_impact$dt
   dt <- merge(dt, loc_table[, .(location_id, region)], by = "location_id")
   baseline_dt <- dt[year == 2019]
@@ -52,8 +54,7 @@ run_results = function() {
                                ]
   
   # NOTE: Used to produce markdown document
-  write.csv(table_totals, "outputs/detailed_results.csv", row.names = F)
-  
+  # write.csv(table_totals, "outputs/detailed_results.csv", row.names = F)
   saveRDS(table_totals, file = paste0(o$pth$results, "detailed_results.rds"))
   
   # ---- xxxxxx ----
@@ -73,7 +74,7 @@ run_results = function() {
   table_totals <- table_dt[, .(total = sum(deaths_averted, na.rm = T) / 1e5,
                                incremental = sum(incremental, na.rm = T) / 1e5), by = income_group]
   
-  write.csv(table_totals, "outputs/results_table_income.csv", row.names = F)
+  # write.csv(table_totals, "outputs/results_table_income.csv", row.names = F)
   
   # ---- Impact by income ----
   
@@ -91,9 +92,11 @@ run_results = function() {
            incremental := deaths_averted - baseline_deaths_averted]
   table_totals <- table_dt[, .(total = sum(deaths_averted, na.rm = T),
                                incremental = sum(incremental, na.rm = T)), by = .(income_group, disease, year)][
-                                 order(income_group, disease, year)
-                               ]
-  write.csv(table_totals, "outputs/detailed_results_income.csv", row.names = F)
+                                 order(income_group, disease, year)]
+  
+  # NOTE: Used to produce markdown document
+  # write.csv(table_totals, "outputs/detailed_results_income.csv", row.names = F)
+  saveRDS(table_totals, file = paste0(o$pth$results, "detailed_results_income.rds"))
   
   # ---- Produce markdown results document ----
   
@@ -103,7 +106,13 @@ run_results = function() {
     # Render document
     #
     # NOTE: Uses file outputs/detailed_results.csv
-    rmarkdown::render(paste0(o$pth$code, "results.Rmd"))
+    rmarkdown::render(input             = paste0(o$pth$code, "results.Rmd"), 
+                      # envir             = globalenv(), # globalenv
+                      output_dir        = o$pth$figures, 
+                      knit_root_dir     = o$pth$figures,
+                      intermediates_dir = o$pth$figures, 
+                      # clean             = FALSE,  # Save intermediates
+                      quiet             = TRUE)
   }
 }
 

@@ -137,9 +137,61 @@ plot_strata_fit <- function(rr_dt) {
 }
 
 # ---------------------------------------------------------
+# Prettify ggplot figure
+# ---------------------------------------------------------
+ggpretty = function(g, cols = NULL, colour = NULL, fill = NULL, title = NULL, 
+                    x_lab = NULL, y_lab = NULL, x_discrete = FALSE) {
+    
+    # Set line colours if specified
+    if (!is.null(colour))
+        g = g + scale_colour_manual(values = cols[[colour]], 
+                                    name   = first_cap(colour))
+    
+    # Set patch colours if specified
+    if (!is.null(fill))
+        g = g + scale_fill_manual(values = cols[[fill]], 
+                                  name   = first_cap(fill))
+    
+    # Prettify y axis as standard
+    g = g + scale_y_continuous(breaks = scales::pretty_breaks(), 
+                               expand = expansion(mult = c(0, 0.05)))
+    
+    # Only prettify x axis for continuous plots
+    if (!x_discrete)
+        g = g + scale_x_continuous(breaks = scales::pretty_breaks())
+    
+    # Set labels
+    g = g + ggtitle(title) +
+        xlab(x_lab) + 
+        ylab(y_lab)
+    
+    # Prettify theme
+    g = g + theme_classic() + 
+        theme(plot.title    = element_text(size = o$font_size[1], hjust = 0.5),
+              axis.title    = element_text(size = o$font_size[2]),
+              axis.text     = element_text(size = o$font_size[3]),
+              axis.text.x   = element_text(hjust = ifelse(x_discrete, 1, 0.5), 
+                                           angle = ifelse(x_discrete, 50, 0)),
+              axis.line     = element_blank(),
+              panel.border  = element_rect(linewidth = 1, colour = "black", fill = NA),
+              panel.spacing = unit(1, "lines"),
+              strip.text    = element_text(size = o$font_size[4]),
+              strip.background = element_blank(),
+              legend.title  = element_text(size = o$font_size[5]),
+              legend.text   = element_text(size = o$font_size[6]))
+              # legend.key    = element_blank(),
+              # legend.position = "bottom", 
+              # legend.key.height = unit(2, "lines"),
+              # legend.key.width  = unit(2, "lines"),
+              # legend.box.background = element_rect())
+    
+    return(g)
+}
+
+# ---------------------------------------------------------
 # Save a ggplot figure to file with default settings
 # ---------------------------------------------------------
-fig_save = function(g, ..., path = "results", width = o$save_width, height = o$save_height) {
+fig_save = function(g, ..., path = "figures", width = o$save_width, height = o$save_height) {
     
     # Collapse inputs into vector of strings
     fig_name_parts = unlist(list(...))

@@ -64,24 +64,13 @@ set_dirs = function(o) {
   # Path to test run files
   out$testing = file.path(pth_output, "0_testing")
   
-  # Path to relative risk files
-  out$relative_risk = file.path(pth_output, "1_relative_risk", o$analysis_name)
-  # out$fit_samples = file.path(out$fitting, "fit_samples")
-  
-  # Paths to scenario files
+  # Path to relative risk and impact factor files
+  out$relative_risk  = file.path(pth_output, "1_relative_risk",  o$analysis_name)
   out$impact_factors = file.path(pth_output, "2_impact_factors", o$analysis_name)
-  # out$scenarios   = file.path(pth_scenarios, "scenarios")
-  # out$simulations = file.path(pth_scenarios, "simulations")
-  # out$uncertainty = file.path(pth_scenarios, "uncertainty")
-  
-  # Path to predictor models for LHC scenarios
-  out$uncertainty = file.path(pth_output, "3_uncertainty", o$analysis_name)
-  # out$array_info = file.path(pth_arrays, "array_info")
-  # out$parents    = file.path(pth_arrays, "grid_parents")  # TODO: Pre-summarise grid parents
-  # out$endpoints  = file.path(pth_arrays, "lhc_endpoints")
   
   # Path to figures and other output results
-  out$results = file.path(pth_output, "4_results", o$analysis_name)
+  out$results = file.path(pth_output, "3_results", o$analysis_name)
+  out$figures = file.path(pth_output, "4_figures", o$analysis_name)
   
   # ---- Create directory structure ----
   

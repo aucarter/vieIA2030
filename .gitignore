@@ -1,3 +1,6 @@
+.DS_Store
+.Rhistory
+vieIA2030.db
 cache/
 docs/
 data/
@@ -5,8 +8,4 @@ output/
 outputs/
 plots/
 results/
-.DS_Store
-vieIA2030.db
-.Rhistory
 gcs_creds.json
-reference_results.csv

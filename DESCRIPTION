@@ -29,6 +29,8 @@ Imports:
     ggplot2,
     rnaturalearthdata,
     utils,
+    scales,
+    pals,
     viridis,
     bigrquery,
     dbplyr

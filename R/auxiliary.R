@@ -67,8 +67,8 @@ colour_scheme = function(map, pal = NULL, n = 1, ...) {
       stop("Palette not defined - Use 'pal = my_pal' or 'map = my_map::my_pal'")
     
     # Seperate out the map and the palette
-    pal = str_remove(map, ".*\\::")
-    map = str_remove(map, "\\::.*")
+    pal = stringr::str_remove(map, ".*\\::")
+    map = stringr::str_remove(map, "\\::.*")
   }
   
   # Initiate colours variable

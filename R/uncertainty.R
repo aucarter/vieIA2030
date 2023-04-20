@@ -113,7 +113,7 @@ run_uncertainty = function() {
   )
   
   # Save results to file
-  saveRDS(out_dt, file = paste0(o$pth$uncertainty, "reference_results.rds"))
+  saveRDS(out_dt, file = paste0(o$pth$results, "reference_results.rds"))
   
   # Other ways to output these results
   # write.csv(out_dt, "outputs/reference_results.csv", row.names = F)
