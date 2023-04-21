@@ -33,6 +33,8 @@ run_impact_factors = function() {
   impact_factors <- calc_impact_factors(rr_dt)  # See impact_factors.R
   impact_dt <- rake_impact(impact_factors)  # See impact_factors.R
   
+  browser() # What is meant by 'rake' here?
+  
   # Save to file
   saveRDS(impact_dt, file = paste0(o$pth$impact_factors, "impact_dt.rds"))
   
@@ -104,7 +106,11 @@ calc_impact_factors <- function(dt) {
 # Called by: xxxxxx
 # ---------------------------------------------------------
 rake_impact <- function(impact_factors) {
+  
   load_tables("vimc_yov_impact")
+  
+  browser()
+  
   yov_dt <- unique(vimc_yov_impact[, .(location_id, vaccine, activity_type, deaths_averted_rate)])
   # Take the mean here for the Rubella mishap
   yov_dt <- yov_dt[, lapply(.SD, mean), by = .(location_id, vaccine, activity_type)]

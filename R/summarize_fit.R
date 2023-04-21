@@ -23,21 +23,25 @@ summarize_fit <- function(pred_all) {
 }
 
 # ---------------------------------------------------------
-# xxx
-# Called by: xxx
+# Summarise raking factor for each vaccine-activity
+# Called by: rake_impact(), run_uncertainty()
 # ---------------------------------------------------------
 summarize_raking <- function(impact_dt) {
     
-    summary <- impact_dt[!is.na(raking_factor) > 0 & pred_deaths_averted_rate != 0,
-                         .(  median = median(raking_factor),
-                             mean = mean(raking_factor),
-                             min = min(raking_factor),
-                             max = max(raking_factor),
-                             sd = sd(raking_factor),
-                             cv = sd(raking_factor) / mean(raking_factor)
-                         ),
-                         by = .(vaccine, activity_type)]
+    # Summarise raking factor for each vaccine-activity
+    raking_dt = impact_dt %>%
+        filter(!is.na(raking_factor), 
+               pred_deaths_averted_rate != 0) %>%
+        group_by(vaccine, activity_type) %>% 
+        summarise(median = median(raking_factor),
+                  mean   = mean(raking_factor),
+                  min    = min(raking_factor),
+                  max    = max(raking_factor),
+                  sd     = sd(raking_factor),
+                  cv     = sd / mean) %>%
+        ungroup() %>%
+        as.data.table()
     
-    return(summary)
+    return(raking_dt)
 }
 

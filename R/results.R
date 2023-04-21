@@ -101,7 +101,7 @@ run_results = function() {
   # ---- Produce markdown results document ----
   
   # Check flag
-  if (o$do_markdown) {
+  if (o$results_markdown) {
     
     # Render document
     #
@@ -114,5 +114,11 @@ run_results = function() {
                       # clean             = FALSE,  # Save intermediates
                       quiet             = TRUE)
   }
+  
+  # ---- Upload results to database ----
+  
+  # Upload results if desired
+  if (o$results_upload)
+    upload_object(out_dt, "ia2030_reference_results")
 }
 

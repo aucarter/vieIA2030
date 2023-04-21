@@ -75,35 +75,39 @@ set_options = function(do_step = NA, quiet = FALSE) {
   
   # ---- Uncertainty settings ----
   
-  # # Flag for reproducible scenarios (consistent randomly sampled seeds)
-  # o$scenario_reproducible = TRUE
-  # 
-  # # Statistical summary to use for 'best estimate' projection
-  # #
-  # # OPTIONS:
-  # #  "median" := Median of uncertainty simulations (stochastic and parameter uncertainty)
-  # #    "mean" := Mean of uncertainty simulations (stochastic and parameter uncertainty)
+  # Flag for reproducible uncertainty draws (consistent randomly sampled seeds)
+  o$uncertainty_reproducible = TRUE  # TODO: Implement this
+  
+  # Number of draws to sample
+  o$n_draws = 200
+
+  # Statistical summary to use for 'best estimate' projection
+  #
+  # OPTIONS:
+  #  "median" := Median of uncertainty simulations (stochastic and parameter uncertainty)
+  #    "mean" := Mean of uncertainty simulations (stochastic and parameter uncertainty)
   # o$best_estimate_simulation = "mean"
-  # 
-  # # Number of seeds to run for each scenario (including baseline)
-  # o$n_seeds_analysis = 10
-  # 
-  # # Number of parameters sets to sample when simulating parameter uncertainty
-  # o$n_parameter_sets = 10  # Best to set to 1 if not simulating parameter uncertainty
-  # 
-  # # Flag for simulating each uncertainty parameter set n_seeds times
-  # #
-  # # NOTE: If false, each parameter set is simulated only once with a randomly defined seed
-  # o$full_factorial_uncertainty = FALSE
-  # 
-  # # Flag to impute vaules for scenarios that did not run (mean across all other seeds)
-  # o$impute_failed_jobs = TRUE
-  # 
-  # # Quantiles for credibility intervals
+  
+  # Quantiles for credibility intervals
   # o$quantiles = c(0.025, 0.975)
-  # 
-  # # Force quantile summary even if no new simulations have been run
-  # o$force_summarise = FALSE
+  
+  # ---- Results flags ----
+  
+  # Turn results generation on or off
+  o$results_markdown = TRUE  # Full markdown results document
+  o$results_upload   = FALSE  # Upload reference results to database
+  
+  # ---- Plotting flags ----
+  
+  # Turn figures on or off
+  # o$plot_baseline    = TRUE  # Standard baseline figures
+  # o$plot_cumulative  = TRUE  # Plot cumulative outcomes
+  # o$plot_scenarios   = TRUE  # Plot alternative (non-array) scenarios
+  # o$plot_arrays      = TRUE  # Plot grid array scenario bundles
+  # o$plot_heatmaps    = TRUE  # Plot heat maps for multidimension grid arrays
+  # o$plot_endpoints   = TRUE  # Plot array LHC endpoints across different parameters
+  # o$plot_assumptions = TRUE  # Model structure and assumptions figures
+  # o$plot_calibration = TRUE  # Calibration performance and diagnostics
   
   # ---- Plotting settings ----
   
@@ -126,13 +130,10 @@ set_options = function(do_step = NA, quiet = FALSE) {
   
   # Font sizes: title, axis, tick, strip, legend, key
   o$font_size = c(34, 28, 16, 24, 20, 18)
-
+  
   # Saved figure size
   o$save_width  = 14
   o$save_height = 10
-  
-  # Units of figures sizes
-  o$save_units = "in"
   
   # Units of figures sizes
   o$save_units = "in"
@@ -145,26 +146,10 @@ set_options = function(do_step = NA, quiet = FALSE) {
   # NOTE: Use a character vector to save with multiple formats at once
   o$figure_format = "png" # Classic options: "png", "pdf", or "svg"
   
-  # ---- Plotting flags ----
+  # ---- Prepare output ----
   
-  # Turn figures on or off
-  o$plot_baseline    = TRUE  # Standard baseline figures
-  o$plot_cumulative  = TRUE  # Plot cumulative outcomes
-  o$plot_scenarios   = TRUE  # Plot alternative (non-array) scenarios
-  o$plot_arrays      = TRUE  # Plot grid array scenario bundles
-  o$plot_heatmaps    = TRUE  # Plot heat maps for multidimension grid arrays
-  o$plot_endpoints   = TRUE  # Plot array LHC endpoints across different parameters
-  o$plot_assumptions = TRUE  # Model structure and assumptions figures
-  o$plot_calibration = TRUE  # Calibration performance and diagnostics
-  
-  # Flags for custom figures
-  o$plot_custom      = TRUE  # Run my_results.R (if it exists)
-  o$plot_manuscript  = TRUE  # Run manuscript.R (if it exists)
-  
-  # Other results
-  o$do_markdown = TRUE  # Full markdown results document
-  
-  # ---- Override options ----
+  # Append helpful properties
+  o = append_shortcuts(o)
   
   # Override options set in my_options file
   # o = override_options(o, quiet = quiet)
@@ -213,6 +198,19 @@ override_options = function(o, quiet = FALSE) {
     }
   }
   
+  return(o)
+}
+
+# ---------------------------------------------------------
+# Override options set in my_options file
+# Called by: set_options()
+# ---------------------------------------------------------
+append_shortcuts = function(o) {
+
+  # Disease source (VIMC or GBD)
+  for (i in unique(disease_table$source))
+    o$disease[[i]] = disease_table[source == i, disease]
+
   return(o)
 }
 
