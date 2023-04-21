@@ -16,9 +16,6 @@ run_uncertainty = function() {
   
   message("* Generating uncertainty")
   
-  # Load tables up front (see db_utils.R)
-  load_tables("wpp_input")
-  
   # Load impact factors calculated in step 2
   impact_dt       = try_load(o$pth$impact_factors, "impact_dt")
   scenario_impact = try_load(o$pth$impact_factors, "scenario_impact")
@@ -43,9 +40,9 @@ run_uncertainty = function() {
     select(disease, location_id, vaccine, activity_type, 
            impact_factor, year, age, fvps, deaths_averted, sd)
   
-  # Generate uncertainty 
+  # Generate uncertainty for VIMC diseases
   vimc_draws = generate_vimc_uncertainty(vimc_dt)
-
+  
   # ---- Draws for non-VIMC diseases ----
   
   message(" - GBD diseases")
@@ -57,64 +54,26 @@ run_uncertainty = function() {
     filter(disease %in% o$disease$gbd) %>%
     select(-source)
   
+  # Generate uncertainty for GBD diseases
   gbd_draws = generate_gbd_uncertainty(gbd_dt, scenario_impact)
   
-  # ---- Combine and rescale to the mean ----
+  # ---- Combine and align to modelled mean ----
   
-  message(" - Combining draws")
+  message(" - Realigning means")
   
-  # Concatenate the two datatables
-  draws_dt = rbind(gbd_draws, vimc_draws)
+  # Bind and shift all draws such that we don't move the modelled mean
+  draws_dt = rbind(gbd_draws, vimc_draws) %>%                  # Concatenate all diseases
+    mutate(draw_mean = rowMeans(across(starts_with("draw"))),  # Mean of all draws per row
+           draw_diff = deaths_averted - draw_mean,             # Difference to modelled mean
+           across(starts_with("draw"), ~. + draw_diff)) %>%    # Shift all draws to align means
+    select(-draw_mean, -draw_diff)
   
-  draws_dt[, draw_mean := rowMeans(draws_dt[, grep("draw", names(draws_dt), value = T), with = F])]
-  draws_dt[, mean_diff := deaths_averted - draw_mean]
-  draws_dt[, grep("draw", names(draws_dt), value = T) := draws_dt[, grep("draw", names(draws_dt), value = T), with = F] + mean_diff]
-  draws_dt[, c("draw_mean", "mean_diff") := NULL]
+  # Save datatable to file
+  saveRDS(draws_dt, file = paste0(o$pth$uncertainty, "draws.rds"))
   
-  year_total_draws <- draws_dt[, lapply(.SD, sum), by = .(year), .SDcols = paste0("draw_", 1:200)]
-  melt_year_total_draws <- melt(year_total_draws, id.vars = "year")
-  year_total_summary <- melt_year_total_draws[, .(mean = mean(value), 
-                                                  lower = quantile(value, 0.05), upper = quantile(value, 0.95)),
-                                              by = year]
-
-  # Diagnostic plot
-  # ggplot(year_total_summary, aes(x = year)) + 
-  #   geom_ribbon(aes(ymin = lower, ymax = upper), 
-  #               colour = "red", fill = "red", alpha = 0.5) + 
-  #   geom_line(aes(y = mean), colour = "red", linewidth = 2) + 
-  #   geom_point(data = scenario_impact$year_totals,
-  #              mapping = aes(y = total), 
-  #              colour = "black")
-  
-  message(" - Saving results")
-  
-  ## Save for sharing
-  out_dt <- merge(
-    draws_dt,
-    loc_table[, .(location_id, location_name, location_iso3, region, income_group, gavi73)],
-    by = "location_id"
-  )
-  out_dt <- out_dt[order(location_name, disease, vaccine, activity_type)]
-  out_dt[is.na(deaths_averted), deaths_averted := 0]
-  
-  cohort_dt <- wpp_input[age == 0, .(nx = sum(nx)), by = .(location_id, year)]
-  setnames(cohort_dt, "nx", "cohort_size")
-  out_dt <- merge(out_dt, cohort_dt, by = c("location_id", "year"))
-  
-  total_dt <- wpp_input[, .(nx = sum(nx)), by = .(location_id, year)]
-  setnames(total_dt, "nx", "total_pop")
-  out_dt <- merge(out_dt, total_dt, by = c("location_id", "year"))
-  setcolorder(
-    out_dt, 
-    c(
-      "location_name", "location_iso3", "location_id", "year", "disease", 
-      "vaccine", "activity_type", "age", "impact_factor", "fvps", "deaths_averted",
-      "region", "income_group", "gavi73", "cohort_size", "total_pop", paste0("draw_", 1:200)
-    )
-  )
-  
-  # Save results to file
-  saveRDS(out_dt, file = paste0(o$pth$results, "reference_results.rds"))
+  # Produce diagnostic plots (see plotting.R)
+  plot_draws("Uncertainty draws")
+  plot_annual_total("Annual total")
 }
 
 # ---------------------------------------------------------
@@ -166,7 +125,7 @@ generate_gbd_uncertainty = function(gbd_dt, scenario_impact) {
     
     # Determine ...
     opt_result = optim(par    = c(1, 1),     # Starting point
-                       fn     = obj_fn,      # Objective function
+                       fn     = gbd_obj_fn,  # Objective function
                        data   = as.list(v),  # Additonal arguments for obj_fn
                        lower  = log(1), 
                        upper  = log(10),
@@ -180,7 +139,7 @@ generate_gbd_uncertainty = function(gbd_dt, scenario_impact) {
     as_named_dt(c("p1", "p2")) %>%
     # Sample from beta distribution...
     split(rownames(.)) %>%
-    lapply(draw_fn, n = o$n_draws) %>%
+    lapply(gbd_draw_fn, n = o$n_draws) %>%
     as_named_dt(efficacy$disease) %>%
     # Melt to long format...
     mutate(draw = paste0("draw_", 1 : o$n_draws)) %>%
@@ -206,7 +165,7 @@ generate_gbd_uncertainty = function(gbd_dt, scenario_impact) {
 # ---------------------------------------------------------
 # Objective function to minimise
 # ---------------------------------------------------------
-obj_fn = function(par, data) {
+gbd_obj_fn = function(par, data) {
   
   # Extract fitting parameters
   a = exp(par[1])
@@ -225,6 +184,6 @@ obj_fn = function(par, data) {
 # ---------------------------------------------------------
 # Draw samples for beta distribution
 # ---------------------------------------------------------
-draw_fn = function(x, n) 
+gbd_draw_fn = function(x, n) 
   rbeta(n, x$p1, x$p2) / (x$p1 / (x$p1 + x$p2))
 

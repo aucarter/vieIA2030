@@ -17,11 +17,47 @@ run_results = function() {
   message("* Producing results")
   
   # Load tables up front (see db_utils.R)
-  # load_tables("wpp_input")
+  load_tables("wpp_input")
   
   # Load impact factors calculated in step 2
   # impact_dt       = try_load(o$pth$impact_factors, "impact_dt")
   scenario_impact = try_load(o$pth$impact_factors, "scenario_impact")
+  
+  # ---- Reference results ----
+  
+  message(" - Saving results")
+  
+  ## Save for sharing
+  out_dt <- merge(
+    draws_dt,
+    loc_table[, .(location_id, location_name, location_iso3, region, income_group, gavi73)],
+    by = "location_id"
+  )
+  out_dt <- out_dt[order(location_name, disease, vaccine, activity_type)]
+  out_dt[is.na(deaths_averted), deaths_averted := 0]
+  
+  cohort_dt <- wpp_input[age == 0, .(nx = sum(nx)), by = .(location_id, year)]
+  setnames(cohort_dt, "nx", "cohort_size")
+  out_dt <- merge(out_dt, cohort_dt, by = c("location_id", "year"))
+  
+  total_dt <- wpp_input[, .(nx = sum(nx)), by = .(location_id, year)]
+  setnames(total_dt, "nx", "total_pop")
+  out_dt <- merge(out_dt, total_dt, by = c("location_id", "year"))
+  setcolorder(
+    out_dt, 
+    c(
+      "location_name", "location_iso3", "location_id", "year", "disease", 
+      "vaccine", "activity_type", "age", "impact_factor", "fvps", "deaths_averted",
+      "region", "income_group", "gavi73", "cohort_size", "total_pop", paste0("draw_", 1:200)
+    )
+  )
+  
+  # Save results to file
+  saveRDS(out_dt, file = paste0(o$pth$results, "reference_results.rds"))
+  
+  # Upload results if desired
+  if (o$results_upload)
+    upload_object(out_dt, "ia2030_reference_results")
   
   # ---- Impact by region ----
   
@@ -114,11 +150,5 @@ run_results = function() {
                       # clean             = FALSE,  # Save intermediates
                       quiet             = TRUE)
   }
-  
-  # ---- Upload results to database ----
-  
-  # Upload results if desired
-  if (o$results_upload)
-    upload_object(out_dt, "ia2030_reference_results")
 }
 

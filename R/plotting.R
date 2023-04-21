@@ -133,7 +133,110 @@ plot_strata_fit <- function(rr_dt) {
         ylab("Predicted")
     
     # Save figure to file
-    fig_save(g, "strata_fit")
+    fig_save(g, "Strata fit", dir = "diagnostics")
+}
+
+# ---------------------------------------------------------
+# Plot uncertainty draws
+# ---------------------------------------------------------
+plot_draws = function(fig_name) {
+    
+    # Flag for transforming y axis to log10 scale
+    y_transform = FALSE
+    
+    # ---- Load and format plot datatables ----
+    
+    # Load draws from file
+    draws_dt = try_load(o$pth$uncertainty, "draws")
+    
+    # Append source and collapse to d_v_at
+    details_dt = draws_dt %>%
+        left_join(disease_table, by = "disease") %>%
+        tidyr::unite("d_v_at", disease, vaccine, activity_type)
+    
+    # Mean deaths averted (not from draws)
+    mean_dt = details_dt %>%
+        group_by(d_v_at, source) %>%
+        summarise(deaths_averted = sum(deaths_averted)) %>%
+        ungroup() %>%
+        as.data.table()
+    
+    # Sampled deaths averted
+    samples_dt = details_dt %>%
+        tidyr::pivot_longer(cols = starts_with("draw"), 
+                            names_to = "draw") %>%
+        group_by(d_v_at, source, draw) %>%
+        summarise(deaths_averted = sum(value)) %>%
+        ungroup() %>%
+        as.data.table()
+    
+    # ---- Produce plot ----
+    
+    # Plot draws and then mean on top
+    g = ggplot(samples_dt, aes(x = d_v_at, y = deaths_averted)) + 
+        geom_violin(aes(colour = source, fill = source), 
+                    alpha = 0.2) + 
+        geom_point(data = mean_dt, colour = "black", size = 2)
+    
+    # Prettify plot
+    g %<>% ggpretty(
+        x_lab = "Disease - vaccine - activity", 
+        y_lab = "Deaths averted",
+        x_discrete = TRUE)
+    
+    # Transform y axis to log10 scale if desired
+    scale_fn = ifelse(y_transform, "scale_y_log10", "scale_y_continuous")
+    g = g + get(scale_fn)(labels = label_comma(), 
+                          expand = expansion(mult = c(0, 0.05)))
+    
+    # Save figure to file
+    fig_save(g, fig_name, dir = "diagnostics")
+}
+
+# ---------------------------------------------------------
+# Plot annual totals - diagnostic figure to check alignment of means
+# ---------------------------------------------------------
+plot_annual_total = function(fig_name) {
+    
+    # Load modelled mean annual totals
+    scenario_impact = try_load(o$pth$impact_factors, "scenario_impact")
+    
+    # Load uncertainty draws - we want to see the means of these the same as above
+    draws_dt = try_load(o$pth$uncertainty, "draws")
+    
+    # Uncertainty per year (all diseases and locations) across draws
+    annual_dt = draws_dt %>%
+        # Melt to long format...
+        tidyr::pivot_longer(cols = starts_with("draw"), 
+                            names_to = "draw") %>%
+        # Total deaths averted per year (per draw)...
+        group_by(year, draw) %>%
+        summarise(value = sum(value)) %>%
+        ungroup() %>%
+        # Mean and bounds across draws...
+        group_by(year) %>%
+        summarise(mean =  mean(value), 
+                  lower = quantile(value, 0.05), 
+                  upper = quantile(value, 0.95)) %>%
+        ungroup() %>%
+        as.data.table()
+    
+    # Plot mean and bounds from draws, and overlay modelled mean
+    g = ggplot(annual_dt, aes(x = year)) +
+        geom_ribbon(aes(ymin = lower, ymax = upper),
+                    colour = "red", fill = "red", alpha = 0.5) +
+        geom_line(aes(y = mean), colour = "red", linewidth = 2) +
+        geom_point(data = scenario_impact$year_totals,
+                   mapping = aes(y = total),
+                   colour = "black")
+    
+    # Prettify plot
+    g %<>% ggpretty(
+        x_lab = "Year", 
+        y_lab = "Deaths averted")
+    
+    # Save figure to file
+    fig_save(g, fig_name, dir = "diagnostics")
 }
 
 # ---------------------------------------------------------
@@ -191,7 +294,7 @@ ggpretty = function(g, cols = NULL, colour = NULL, fill = NULL, title = NULL,
 # ---------------------------------------------------------
 # Save a ggplot figure to file with default settings
 # ---------------------------------------------------------
-fig_save = function(g, ..., path = "figures", width = o$save_width, height = o$save_height) {
+fig_save = function(g, ..., dir = "figures") {
     
     # Collapse inputs into vector of strings
     fig_name_parts = unlist(list(...))
@@ -201,15 +304,15 @@ fig_save = function(g, ..., path = "figures", width = o$save_width, height = o$s
     
     # Repeat the saving process for each image format in figure_format
     for (fig_format in o$figure_format) {
-        save_pth  = paste0(o$pth[[path]], save_name, ".", fig_format)
+        save_pth  = paste0(o$pth[[dir]], save_name, ".", fig_format)
         
         # Save figure (size specified in options.R)
         ggsave(save_pth, 
                plot   = g, 
                device = fig_format, 
                dpi    = o$save_resolution, 
-               width  = width, 
-               height = height, 
+               width  = o$save_width, 
+               height = o$save_height, 
                units  = o$save_units)
     }
 }
