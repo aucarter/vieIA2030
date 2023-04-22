@@ -82,6 +82,10 @@ run_uncertainty = function() {
     fig_name = "Uncertainty distributions - GBD diseases"
     plot_gbd_uncertainty_dist(fig_name)  # See plotting.R
     
+    # Plot parameters of fitted beta distribution to vaccine efficacy (GBD diseases only)
+    fig_name = "Uncertainty distribution fit - GBD diseases"
+    plot_gbd_uncertainty_fit(fig_name)  # See plotting.R
+    
     # Plot uncertainty draws for all diseases
     fig_name = "Uncertainty draws - All diseases"
     plot_draws(fig_name)  # See plotting.R
@@ -119,14 +123,6 @@ generate_vimc_uncertainty = function (vimc_dt) {
 # ---------------------------------------------------------
 generate_gbd_uncertainty = function(gbd_dt, scenario_impact) {
   
-  # ---- Settings ----
-  
-  # Lower and upper parameter bounds for optimisation
-  o$par_lower = log(1)
-  o$par_upper = log(10)
-  
-  # ---- Set up ----
-  
   # Initiate optimal matrix (diseases x beta distribution parameters)
   opt_pars = matrix(NA, nrow = nrow(gbd_dt), ncol = 2)
   
@@ -148,18 +144,6 @@ generate_gbd_uncertainty = function(gbd_dt, scenario_impact) {
     
     # Store best fitting parameters
     opt_pars[i, ] = exp(opt_result$par)
-    
-    # # To assess performance, evaluate every point in a grid
-    # for (j in 1 : nrow(grid_dt))
-    #   grid_dt$obj[[j]] = gbd_obj_fn(unlist(grid_dt[j, .(p1, p2)]), v)
-    # 
-    # # Heat map of objective function, with optimal value on top
-    # g_list[[i]] = 
-    #   ggplot(grid_dt, aes(x = p1, y = p2)) + 
-    #   geom_tile(aes(colour = obj, fill = obj)) + 
-    #   geom_point(data = data.table(p1 = opt_result$par[1], 
-    #                                p2 = opt_result$par[2]), 
-    #              colour = "red", size = 2)
   }
   
   # Convert optimal results to datatable
@@ -197,9 +181,6 @@ generate_gbd_uncertainty = function(gbd_dt, scenario_impact) {
     tidyr::pivot_wider(names_from  = draw, 
                        values_from = deaths_averted_draw) %>%
     as.data.table()
-  
-  # Diagnostic plot to visualise quality of optimisation
-  # g = ggpubr::ggarrange(plotlist = g_list)
   
   return(draws_wide)
 }

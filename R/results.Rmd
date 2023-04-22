@@ -189,7 +189,7 @@ g <- ggplot(d_summ) +
 g %<>% ggpretty(
   x_lab = "Disease", 
   y_lab = "Annual total deaths averted \n (in thousands)", 
-  x_discrete = TRUE)
+  x_rotate = TRUE)
 
 # Save and print figure
 fig_save(g, "mean_range_disease")
@@ -314,7 +314,7 @@ g <- ggplot(d_summ) +
 g %<>% ggpretty(
   x_lab = "Disease", 
   y_lab = "Annual incremental deaths averted (in thousands)", 
-  x_discrete = TRUE)
+  x_rotate = TRUE)
 
 # Save and print figure
 fig_save(g, "increment_mean_range_disease")

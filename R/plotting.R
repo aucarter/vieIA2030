@@ -182,8 +182,8 @@ plot_draws = function(fig_name) {
   g %<>% ggpretty(
     x_lab = "Disease - vaccine - activity", 
     y_lab = "Deaths averted",
-    x_discrete = TRUE, 
-    y_pretty   = FALSE)
+    x_rotate = TRUE, 
+    y_pretty = FALSE)
   
   # Transform y axis to log10 scale if desired
   scale_fn = ifelse(y_transform, "scale_y_log10", "scale_y_continuous")
@@ -336,24 +336,101 @@ plot_gbd_uncertainty_fit = function(fig_name) {
   # Grid points for diagnostic plot
   n_grid = 100  # n_grid^2 total evaluations per disease
   
-  # Initate plot list
-  g_list = list()
+  # Padding around heatmap
+  padding = 0.05
   
+  # Colours for good and bad objective values
+  colours = list(
+    good = "blue", 
+    bad  = "white", 
+    best = "darkred")  # Best fit parameter value(s)
+  
+  # ---- Evaluate objective function for grid of points ----
+  
+  # Points to evaluate across each parameter
   eval_pts = seq(o$par_lower, o$par_upper, length.out = n_grid)
   
-  # Create grid to evaluate all points
+  # Create grid of all points to evaluate
   grid_dt = tidyr::expand_grid(
     p1  = eval_pts,
     p2  = eval_pts,
     obj = NA) %>%
     as.data.table()
+  
+  # Initate list of grids
+  grid_list = list()
+  
+  # Loop through diseases
+  for (i in 1 : nrow(gbd_efficacy)) {
+    
+    # Vaccine efficacy details
+    v = gbd_efficacy[i, .(mean, lower, upper)]
+    
+    # To assess performance, evaluate every point in a grid
+    #
+    # NOTE: See uncertainty.R for function gbd_obj_fn()
+    for (j in 1 : nrow(grid_dt))
+      grid_dt$obj[[j]] = gbd_obj_fn(unlist(grid_dt[j, .(p1, p2)]), v)
+    
+    grid_list[[i]] = grid_dt %>%
+      mutate(disease = gbd_efficacy[i, disease], 
+             vaccine = gbd_efficacy[i, vaccine])
+  }
+  
+  # Bind datatables and collapse disease-vaccine
+  plot_dt = rbindlist(grid_list) %>%
+    left_join(y  = disease_table, 
+              by = "disease") %>%
+    tidyr::unite("d_v", disease_long, vaccine) %>%
+    select(d_v, p1, p2, obj)
+  
+  # Also load best fit parameters (see uncertainty.R)
+  fitted_pars = try_load(o$pth$uncertainty, "gbd_beta_pars") %>%
+    left_join(y  = disease_table, 
+              by = "disease") %>%
+    tidyr::unite("d_v", disease_long, vaccine) %>%
+    mutate(p1 = log(p1), p2 = log(p2)) %>%
+    select(d_v, p1, p2)
+  
+  # ---- Produce plot ----
+  
+  # Heat map of objective function for each disease-vaccine
+  g = ggplot(plot_dt, aes(x = p1, y = p2)) +
+    geom_tile(aes(fill = obj), colour = NA) +
+    facet_wrap(~d_v) + 
+    scale_fill_gradient(low  = colours$good, 
+                        high = colours$bad)
+  
+  # Plot pre-determined optimal value on top
+  g = g + geom_point(data   = fitted_pars, 
+                     colour = colours$best, 
+                     size   = 3)
+  
+  # Prettify plot
+  g %<>% ggpretty(
+    title = "Optimisation performance",
+    x_lab = "Shape parameter 1", 
+    y_lab = "Shape parameter 2", 
+    x_pretty = FALSE, 
+    y_pretty = FALSE)
+  
+  # Remove padding and text from heatmap
+  g = g + scale_x_continuous(expand = c(padding, padding)) + 
+    scale_y_continuous(expand = c(padding, padding)) + 
+    theme(panel.border = element_blank(), 
+          axis.text.x  = element_blank(), 
+          axis.text.y  = element_blank(),
+          axis.ticks   = element_blank())
+  
+  # Save figure to file
+  fig_save(g, fig_name, dir = "diagnostics")
 }
 
 # ---------------------------------------------------------
 # Prettify ggplot figure
 # ---------------------------------------------------------
-ggpretty = function(g, cols = NULL, colour = NULL, fill = NULL, title = NULL, 
-                    x_lab = NULL, y_lab = NULL, x_discrete = FALSE, y_pretty = TRUE) {
+ggpretty = function(g, cols = NULL, colour = NULL, fill = NULL, title = NULL, x_rotate = FALSE,
+                    x_lab = NULL, y_lab = NULL, x_pretty = TRUE, y_pretty = TRUE) {
   
   # Set line colours if specified
   if (!is.null(colour))
@@ -365,11 +442,11 @@ ggpretty = function(g, cols = NULL, colour = NULL, fill = NULL, title = NULL,
     g = g + scale_fill_manual(values = cols[[fill]], 
                               name   = first_cap(fill))
   
-  # Only prettify x axis for continuous plots
-  if (!x_discrete)
+  # Prettify x axis
+  if (x_pretty && !x_rotate)
     g = g + scale_x_continuous(breaks = scales::pretty_breaks())
   
-  # Prettify y axis as standard
+  # Prettify y axis
   if (y_pretty)
     g = g + scale_y_continuous(breaks = scales::pretty_breaks(), 
                                expand = expansion(mult = c(0, 0.05)))
@@ -384,8 +461,8 @@ ggpretty = function(g, cols = NULL, colour = NULL, fill = NULL, title = NULL,
     theme(plot.title    = element_text(size = o$font_size[1], hjust = 0.5),
           axis.title    = element_text(size = o$font_size[2]),
           axis.text     = element_text(size = o$font_size[3]),
-          axis.text.x   = element_text(hjust = ifelse(x_discrete, 1, 0.5), 
-                                       angle = ifelse(x_discrete, 50, 0)),
+          axis.text.x   = element_text(angle = ifelse(x_rotate, 50, 0), 
+                                       hjust = ifelse(x_rotate, 1, 0.5)), 
           axis.line     = element_blank(),
           panel.border  = element_rect(linewidth = 1, colour = "black", fill = NA),
           panel.spacing = unit(1, "lines"),

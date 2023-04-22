@@ -27,7 +27,7 @@ run_results = function() {
   
   message(" - Saving results")
   
-  browser()
+  browser() # Tidy up...
   
   ## Save for sharing
   out_dt <- merge(
