@@ -182,7 +182,8 @@ plot_draws = function(fig_name) {
     g %<>% ggpretty(
         x_lab = "Disease - vaccine - activity", 
         y_lab = "Deaths averted",
-        x_discrete = TRUE)
+        x_discrete = TRUE, 
+        y_pretty   = FALSE)
     
     # Transform y axis to log10 scale if desired
     scale_fn = ifelse(y_transform, "scale_y_log10", "scale_y_continuous")
@@ -331,7 +332,7 @@ plot_gbd_uncertainty_dist = function(fig_name) {
 # Prettify ggplot figure
 # ---------------------------------------------------------
 ggpretty = function(g, cols = NULL, colour = NULL, fill = NULL, title = NULL, 
-                    x_lab = NULL, y_lab = NULL, x_discrete = FALSE) {
+                    x_lab = NULL, y_lab = NULL, x_discrete = FALSE, y_pretty = TRUE) {
     
     # Set line colours if specified
     if (!is.null(colour))
@@ -343,13 +344,14 @@ ggpretty = function(g, cols = NULL, colour = NULL, fill = NULL, title = NULL,
         g = g + scale_fill_manual(values = cols[[fill]], 
                                   name   = first_cap(fill))
     
-    # Prettify y axis as standard
-    g = g + scale_y_continuous(breaks = scales::pretty_breaks(), 
-                               expand = expansion(mult = c(0, 0.05)))
-    
     # Only prettify x axis for continuous plots
     if (!x_discrete)
         g = g + scale_x_continuous(breaks = scales::pretty_breaks())
+    
+    # Prettify y axis as standard
+    if (y_pretty)
+        g = g + scale_y_continuous(breaks = scales::pretty_breaks(), 
+                                   expand = expansion(mult = c(0, 0.05)))
     
     # Set labels
     g = g + ggtitle(title) +

@@ -152,5 +152,25 @@ run_results = function() {
                       # clean             = FALSE,  # Save intermediates
                       quiet             = TRUE)
   }
+  
+  # ---- All diagnostic plots ----
+  
+  # Check flag
+  if (o$plot_diagnostics) {
+    
+    message(" - Plotting diagnostics")
+    
+    # Plot parameters of fitted beta distribution to vaccine efficacy (GBD diseases only)
+    fig_name = "Uncertainty distributions - GBD diseases"
+    plot_gbd_uncertainty_dist(fig_name)  # See plotting.R
+    
+    # Plot uncertainty draws for all diseases
+    fig_name = "Uncertainty draws - All diseases"
+    plot_draws(fig_name)  # See plotting.R
+    
+    # Plot annual totals to check alignment of means
+    fig_name = "Uncertainty bounds - Annual total"
+    plot_annual_total(fig_name)  # See plotting.R
+  }
 }
 
