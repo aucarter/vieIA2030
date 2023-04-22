@@ -71,7 +71,12 @@ run_uncertainty = function() {
   # Save datatable to file
   saveRDS(draws_dt, file = paste0(o$pth$uncertainty, "draws.rds"))
   
+  # ---- Diagnostic figures ----
+  
+  message(" - Plotting diagnostics")
+  
   # Produce diagnostic plots (see plotting.R)
+  plot_gbd_uncertainty_dist("GBD uncertainty distribution")
   plot_draws("Uncertainty draws")
   plot_annual_total("Annual total")
 }
@@ -103,40 +108,76 @@ generate_vimc_uncertainty = function (vimc_dt) {
 # ---------------------------------------------------------
 generate_gbd_uncertainty = function(gbd_dt, scenario_impact) {
   
-  # dt = tidyr::expand_grid(
-  #     p1 = seq(log(1), log(10), length.out = 100), 
-  #     p2 = seq(log(1), log(10), length.out = 100), 
-  #     y  = NA) %>%
-  #     as.data.table()
+  # ---- Settings ----
   
-  # Initiate matrix (diseases x beta distribution parameters)
+  # Lower and upper parameter bounds for optimisation
+  p_lower = log(1)
+  p_upper = log(10)
+  
+  # Grid points for diagnostic plot
+  n_grid = 100
+  
+  # ---- Set up ----
+  
+  # Initiate optimal matrix (diseases x beta distribution parameters)
   opt_pars = matrix(NA, nrow = nrow(gbd_dt), ncol = 2)
   
+  # # Initate list for diagnostic plots
+  # g_list = list()
+  # 
+  # # Create grid to evaluate all points
+  # grid_dt = tidyr::expand_grid(
+  #     p1  = seq(p_lower, p_upper, length.out = n_grid),
+  #     p2  = seq(p_lower, p_upper, length.out = n_grid),
+  #     obj = NA) %>%
+  #     as.data.table()
+  
+  # ---- Optimise parameters for each disease ----
+  
+  # Loop through diseases
   for (i in 1 : nrow(gbd_dt)) {
     
     # Vaccine efficacy details
     v = efficacy[i, .(mean, lower, upper)]
     
-    # for (i in 1 : nrow(dt)) {
-    #     dt$y[[i]] = obj_fn(unlist(dt[i, .(p1, p2)]), v)
-    # }
-    # 
-    # g = ggplot(dt, aes(x = p1, y = p2, colour = y, fill = y)) + geom_point()
-    
-    # Determine ...
+    # Determine optimal beta parameters to fit vaccine efficacy
     opt_result = optim(par    = c(1, 1),     # Starting point
                        fn     = gbd_obj_fn,  # Objective function
                        data   = as.list(v),  # Additonal arguments for obj_fn
-                       lower  = log(1), 
-                       upper  = log(10),
+                       lower  = p_lower, 
+                       upper  = p_upper,
                        method = "L-BFGS-B")
     
+    # Store best fitting parameters
     opt_pars[i, ] = exp(opt_result$par)
+    
+    # # To assess performance, evaluate every point in a grid
+    # for (j in 1 : nrow(grid_dt))
+    #   grid_dt$obj[[j]] = gbd_obj_fn(unlist(grid_dt[j, .(p1, p2)]), v)
+    # 
+    # # Heat map of objective function, with optimal value on top
+    # g_list[[i]] = 
+    #   ggplot(grid_dt, aes(x = p1, y = p2)) + 
+    #   geom_tile(aes(colour = obj, fill = obj)) + 
+    #   geom_point(data = data.table(p1 = opt_result$par[1], 
+    #                                p2 = opt_result$par[2]), 
+    #              colour = "red", size = 2)
   }
   
-  # Draw samples from beta distribution using these optimal parameters
-  draws_dt = opt_pars %>%
+  # Convert optimal results to datatable
+  beta_pars = opt_pars %>%
     as_named_dt(c("p1", "p2")) %>%
+    mutate(disease = gbd_dt$disease, 
+           vaccine = gbd_dt$vaccine, 
+           .before = 1)
+  
+  # Save file - primarily for diagnostic figures
+  saveRDS(beta_pars, paste0(o$pth$uncertainty, "gbd_beta_pars.rds"))
+  
+  # ---- Draw samples from optimal beta distribution ----
+  
+  # Draw samples from beta distribution using these optimal parameters
+  draws_dt = beta_pars %>%
     # Sample from beta distribution...
     split(rownames(.)) %>%
     lapply(gbd_draw_fn, n = o$n_draws) %>%
@@ -159,6 +200,9 @@ generate_gbd_uncertainty = function(gbd_dt, scenario_impact) {
                        values_from = deaths_averted_draw) %>%
     as.data.table()
   
+  # Diagnostic plot to visualise quality of optimisation
+  # g = ggpubr::ggarrange(plotlist = g_list)
+  
   return(draws_wide)
 }
 
@@ -171,19 +215,25 @@ gbd_obj_fn = function(par, data) {
   a = exp(par[1])
   b = exp(par[2])
   
+  # Error between means
   mean_diff = abs(a / (a + b) - data$mean)
   
+  # Error between bounds
   l_diff = abs(qbeta(0.05, a, b) - data$lower)
   u_diff = abs(qbeta(0.95, a, b) - data$upper)
   
+  # Add weight to any error from the means
   y = sum(c(20 * mean_diff, l_diff, u_diff))
   
   return(y)
 }
 
 # ---------------------------------------------------------
-# Draw samples for beta distribution
+# Draw samples for beta distribution (centered to mean)
 # ---------------------------------------------------------
-gbd_draw_fn = function(x, n) 
+gbd_draw_fn = function(x, n) {
+  
+  # NOTE: alpha / (alpha + beta) is the mean of a beta distribution
   rbeta(n, x$p1, x$p2) / (x$p1 / (x$p1 + x$p2))
+}
 

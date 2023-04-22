@@ -240,6 +240,94 @@ plot_annual_total = function(fig_name) {
 }
 
 # ---------------------------------------------------------
+# Plot parameters of fitted beta distribution to vaccine efficacy (GBD diseases only)
+# ---------------------------------------------------------
+plot_gbd_uncertainty_dist = function(fig_name) {
+    
+    # Points over which to evaluate beta distribution
+    eval_pts = seq(0, 1, length.out = 100)
+    
+    # ---- Load and format plot datatables ----
+    
+    # Load actual vaccine efficacy for GBD diseases and collapse disease-vaccine
+    efficacy_dt = gbd_efficacy %>%
+        left_join(y  = disease_table, 
+                  by = "disease") %>%
+        tidyr::unite("d_v", disease_long, vaccine) %>%
+        select(d_v, mean, lower, upper)
+    
+    # Load fitted parameters and collapse disease-vaccine
+    beta_pars = try_load(o$pth$uncertainty, "gbd_beta_pars") %>%
+        left_join(y  = disease_table, 
+                  by = "disease") %>%
+        tidyr::unite("d_v", disease_long, vaccine) %>%
+        select(d_v, p1, p2)
+    
+    # Mean and 90% CI of fitted beta distribution
+    beta_summary_dt = beta_pars %>%
+        mutate(par_mean  = p1 / (p1 + p2),       # Mean of a beta distribution
+               par_lower = qbeta(0.05, p1, p2),  # Lower bound
+               par_upper = qbeta(0.95, p1, p2))  # Upper bound
+    
+    # Function to evaluate beta distribution
+    beta_fn = function(p, x)
+        dbeta(x = eval_pts, p[1], p[2])
+    
+    # Evaluate beta for fitted parameters for each disease-vaccine
+    beta_dist_dt = beta_pars %>%
+        select(p1, p2) %>%
+        apply(1, beta_fn, x = eval_pts) %>%
+        # Convert to tidy datatable...
+        as_named_dt(beta_pars$d_v) %>%
+        mutate(x = eval_pts) %>%
+        tidyr::pivot_longer(cols = - x, 
+                            names_to = "d_v") %>%
+        # Normalise probability distributions...
+        group_by(d_v) %>%
+        mutate(value = value / max(value)) %>%
+        ungroup() %>%
+        arrange(d_v, x) %>%
+        as.data.table()
+
+    # ---- Produce plot ----
+
+    # Plot actual vaccine efficacy for each disease-vaccine
+    g = ggplot(efficacy_dt) + 
+        geom_errorbar(aes(y = 1.1, xmin = lower, xmax = upper), 
+                      width = 0.1, size = 1.5, colour = "black") + 
+        geom_point(aes(y = 1.1, x = mean), 
+                   size = 3, colour = "darkred") +
+        facet_wrap(~d_v, nrow = 1)
+    
+    # Plot fitted beta distribution
+    g = g + geom_line(data = beta_dist_dt, aes(x = x, y = value), 
+                      size = 2, colour = "darkblue") 
+    
+    # Function for adding vlines to plot
+    add_vline = function(g, var, col)
+        g = g + geom_vline(data     = beta_summary_dt, 
+                           mapping  = aes_string(xintercept = var), 
+                           colour   = col, 
+                           linetype = "dashed")
+    
+    # Append mean and 90% CI from fitted beta distribution
+    g %<>% add_vline("par_mean", "darkred") %>%
+        add_vline("par_lower", "black") %>%
+        add_vline("par_upper", "black")
+    
+    # Prettify plot
+    g %<>% ggpretty(
+        x_lab = "Efficacy", 
+        y_lab = "Probability density")
+    
+    # Final prettifying touches
+    g = g + theme(axis.text.y = element_blank())
+    
+    # Save figure to file
+    fig_save(g, fig_name, dir = "diagnostics")
+}
+
+# ---------------------------------------------------------
 # Prettify ggplot figure
 # ---------------------------------------------------------
 ggpretty = function(g, cols = NULL, colour = NULL, fill = NULL, title = NULL, 

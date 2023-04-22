@@ -27,6 +27,8 @@ run_results = function() {
   
   message(" - Saving results")
   
+  browser()
+  
   ## Save for sharing
   out_dt <- merge(
     draws_dt,
