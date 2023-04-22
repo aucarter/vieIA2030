@@ -1,12 +1,12 @@
 ###########################################################
 # SET DIRECTORIES
 #
-# Set and get directories in one place in the name of consistency and ease.
-# Creates any directories that do not currently exist.
+# Set and get directories in one place in the name of consistency
+# and ease. Creates any directories that do not currently exist.
 #
 # OUTPUTS:
-#	- A list of relevant directories (within o$pth) which can be referenced
-#   elsewhere.
+#	- A list of relevant directories (within o$pth) which can
+#   be referenced throughout in the pipeline
 #
 ###########################################################
 
@@ -35,26 +35,6 @@ set_dirs = function(o) {
   # pth$states    = file.path(pth$config, "model_states.yaml")
   # pth$metrics   = file.path(pth$config, "model_metrics.yaml")
   # pth$variables = file.path(pth$config, "model_variables.yaml")
-  
-  # ---- Set analysis name ----
-  
-  # # User's custom options (may or may not exist)
-  # pth$my_options = file.path(pth$config, "my_options.yaml")
-  # 
-  # # If user has a 'my options' file, load it
-  # if (file.exists(pth$my_options)) {
-  #   
-  #   # Check whether analysis name has been defined
-  #   overwrite_name = read_yaml(pth$my_options)$analysis_name
-  #   
-  #   # If so, overwrite value defined in options.R
-  #   if (!is.null(overwrite_name))
-  #     o$analysis_name = overwrite_name
-  # }
-  # 
-  # # Throw error if illegal characters used
-  # if (grepl("\\.", o$analysis_name))
-  #   stop("Analysis name should not contain any period characters")
   
   # ---- Output directories ----
   

@@ -135,6 +135,8 @@ calc_scenario_impact <- function(scenario_dt, impact_dt) {
   
   message(" - Calculating scenario impact")
   
+  browser()
+  
   scenario_dt <- merge(scenario_dt, v_at_table, by = "v_at_id")
   scenario_dt[vaccine == "Rubella", activity_type := "combined"]
   scenario_dt[, v_at_id := NULL]

@@ -1,13 +1,9 @@
 ###########################################################
 # OPTIONS
 #
-# Set key options for all things model related.
-#
-# Any numerical, logical, or character value or vector defined
-# in the main set_options() function can be overridden through
-# the non-mandatory \config\my_options.yaml file. Note that
-# this my_options file is git ignored (indeed, that is the very
-# point of such a file), so each user will need to create one.
+# Set key options for all things model related. The output 
+# of this function, o (a list), lives in the global environment, 
+# so can be referenced throughout the pipeline.
 #
 ###########################################################
 
@@ -24,9 +20,6 @@ set_options = function(do_step = NA, quiet = FALSE) {
   
   # Initiate options list
   o = list(do_step = do_step)
-  
-  # Detect user - required for checking cluster jobs
-  # o$user = Sys.info()[["user"]]
   
   # ---- Analysis settings ----
   
@@ -48,22 +41,22 @@ set_options = function(do_step = NA, quiet = FALSE) {
   
   # ---- Data references ----
   
-  # ECDC data links
-  o$ecdc_api = 
-    list(cases = "https://opendata.ecdc.europa.eu/covid19/nationalcasedeath_eueea_daily_ei/csv", 
-         hosp  = "https://opendata.ecdc.europa.eu/covid19/hospitalicuadmissionrates/csv")
-  
-  # ETH effective reproduction number estimates
-  o$eth_api = "https://raw.githubusercontent.com/covid-19-Re/dailyRe-Data/master/<country>-estimates.csv"
-  
-  # API endpoint for national-level Oxford Stringency Index data
-  o$osi_api = "https://covidtrackerapi.bsg.ox.ac.uk/api/v2/stringency/date-range/"
-  
-  # Data dictionary: ECDC hospital & ICU indicators
-  o$data_dict$ecdc = c(hospital_beds = "Daily hospital occupancy", 
-                       icu_beds      = "Daily ICU occupancy",
-                       hospital_admissions = "Weekly new hospital admissions per 100k", 
-                       icu_admissions      = "Weekly new ICU admissions per 100k")
+  # # ECDC data links
+  # o$ecdc_api = 
+  #   list(cases = "https://opendata.ecdc.europa.eu/covid19/nationalcasedeath_eueea_daily_ei/csv", 
+  #        hosp  = "https://opendata.ecdc.europa.eu/covid19/hospitalicuadmissionrates/csv")
+  # 
+  # # ETH effective reproduction number estimates
+  # o$eth_api = "https://raw.githubusercontent.com/covid-19-Re/dailyRe-Data/master/<country>-estimates.csv"
+  # 
+  # # API endpoint for national-level Oxford Stringency Index data
+  # o$osi_api = "https://covidtrackerapi.bsg.ox.ac.uk/api/v2/stringency/date-range/"
+  # 
+  # # Data dictionary: ECDC hospital & ICU indicators
+  # o$data_dict$ecdc = c(hospital_beds = "Daily hospital occupancy", 
+  #                      icu_beds      = "Daily ICU occupancy",
+  #                      hospital_admissions = "Weekly new hospital admissions per 100k", 
+  #                      icu_admissions      = "Weekly new ICU admissions per 100k")
   
   # ---- Data cache ----
   
@@ -100,14 +93,7 @@ set_options = function(do_step = NA, quiet = FALSE) {
   # ---- Plotting flags ----
   
   # Turn figures on or off
-  # o$plot_baseline    = TRUE  # Standard baseline figures
-  # o$plot_cumulative  = TRUE  # Plot cumulative outcomes
-  # o$plot_scenarios   = TRUE  # Plot alternative (non-array) scenarios
-  # o$plot_arrays      = TRUE  # Plot grid array scenario bundles
-  # o$plot_heatmaps    = TRUE  # Plot heat maps for multidimension grid arrays
-  # o$plot_endpoints   = TRUE  # Plot array LHC endpoints across different parameters
-  # o$plot_assumptions = TRUE  # Model structure and assumptions figures
-  # o$plot_calibration = TRUE  # Calibration performance and diagnostics
+  o$plot_diagnostics = TRUE  # All diagnostic figures
   
   # ---- Plotting settings ----
   
@@ -151,52 +137,8 @@ set_options = function(do_step = NA, quiet = FALSE) {
   # Append helpful properties
   o = append_shortcuts(o)
   
-  # Override options set in my_options file
-  # o = override_options(o, quiet = quiet)
-  
   # Display analysis details
   if (!quiet) message(" - Analysis name: ", o$analysis_name)
-  
-  return(o)
-}
-
-# ---------------------------------------------------------
-# Override options set in my_options file
-# Called by: set_options()
-# ---------------------------------------------------------
-override_options = function(o, quiet = FALSE) {
-  
-  # Throw a warning if user still has a my_options.csv file
-  if (file.exists(str_replace(o$pth$my_options, ".yaml$", ".csv")))
-    warning("my_options.csv has been deprecated: use my_options.yaml instead")
-  
-  # If user has a 'my options' file, load it
-  if (file.exists(o$pth$my_options)) {
-    my_options = read_yaml(o$pth$my_options)
-    
-    # Continue if we have options to override
-    if (length(my_options) > 0) {
-      
-      if (!quiet) message(" - Overriding options using config/my_options.yaml file")
-      
-      # Throw an error if there are entries that are not well defined options
-      unrecognised = names(my_options)[!names(my_options) %in% names(o)]
-      if (length(unrecognised) > 0)
-        stop("Unrecognised entries in 'my options' file: ", paste(unrecognised, collapse = ", "))
-      
-      # Throw an error if there are multiple entries for any one option
-      duplicates = names(my_options)[duplicated(names(my_options))]
-      if (length(duplicates) > 0)
-        stop("Duplicate entries in 'my options' file: ", paste(duplicates, collapse = ", "))
-      
-      # Variable class of the options we wish to overwrite
-      class_conversion = paste0("as.", lapply(o[names(my_options)], class))
-      
-      # Iterate through the options and overwrite with value of correct class
-      for (i in seq_along(my_options))
-        o[[names(my_options)[i]]] = get(class_conversion[i])(my_options[[i]])
-    }
-  }
   
   return(o)
 }
