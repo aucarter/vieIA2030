@@ -73,7 +73,7 @@ set_options = function(do_step = NA, quiet = FALSE) {
   
   # Number of draws to sample
   o$n_draws = 200
-
+  
   # Statistical summary to use for 'best estimate' projection
   #
   # OPTIONS:
@@ -148,11 +148,11 @@ set_options = function(do_step = NA, quiet = FALSE) {
 # Called by: set_options()
 # ---------------------------------------------------------
 append_shortcuts = function(o) {
-
+  
   # Disease source (VIMC or GBD)
   for (i in unique(disease_table$source))
     o$disease[[i]] = disease_table[source == i, disease]
-
+  
   return(o)
 }
 

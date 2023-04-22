@@ -289,7 +289,7 @@ normalise_0to1 = function(x, x_min = NULL, x_max = NULL, direction = "forward") 
     # Take bounds from data unless given
     if (is.null(x_min)) x_min = min(x)
     if (is.null(x_max)) x_max = max(x)
-      
+    
     # Normalisation equation
     y = (x - x_min) / (x_max - x_min)
     

@@ -130,11 +130,11 @@ gen_db <- function() {
 # Called by: various functions in data-raw directory - via gen_db()
 # ---------------------------------------------------------
 upload_object <- function(object, name) {
-    file <- paste0(name, ".csv")
-    func_path <- system.file("upload_file.py", package = "vieIA2030")
-    write.csv(object, file, row.names = F)
-    system(paste("python3", func_path, file, name))
-    file.remove(file)
+  file <- paste0(name, ".csv")
+  func_path <- system.file("upload_file.py", package = "vieIA2030")
+  write.csv(object, file, row.names = F)
+  system(paste("python3", func_path, file, name))
+  file.remove(file)
 }
 
 # ---------------------------------------------------------

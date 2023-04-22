@@ -17,9 +17,9 @@ get_ccpm <- function(nx, sx, fx, mig, n) {
     p[, i + 1] <- next_pop[[1]]
     bx[i] <- next_pop[[2]]
   }
-
+  
   ccpm <- list(population = p[, 2:(n + 1)], births = bx)
-
+  
   return(ccpm)
 }
 
@@ -36,49 +36,49 @@ update_pop <- function(p_in, sx, fx, mig, z, srb) {
       mid_idx <- z + 2:(z - 1)
       final_idx <- z + z
     }
-
+    
     # Middle age groups
     p_out[mid_idx] <- p_in[mid_idx - 1] * (
-        sx[mid_idx - 1] * (1 + .5 * mig[mid_idx]) +
+      sx[mid_idx - 1] * (1 + .5 * mig[mid_idx]) +
         .5 * mig[mid_idx]
-      )
-
+    )
+    
     # Final age group
     p_out[final_idx] <- p_in[final_idx - 1] * (
-        sx[final_idx - 1] * (1 + .5 * mig[final_idx]) +
+      sx[final_idx - 1] * (1 + .5 * mig[final_idx]) +
         .5 * mig[final_idx]
-      ) +
+    ) +
       p_in[final_idx] * (
         sx[final_idx] * (1 + .5 * mig[final_idx]) +
-        .5 * mig[final_idx]
+          .5 * mig[final_idx]
       )
     
     # First age group
     bx <- calc_births(srb, fx, sx, p_in, mig, z, sex)
     bx_out <- bx_out + bx
     p_out[first_idx] <- bx * (sx[first_idx] * (1 + .5 * mig[first_idx]) +
-      .5 * mig[first_idx])
+                                .5 * mig[first_idx])
   }
-
-
+  
+  
   return(list(p_out, bx_out))
 }
 
 calc_births <- function(srb, fx, sx, p_in, mig, z, sex = "female") {
   # Calculate births
   fxb <- ((1 + srb) ^ (-1) * (
-      fx[z + 10:54] +
+    fx[z + 10:54] +
       fx[z + 11:55] * sx[z + 11:55]
-    ) * 0.5)
-
+  ) * 0.5)
+  
   if (sex == "male") {
     fxb <- fxb * srb
   }
-
+  
   bx <- sum(
-      fxb * p_in[z + 10:54] * (1 + .5 * mig[z + 10:54])
-    )
-
+    fxb * p_in[z + 10:54] * (1 + .5 * mig[z + 10:54])
+  )
+  
   return(bx)
 }
 
@@ -99,7 +99,7 @@ lt_est <- function(y) {
   q5 <- 1000 * (1 - lx[6])
   q1 <- 1000 * (1 - lx[2])
   lt <- c(ex, q1, q5)
-
+  
   return(lt)
 }
 
@@ -122,7 +122,7 @@ project_pop <- function(is, y0, y1, wpp_input, scen = "Default") {
     select(-c(sex_id, age)) %>%
     as.matrix()
   nx[nx == 0]   <- 1e-09
-
+  
   wpp_ina <- wpp_ina %>%
     filter(year %in% y0:y1)
   fx <- wpp_ina %>%
@@ -140,18 +140,18 @@ project_pop <- function(is, y0, y1, wpp_input, scen = "Default") {
     tidyr::spread(year, mx) %>%
     select(-c(sex_id, age)) %>%
     as.matrix()
-    mx[mx == 0] <- 1e-09
+  mx[mx == 0] <- 1e-09
   if (scen != "Default") {
     mx <- get_mx_scen(is, y0, y1, scen, mx, nx[, 2:n])
   }
-
+  
   sx <- exp(-mx)
   
   ccpm_res <- get_ccpm(nx, sx, fx, mig)
   population <- ccpm_res[["population"]]
   births <- ccpm_res[["births"]]
   deaths <- -1 * (log(sx)) * population[, 1:n]
-
+  
   list(population = population, deaths = deaths, births = births, mx = mx)
 }
 
@@ -160,26 +160,26 @@ add_lt <- function(projected_pop, is, y0, y1) {
   deaths <- projected_pop$deaths
   births <- projected_pop$births
   mx <- projected_pop$mx
-
+  
   pop_tot <- apply(population, 2, get_person)
   deaths_tot <- apply(deaths, 2, get_person)
   mx_both  <- deaths_tot / pop_tot
-
+  
   lt_out_both <- apply(mx_both, 2, lt_est)
   lt_out_fmle <- apply(mx[1:96, ], 2, lt_est)
   lt_out_mle <- apply(mx[97:192, ], 2, lt_est)
-
+  
   deaths_both <- apply(deaths, 2, sum)
   deaths_male <- apply(deaths[97:192, ], 2, sum)
   deaths_female <- apply(deaths[1:96, ], 2, sum)
-
+  
   e0 <- lt_out_both[1, ]
   e0_male <- lt_out_mle[1, ]
   e0_female <- lt_out_fmle[1, ]
-
+  
   imr <- lt_out_both[2, ]
   u5mr <- lt_out_both[3, ]
-
+  
   locs <- loc_table %>%
     filter(location_name == is) %>%
     select(location_iso3, location_name)
@@ -193,7 +193,7 @@ add_lt <- function(projected_pop, is, y0, y1) {
     e0_female = e0_female,
     imr = imr, u5mr = u5mr, births = births, locs
   )
-
+  
   return(out_df)
 }
 
@@ -201,15 +201,15 @@ add_lt <- function(projected_pop, is, y0, y1) {
 # NOTE: More function description required for devtools::document()
 add_obs <- function(df, obs_wpp, is, y0, y1) {
   out_df <- df %>%
-  mutate(group = "CCPM") %>%
-  rbind(
-    obs_wpp %>%
-    filter(location_name == is & year %in% y0:y1) %>%
-    mutate(group = "WPP2019") %>%
-    select(-c("location_id")),
-    fill = T
-  )
-
+    mutate(group = "CCPM") %>%
+    rbind(
+      obs_wpp %>%
+        filter(location_name == is & year %in% y0:y1) %>%
+        mutate(group = "WPP2019") %>%
+        select(-c("location_id")),
+      fill = T
+    )
+  
   return(out_df)
 }
 

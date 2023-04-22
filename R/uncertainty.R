@@ -122,26 +122,13 @@ generate_gbd_uncertainty = function(gbd_dt, scenario_impact) {
   # ---- Settings ----
   
   # Lower and upper parameter bounds for optimisation
-  p_lower = log(1)
-  p_upper = log(10)
-  
-  # Grid points for diagnostic plot
-  n_grid = 100
+  o$par_lower = log(1)
+  o$par_upper = log(10)
   
   # ---- Set up ----
   
   # Initiate optimal matrix (diseases x beta distribution parameters)
   opt_pars = matrix(NA, nrow = nrow(gbd_dt), ncol = 2)
-  
-  # # Initate list for diagnostic plots
-  # g_list = list()
-  # 
-  # # Create grid to evaluate all points
-  # grid_dt = tidyr::expand_grid(
-  #     p1  = seq(p_lower, p_upper, length.out = n_grid),
-  #     p2  = seq(p_lower, p_upper, length.out = n_grid),
-  #     obj = NA) %>%
-  #     as.data.table()
   
   # ---- Optimise parameters for each disease ----
   
@@ -155,8 +142,8 @@ generate_gbd_uncertainty = function(gbd_dt, scenario_impact) {
     opt_result = optim(par    = c(1, 1),     # Starting point
                        fn     = gbd_obj_fn,  # Objective function
                        data   = as.list(v),  # Additonal arguments for obj_fn
-                       lower  = p_lower, 
-                       upper  = p_upper,
+                       lower  = o$par_lower, 
+                       upper  = o$par_upper,
                        method = "L-BFGS-B")
     
     # Store best fitting parameters

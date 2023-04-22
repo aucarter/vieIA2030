@@ -44,7 +44,7 @@ dt2 = try_load(o$pth$results, "detailed_results_income") %>%
 dt3 = try_load(o$pth$results, "reference_results") %>%
   arrange(disease) %>%
   mutate(disease = fct_inorder(disease))
-         
+
 # Number of diseases, regions
 n_disease  = length(levels(dt1$disease))
 n_region   = length(unique(dt1$region))

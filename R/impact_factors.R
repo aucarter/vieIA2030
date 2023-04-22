@@ -14,7 +14,7 @@ run_impact_factors = function() {
   
   do_plots = FALSE
   
-
+  
   
   # Only continue if specified by do_step
   if (!is.element(2, o$do_step)) return()
