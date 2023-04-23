@@ -24,6 +24,10 @@ NULL
 #' @import data.table
 NULL
 
+# many useful tidy functions including pivot_longer/wider, expand_grid, and unite
+#' @import tidyr
+NULL
+
 # for shiny plots
 #' @import highcharter
 #' @import shiny

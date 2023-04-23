@@ -23,6 +23,9 @@ run_results = function() {
   # impact_dt       = try_load(o$pth$impact_factors, "impact_dt")
   scenario_impact = try_load(o$pth$impact_factors, "scenario_impact")
   
+  # Load uncertainty generated in step 3
+  draws_dt = try_load(o$pth$uncertainty, "draws")
+  
   # ---- Reference results ----
   
   message(" - Saving results")
@@ -55,7 +58,7 @@ run_results = function() {
   )
   
   # Save results to file
-  saveRDS(out_dt, file = paste0(o$pth$results, "reference_results.rds"))
+  save_file(out_dt, o$pth$results, "reference_results")
   
   # Upload results if desired
   if (o$results_upload)
@@ -63,7 +66,7 @@ run_results = function() {
   
   # ---- Impact by region ----
   
-  no_lin_range_cov <- gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
+  no_lin_range_cov <- gen_ia2030_goals(linear = F, no_covid_effect = 2022, 
                                        intro_year = 2025, intro_range = T)
   scen_dt <- merge(
     no_lin_range_cov,
@@ -74,7 +77,7 @@ run_results = function() {
   write.csv(scen_dt, "outputs/ia2030_cov_trajectories.csv", row.names = F)
   
   
-  dt <- scenario_impact$dt
+  dt <- scenario_impact
   dt <- merge(dt, loc_table[, .(location_id, region)], by = "location_id")
   baseline_dt <- dt[year == 2019]
   setnames(baseline_dt, "deaths_averted", "baseline_deaths_averted")
@@ -93,11 +96,11 @@ run_results = function() {
   
   # NOTE: Used to produce markdown document
   # write.csv(table_totals, "outputs/detailed_results.csv", row.names = F)
-  saveRDS(table_totals, file = paste0(o$pth$results, "detailed_results.rds"))
+  save_file(table_totals, o$pth$results, "detailed_results")
   
   # ---- xxxxxx ----
   
-  dt <- scenario_impact$dt
+  dt <- scenario_impact
   dt <- merge(dt, loc_table[, .(location_id, income_group)], by = "location_id")
   global_dt <- dt[, .(deaths_averted = sum(deaths_averted, na.rm = T)), by = .(year, disease, vaccine, activity_type)]
   global_dt[, income_group := "Global"]
@@ -116,7 +119,7 @@ run_results = function() {
   
   # ---- Impact by income ----
   
-  dt <- scenario_impact$dt
+  dt <- scenario_impact
   dt <- merge(dt, loc_table[, .(location_id, income_group)], by = "location_id")
   baseline_dt <- dt[year == 2019]
   setnames(baseline_dt, "deaths_averted", "baseline_deaths_averted")
@@ -134,7 +137,7 @@ run_results = function() {
   
   # NOTE: Used to produce markdown document
   # write.csv(table_totals, "outputs/detailed_results_income.csv", row.names = F)
-  saveRDS(table_totals, file = paste0(o$pth$results, "detailed_results_income.rds"))
+  save_file(table_totals, o$pth$results, "detailed_results_income")
   
   # ---- Produce markdown results document ----
   

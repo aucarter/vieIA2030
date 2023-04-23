@@ -110,9 +110,9 @@ plot_strata_fit <- function(rr_dt) {
     group_by(strata) %>%
     summarise(max_value = max(max_value)) %>%
     ungroup() %>%
-    tidyr::expand_grid(type = c("truth", "predict")) %>%
-    tidyr::pivot_wider(names_from  = type, 
-                       values_from = max_value) %>%
+    expand_grid(type = c("truth", "predict")) %>%
+    pivot_wider(names_from  = type, 
+                values_from = max_value) %>%
     as.data.table()
   
   # Single plot with multiple facets
@@ -152,7 +152,7 @@ plot_draws = function(fig_name) {
   # Append source and collapse to d_v_at
   details_dt = draws_dt %>%
     left_join(disease_table, by = "disease") %>%
-    tidyr::unite("d_v_at", disease, vaccine, activity_type)
+    unite("d_v_at", disease, vaccine, activity_type)
   
   # Mean deaths averted (not from draws)
   mean_dt = details_dt %>%
@@ -163,8 +163,8 @@ plot_draws = function(fig_name) {
   
   # Sampled deaths averted
   samples_dt = details_dt %>%
-    tidyr::pivot_longer(cols = starts_with("draw"), 
-                        names_to = "draw") %>%
+    pivot_longer(cols = starts_with("draw"), 
+                 names_to = "draw") %>%
     group_by(d_v_at, source, draw) %>%
     summarise(deaths_averted = sum(value)) %>%
     ungroup() %>%
@@ -199,8 +199,8 @@ plot_draws = function(fig_name) {
 # ---------------------------------------------------------
 plot_annual_total = function(fig_name) {
   
-  # Load modelled mean annual totals
-  scenario_impact = try_load(o$pth$impact_factors, "scenario_impact")
+  # Load modelled total deaths per year
+  scenario_total = try_load(o$pth$impact_factors, "scenario_total")
   
   # Load uncertainty draws - we want to see the means of these the same as above
   draws_dt = try_load(o$pth$uncertainty, "draws")
@@ -208,8 +208,8 @@ plot_annual_total = function(fig_name) {
   # Uncertainty per year (all diseases and locations) across draws
   annual_dt = draws_dt %>%
     # Melt to long format...
-    tidyr::pivot_longer(cols = starts_with("draw"), 
-                        names_to = "draw") %>%
+    pivot_longer(cols = starts_with("draw"), 
+                 names_to = "draw") %>%
     # Total deaths averted per year (per draw)...
     group_by(year, draw) %>%
     summarise(value = sum(value)) %>%
@@ -227,9 +227,9 @@ plot_annual_total = function(fig_name) {
     geom_ribbon(aes(ymin = lower, ymax = upper),
                 colour = "red", fill = "red", alpha = 0.5) +
     geom_line(aes(y = mean), colour = "red", linewidth = 2) +
-    geom_point(data = scenario_impact$year_totals,
-               mapping = aes(y = total),
-               colour = "black")
+    geom_point(data    = scenario_total,
+               mapping = aes(y = deaths_averted),
+               colour  = "black")
   
   # Prettify plot
   g %<>% ggpretty(
@@ -254,14 +254,14 @@ plot_gbd_uncertainty_dist = function(fig_name) {
   efficacy_dt = gbd_efficacy %>%
     left_join(y  = disease_table, 
               by = "disease") %>%
-    tidyr::unite("d_v", disease_long, vaccine) %>%
+    unite("d_v", disease_long, vaccine) %>%
     select(d_v, mean, lower, upper)
   
   # Load fitted parameters and collapse disease-vaccine
   beta_pars = try_load(o$pth$uncertainty, "gbd_beta_pars") %>%
     left_join(y  = disease_table, 
               by = "disease") %>%
-    tidyr::unite("d_v", disease_long, vaccine) %>%
+    unite("d_v", disease_long, vaccine) %>%
     select(d_v, p1, p2)
   
   # Mean and 90% CI of fitted beta distribution
@@ -281,8 +281,8 @@ plot_gbd_uncertainty_dist = function(fig_name) {
     # Convert to tidy datatable...
     as_named_dt(beta_pars$d_v) %>%
     mutate(x = eval_pts) %>%
-    tidyr::pivot_longer(cols = - x, 
-                        names_to = "d_v") %>%
+    pivot_longer(cols = - x, 
+                 names_to = "d_v") %>%
     # Normalise probability distributions...
     group_by(d_v) %>%
     mutate(value = value / max(value)) %>%
@@ -351,7 +351,7 @@ plot_gbd_uncertainty_fit = function(fig_name) {
   eval_pts = seq(o$par_lower, o$par_upper, length.out = n_grid)
   
   # Create grid of all points to evaluate
-  grid_dt = tidyr::expand_grid(
+  grid_dt = expand_grid(
     p1  = eval_pts,
     p2  = eval_pts,
     obj = NA) %>%
@@ -381,14 +381,14 @@ plot_gbd_uncertainty_fit = function(fig_name) {
   plot_dt = rbindlist(grid_list) %>%
     left_join(y  = disease_table, 
               by = "disease") %>%
-    tidyr::unite("d_v", disease_long, vaccine) %>%
+    unite("d_v", disease_long, vaccine) %>%
     select(d_v, p1, p2, obj)
   
   # Also load best fit parameters (see uncertainty.R)
   fitted_pars = try_load(o$pth$uncertainty, "gbd_beta_pars") %>%
     left_join(y  = disease_table, 
               by = "disease") %>%
-    tidyr::unite("d_v", disease_long, vaccine) %>%
+    unite("d_v", disease_long, vaccine) %>%
     mutate(p1 = log(p1), p2 = log(p2)) %>%
     select(d_v, p1, p2)
   

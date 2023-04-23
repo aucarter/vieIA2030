@@ -25,7 +25,7 @@ prep_wuenic_data <- function() {
     data_list <- lapply(sheets[2:15], function(s) {
         df <- readxl::read_excel(path = xls, sheet = s)
         df$Region <- NULL
-        df <- tidyr::pivot_longer(
+        df <- pivot_longer(
             df,
             cols = !c("ISO_code", "Cname", "Vaccine"),
             names_to = "year",
@@ -126,6 +126,7 @@ for (v in unique(non_vimc_dt$vaccine)) {
         )
     ]
 }
+
 # Merge on cohort size and calculate fvps
 load_tables("wpp_input")
 both_dt <- wpp_input[, .(cohort_size = sum(nx)), by = .(location_id, year, age)]

@@ -1,6 +1,10 @@
-gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
-                             no_covid_effect = 2022, intro_year = 2025,
-                             intro_range = T) {
+
+
+# ---------------------------------------------------------
+# Use 2030 coverage targets for DTP vaccine to project future coverage by location
+# ---------------------------------------------------------
+gen_ia2030_goals <- function(linear = T, no_covid_effect = 2022, intro_year = 2025, intro_range = T) {
+  
   # Load 2019 coverage
   load_tables("coverage")
   cov_dt <- coverage[year == 2019]
@@ -34,6 +38,7 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
     if (intro_range) {
       # Range of intro years split up by quintile of coverage goal
       zero_locs <- v_dt[zero_idx]$location_id
+      # 2030 coverage targets for DTP vaccine...
       ordered_locs <- ia2030_dtp_goal[location_id %in% zero_locs][rev(order(value))]$location_id
       split_locs <- split(ordered_locs, floor(5 * seq.int(0, length(ordered_locs) - 1) / length(ordered_locs)))
       names(split_locs) <- (-2:2 + temp_intro_year)[1:length(split_locs)]
@@ -134,8 +139,36 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
   return(dt)
 }
 
+# ---------------------------------------------------------
+# Get vaccine coverage and FVPs for all years up to 2030
+# ---------------------------------------------------------
+get_scenario_fvps <- function() {
+  
+  # Past coverage and FVPs comes directly from the data
+  past_fvps = coverage %>%
+    filter(year >= 2000, 
+           year <  2020)  # TODO: Should this be more flexible? Depends on gen_ia2030_goals I guess
+  
+  # Generate target coverage using seperate function
+  #
+  # TODO: Move this coverage renaming to occur inside of gen_ia2030_goals()
+  future_coverage = gen_ia2030_goals(linear = FALSE) %>%
+    rename(coverage = value)
+  
+  # Convert target coverage to FVPs using pop size projections
+  future_fvps = cov2fvp(future_coverage)
+  
+  # Bind together
+  scenario_dt = rbind(past_fvps, future_fvps)
+  
+  return(scenario_dt)
+}
 
+# ---------------------------------------------------------
+# xxxxxxxxxx
+# ---------------------------------------------------------
 get_mx_scen <- function(is, y0, y1, scen, mx, nx) {
+  
   default_coverage <- get_scen_coverage(is, y0, y1, "Default") %>%
     rename(default_cov = coverage)
   scen_coverage <- get_scen_coverage(is, y0, y1, scen) %>%
@@ -161,20 +194,10 @@ get_mx_scen <- function(is, y0, y1, scen, mx, nx) {
   return(mx)
 }
 
-get_scen_fvps <- function() {
-  ## Merge on coverage scenario onto past for full set of FVPs
-  past_dt <- coverage[year < 2020 & year >= 2000]
-  setnames(past_dt, "coverage", "value")
-  future_dt <- gen_ia2030_goals(ia2030_dtp_goal, linear = F, no_covid_effect = 2022, 
-                                intro_year = 2025, intro_range = T)
-  fvp_future <- cov2fvp(future_dt)
-  scenario_dt <- rbind(past_dt, fvp_future)
-  
-  return(scenario_dt)
-}
-
-get_vimc_deaths_change <- function(is, y0, y1, default_coverage, scen_coverage,
-                                   mx) {
+# ---------------------------------------------------------
+# xxxxxxxxxx
+# ---------------------------------------------------------
+get_vimc_deaths_change <- function(is, y0, y1, default_coverage, scen_coverage, mx) {
   vimc_deaths_change <- vimc_impact %>%
     filter(location_name == is & year %in% y0:y1) %>%
     left_join(default_coverage, by = c("year", "vaccine_id")) %>%
@@ -184,7 +207,7 @@ get_vimc_deaths_change <- function(is, y0, y1, default_coverage, scen_coverage,
     group_by(year, age) %>%
     summarise(deaths_change = sum(deaths_change, na.rm = T)) %>%
     ungroup() %>%
-    tidyr::spread(year, deaths_change) %>%
+    spread(year, deaths_change) %>%
     select(-c(age)) %>%
     as.matrix()
   # Fill in older age groups TODO: fix this on vimc_impact side
@@ -204,8 +227,12 @@ get_vimc_deaths_change <- function(is, y0, y1, default_coverage, scen_coverage,
   return(vimc_deaths_change)
 }
 
+# ---------------------------------------------------------
+# xxxxxxxxxx
+# ---------------------------------------------------------
 get_deaths_scen <- function(deaths_obs, averted_obs, averted_scen) {
   deaths_scen <- deaths_obs + sum(averted_obs) - sum(averted_scen)
   
   return(deaths_scen)
 }
+

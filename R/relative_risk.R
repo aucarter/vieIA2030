@@ -59,7 +59,20 @@ run_relative_risk <- function(source = c("vimc", "gbd"), activity = "routine") {
     rbindlist(fill = TRUE)
   
   # Save relative risk calculations and predictions to file
-  saveRDS(rr_dt, file = paste0(o$pth$relative_risk, "relative_risk.rds"))
+  save_file(rr_dt, o$pth$relative_risk, "relative_risk")
+  
+  # ---- Plot diagnostics ----
+  
+  # Check flag
+  if (o$plot_diagnostics) {
+    
+    message(" - Plotting diagnostics")
+    
+    # TODO: Where is this used ??
+    # fit_summary <- summarize_fit(rr_dt)  
+    
+    plot_strata_fit(rr_dt)
+  }
 }
 
 # ---------------------------------------------------------
@@ -114,7 +127,7 @@ impute_strata_rr <- function(all_strata, all_params, strata_id) {
   dt[, averted := get_averted_deaths(deaths_obs, coverage, pred_rr, params$alpha)]
   
   # Save result to file
-  saveRDS(dt, file = paste0(o$pth$relative_risk, "relative_risk_id", strata_id, ".rds"))
+  save_file(dt, o$pth$relative_risk, paste0("relative_risk_id", strata_id))
 }
 
 # ---------------------------------------------------------
@@ -402,7 +415,7 @@ merge_rr_covariates <- function(dt) {
   #     See: https://www.healthdata.org/taxonomy/glossary/socio-demographic-index-sdi
   
   # All locations, years, and ages
-  dt <- tidyr::expand_grid(
+  dt <- expand_grid(
     location_id = unique(loc_table$location_id),
     age         = o$data_ages,
     year        = 2000 : 2095) %>% # ?? Why 2095?

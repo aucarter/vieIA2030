@@ -17,7 +17,7 @@ get_x <- function(fl, rn, sx, my) {
       year_id = `Reference date (as of 1 July)`,
       location_code = `Country code`
     ) %>%
-    tidyr::gather(age, val, -location_code, -sex_name, -year_id) %>%
+    gather(age, val, -location_code, -sex_name, -year_id) %>%
     filter(year_id > 1979 & year_id < my) %>%
     mutate(age = as.numeric(age), val = val * 1000) %>%
     group_by(location_code, year_id, sex_name, age) %>%

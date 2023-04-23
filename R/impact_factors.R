@@ -11,11 +11,6 @@
 # ---------------------------------------------------------
 run_impact_factors = function() {
   
-  
-  do_plots = FALSE
-  
-  
-  
   # Only continue if specified by do_step
   if (!is.element(2, o$do_step)) return()
   
@@ -24,34 +19,36 @@ run_impact_factors = function() {
   # Load tables up front (see db_utils.R)
   load_tables("coverage")  # Needed by calc_impact_factors()
   
+  # ---- Calculate impact factors ----
+  
   # Load relative risk calculations and predictions from step 1
   rr_dt = try_load(o$pth$relative_risk, "relative_risk")
   
-  # ---- Calculate factors ----
-  
   # Calculate impact factors and rake to VIMC
-  impact_factors <- calc_impact_factors(rr_dt)  # See impact_factors.R
-  impact_dt <- rake_impact(impact_factors)  # See impact_factors.R
-  
-  browser() # What is meant by 'rake' here?
-  
-  # Save to file
-  saveRDS(impact_dt, file = paste0(o$pth$impact_factors, "impact_dt.rds"))
-  
-  # Calculate scenario impact 
-  scenario_dt <- get_scen_fvps()  # See sceanrios.R
-  scenario_impact <- calc_scenario_impact(scenario_dt, impact_dt)  # See calc_scenario_impact.R
+  #
+  # TODO: What is meant by 'rake' here?
+  impact_factors = calc_impact_factors(rr_dt)
+  impact_dt      = rake_impact(impact_factors)
   
   # Save to file
-  saveRDS(scenario_impact, file = paste0(o$pth$impact_factors, "scenario_impact.rds"))
+  save_file(impact_dt, o$pth$impact_factors, "impact_dt")
   
+  # ---- Use impact factors to determine deaths averted ----
   
+  # ?? What is the different between impact_dt and scenario_impact? YoV?
   
+  # Get vaccine coverage and FVPs for all years up to 2030
+  scenario_dt = get_scenario_fvps()  # See sceanrios.R
   
+  # Calculate deaths averted by multiplying FVPs by impact factor
+  scenario_impact = calc_scenario_impact(scenario_dt, impact_dt)
   
-  # fit_summary <- summarize_fit(rr_dt)  # ?? Where is this used ??
-  if (do_plots)
-    plot_strata_fit(rr_dt)
+  # Summarise deaths averted to annual totals across all diseases and locations
+  scenario_total = calc_scenario_total(scenario_impact = scenario_impact) 
+  
+  # Save both of these outputs to file
+  save_file(scenario_impact, o$pth$impact_factors, "scenario_impact")
+  save_file(scenario_total,  o$pth$impact_factors, "scenario_total")
 }
 
 # ---------------------------------------------------------
@@ -109,11 +106,13 @@ rake_impact <- function(impact_factors) {
   
   load_tables("vimc_yov_impact")
   
-  browser()
+  # browser()
   
   yov_dt <- unique(vimc_yov_impact[, .(location_id, vaccine, activity_type, deaths_averted_rate)])
+  
   # Take the mean here for the Rubella mishap
   yov_dt <- yov_dt[, lapply(.SD, mean), by = .(location_id, vaccine, activity_type)]
+  
   impact_dt <- merge(impact_factors, yov_dt,
                      by = c("location_id", "vaccine", "activity_type"), all.x = T)
   impact_dt[, raking_factor := deaths_averted_rate / pred_deaths_averted_rate]
@@ -128,28 +127,82 @@ rake_impact <- function(impact_factors) {
 }
 
 # ---------------------------------------------------------
-# xxxxxxxxx
-# Called by: xxxxxx
+# Calculate deaths averted by multiplying FVPs by impact factor
+# Called by: run_impact_factors(), calc_scenario_total()
 # ---------------------------------------------------------
 calc_scenario_impact <- function(scenario_dt, impact_dt) {
   
   message(" - Calculating scenario impact")
+
+  # Calculate deaths averted 
+  scenario_impact = scenario_dt %>%
+    filter(fvps > 0) %>%
+    # Get vaccine-activity details...
+    # TODO: Feel this wouldn't be necessary without the 'Rubella hiccup'...
+    left_join(y  = v_at_table,
+              by = "v_at_id") %>%
+    mutate(activity_type = ifelse(vaccine == "Rubella", "combined", activity_type)) %>%  # TODO: This *shouldn't* be needed
+    # Join with pre-calculated impact factors...
+    inner_join(y  = impact_dt, 
+               by = c("vaccine", "activity_type", "location_id")) %>%
+    select(disease, vaccine, activity_type, location_id, impact_factor, year, age, fvps) %>%
+    # Now a simple calculation for deaths averted...
+    mutate(deaths_averted = fvps * impact_factor) %>%
+    arrange(disease, vaccine, location_id, year, age)
   
-  browser()
+  # Plotting impact_dt...
+  plot_dt1 = impact_dt %>%
+    group_by(disease, vaccine, activity_type) %>%
+    summarise(deaths_averted = sum(total_averted)) %>%
+    ungroup() %>%
+    unite("d_v_at", disease, vaccine, activity_type) %>%
+    as.data.table()
+
+  g1 = ggplot(plot_dt1, aes(x = d_v_at, y = deaths_averted, fill = d_v_at)) +
+    geom_bar(stat = "identity", show.legend = FALSE) +
+    theme(axis.text.x = element_text(angle = 50, hjust = 1))
+
+  # Plotting scenario_impact...
+  plot_dt2 = scenario_impact %>%
+    group_by(disease, vaccine, activity_type) %>%
+    summarise(deaths_averted = sum(deaths_averted)) %>%
+    ungroup() %>%
+    unite("d_v_at", disease, vaccine, activity_type) %>%
+    as.data.table()
+
+  g2 = ggplot(plot_dt2, aes(x = d_v_at, y = deaths_averted, fill = d_v_at)) +
+    geom_bar(stat = "identity", show.legend = FALSE) +
+    theme(axis.text.x = element_text(angle = 50, hjust = 1))
+
+  # Sanity check: no NA deaths averted
+  if (any(is.na(scenario_impact$deaths_averted)))
+    stop("NA deaths averted calculated")
   
-  scenario_dt <- merge(scenario_dt, v_at_table, by = "v_at_id")
-  scenario_dt[vaccine == "Rubella", activity_type := "combined"]
-  scenario_dt[, v_at_id := NULL]
-  dt <- merge(
-    impact_dt[, .(location_id, disease, vaccine, activity_type, impact_factor)],
-    scenario_dt[fvps > 0, .(location_id, year, age, vaccine, activity_type, fvps)],
-    by = c("location_id", "vaccine", "activity_type"), 
-    allow.cartesian = T
-  )
-  dt[, deaths_averted := fvps * impact_factor]
-  year_vaccine_totals <- dt[, .(total = sum(deaths_averted, na.rm = T)), by = .(year, disease, vaccine)]
-  year_totals <- year_vaccine_totals[, .(total = sum(total, na.rm = T)), by = .(year)][order(year)]
-  return(list(dt = dt, year_vaccine_totals = year_vaccine_totals, 
-              year_totals = year_totals))
+  # Sanity check: all values are positive
+  if (any(scenario_impact$deaths_averted <= 0))
+    stop("Zero or negative deaths averted calculated")
+
+  return(scenario_impact)
+}
+
+# ---------------------------------------------------------
+# Summarise total deaths averted per year
+# Called by: run_impact_factors()
+# ---------------------------------------------------------
+calc_scenario_total = function(scenario_impact = NULL, ...) {
+  
+  # If scenario_impact is not provided, calculated it using mandatory additional arguments
+  if (is.null(scenario_impact))
+    scenario_impact = calc_scenario_impact(...)
+  
+  # Total number of deaths averted per year
+  scenario_total = scenario_impact %>%
+    group_by(year) %>%
+    summarise(deaths_averted = sum(deaths_averted)) %>%
+    ungroup() %>%
+    arrange(year) %>%
+    as.data.table()
+  
+  return(scenario_total)
 }
 

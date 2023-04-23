@@ -165,7 +165,7 @@ cache_save = function(o, table, db_dt) {
   cache_info = list(db_dt = db_dt, timestamp = Sys.time())
   
   # Save list to file in cache dir
-  saveRDS(cache_info, file = paste0(o$pth$cache, table, ".rds"))
+  save_file(cache_info, o$pth$cache, table)
 }
 
 # ---------------------------------------------------------

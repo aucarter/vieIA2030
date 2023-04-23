@@ -339,7 +339,14 @@ quiet = function(x) {
 # ---------------------------------------------------------
 # Wrapper for consistent behaviour of base::sample when length(x) is one
 # ---------------------------------------------------------
-sample_vec = function(x, ...) x[sample.int(length(x), ...)]
+sample_vec = function(x, ...) 
+  x[sample.int(length(x), ...)]
+
+# ---------------------------------------------------------
+# Simple wrapper for saveRDS
+# ---------------------------------------------------------
+save_file = function(x, pth, file)
+  saveRDS(x, file = paste0(pth, file, ".rds"))
 
 # ---------------------------------------------------------
 # Allow scale_fill_fermenter to accept custom palettes

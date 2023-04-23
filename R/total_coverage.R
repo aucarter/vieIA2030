@@ -56,8 +56,8 @@ total_coverage2 <- function(coverage) {
   #
   # NOTE: Sparse result, so most of these age-year pairs will have zero value
   full_dt = unique_data %>%
-    tidyr::expand_grid(year = o$data_years, 
-                       age  = o$data_ages)
+    expand_grid(year = o$data_years, 
+                age  = o$data_ages)
   
   # Join total coverage results to full combination table
   total_dt = rbindlist(cov_list) %>%
@@ -208,16 +208,30 @@ calc_total_cov <- function(dt) {
 }
 
 # ---------------------------------------------------------
-# xxxxxxxxxx
+# Calculate FVPs using coverage and demogrpahic data
+# Called by: get_scenario_fvps() and similar FVPs-generating functions
 # ---------------------------------------------------------
-cov2fvp <- function(dt) {
+cov2fvp = function(coverage_dt) {
+  
+  # Load demographic data
   load_tables("wpp_input")
-  both_dt <- wpp_input[, .(nx = sum(nx)), .(location_id, age, year)]
+  
+  # Total number of people per location (both sexes combined)
+  #
+  # NOTE: nx := number of people
+  both_dt = wpp_input[, .(nx = sum(nx)), .(location_id, age, year)]
   both_dt[, sex_id := 3]
-  pop_dt <- rbind(wpp_input, both_dt, fill = T)
-  fvp_dt <- merge(dt, pop_dt[, .(location_id, age, sex_id, year, nx)])
-  fvp_dt[, fvps := value * nx]
+  
+  # Combine so we have both genders seperate and combined
+  pop_dt = rbind(wpp_input, both_dt, fill = T)
+  
+  # Join with coverage details
+  fvp_dt = merge(coverage_dt, pop_dt[, .(location_id, age, sex_id, year, nx)])
+  
+  # Then just a simple calculation for FVPs
+  fvp_dt[, fvps := coverage * nx]
   fvp_dt[, nx := NULL]
-  return(fvp_dt[])
+  
+  return(fvp_dt)
 }
 
