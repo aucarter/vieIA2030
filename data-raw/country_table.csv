@@ -1,0 +1,195 @@
+country,country_code,country_name,gbd_alt_name,hpv_name,wpp_name,wpp_country_code,region,mena,yf,je
+AFG,1,Afghanistan,Afghanistan,Afghanistan,Afghanistan,4,EMRO,0,0,0
+AGO,5,Angola,Angola,Angola,Angola,24,AFRO,0,1,0
+ALB,2,Albania,Albania,Albania,Albania,8,EURO,0,0,0
+AND,4,Andorra,Andorra,Andorra,NA,NA,EURO,0,0,0
+ARE,183,United Arab Emirates,United Arab Emirates,UAE,United Arab Emirates,784,EMRO,0,0,0
+ARG,7,Argentina,Argentina,Argentina,Argentina,32,PAHO,0,1,0
+ARM,8,Armenia,Armenia,Armenia,Armenia,51,EURO,0,0,0
+ATG,6,Antigua and Barbuda,Antigua and Barbuda,Antigua,Antigua and Barbuda,28,PAHO,0,0,0
+AUS,9,Australia,Australia,Australia,Australia,36,WPRO,0,0,1
+AUT,10,Austria,Austria,Austria,Austria,40,EURO,0,0,0
+AZE,11,Azerbaijan,Azerbaijan,Azerbaijan,Azerbaijan,31,EURO,0,0,0
+BDI,28,Burundi,Burundi,Burundi,Burundi,108,AFRO,1,0,0
+BEL,17,Belgium,Belgium,Belgium,Belgium,56,EURO,0,0,0
+BEN,19,Benin,Benin,Benin,Benin,204,AFRO,1,1,0
+BFA,27,Burkina Faso,Burkina Faso,Burkina Faso,Burkina Faso,854,AFRO,1,1,0
+BGD,14,Bangladesh,Bangladesh,Bangladesh,Bangladesh,50,SEARO,0,0,1
+BGR,26,Bulgaria,Bulgaria,Bulgaria,Bulgaria,100,EURO,0,0,0
+BHR,13,Bahrain,Bahrain,Bahrain,Bahrain,48,EMRO,0,0,0
+BHS,12,Bahamas,The Bahamas,Bahamas,Bahamas,44,PAHO,0,0,0
+BIH,22,Bosnia and Herzegovina,Bosnia and Herzegovina,Bosnia,Bosnia and Herzegovina,70,EURO,0,0,0
+BLR,16,Belarus,Belarus,Belarus,Belarus,112,EURO,0,0,0
+BLZ,18,Belize,Belize,Belize,Belize,84,PAHO,0,0,0
+BOL,21,Bolivia (Plurinational State of),Bolivia,Bolivia,Bolivia (Plurinational State of),68,PAHO,0,1,0
+BRA,24,Brazil,Brazil,Brazil,Brazil,76,PAHO,0,1,0
+BRB,15,Barbados,Barbados,Barbados,Barbados,52,PAHO,0,0,0
+BRN,25,Brunei Darussalam,Brunei,Brunei,Brunei Darussalam,96,WPRO,0,0,1
+BTN,20,Bhutan,Bhutan,Bhutan,Bhutan,64,SEARO,0,0,1
+BWA,23,Botswana,Botswana,Botswana,Botswana,72,AFRO,0,0,0
+CAF,33,Central African Republic,Central African Republic,CAR,Central African Republic,140,AFRO,1,1,0
+CAN,32,Canada,Canada,Canada,Canada,124,PAHO,0,0,0
+CHE,169,Switzerland,Switzerland,Switzerland,Switzerland,756,EURO,0,0,0
+CHL,35,Chile,Chile,Chile,Chile,152,PAHO,0,0,0
+CHN,36,China,China,China,China,156,WPRO,0,0,1
+CIV,46,Côte d'Ivoire,Côte d'Ivoire,Cote d'Ivoire,Cote d'Ivoire,384,AFRO,1,1,0
+CMR,31,Cameroon,Cameroon,Cameroon,Cameroon,120,AFRO,1,1,0
+COD,48,Democratic Republic of the Congo,DR Congo,DRC,Dem. Republic of the Congo,180,AFRO,1,1,0
+COG,39,Congo,Congo (Brazzaville),Congo,Congo,178,AFRO,0,1,0
+COK,40,Cook Islands,Cook Islands,Cook Islands,NA,NA,WPRO,0,0,0
+COL,37,Colombia,Colombia,Colombia,Colombia,170,PAHO,0,1,0
+COM,38,Comoros,Comoros,Comoros,Comoros,174,AFRO,0,0,0
+CPV,29,Cabo Verde,Cape Verde,Cabo Verde,Cabo Verde,132,AFRO,0,0,0
+CRI,41,Costa Rica,Costa Rica,Costa Rica,Costa Rica,188,PAHO,0,0,0
+CUB,43,Cuba,Cuba,Cuba,Cuba,192,PAHO,0,0,0
+CYP,44,Cyprus,Cyprus,Cyprus,Cyprus,196,EURO,0,0,0
+CZE,45,Czechia,Czech Republic,Czech Rep.,Czechia,203,EURO,0,0,0
+DEU,67,Germany,Germany,Germany,Germany,276,EURO,0,0,0
+DJI,50,Djibouti,Djibouti,Djibouti,Djibouti,262,EMRO,0,0,0
+DMA,51,Dominica,Dominica,Dominica,NA,NA,PAHO,0,0,0
+DNK,49,Denmark,Denmark,Denmark,Denmark,208,EURO,0,0,0
+DOM,52,Dominican Republic,Dominican Republic,Dominican Rep.,Dominican Republic,214,PAHO,0,0,0
+DZA,3,Algeria,Algeria,Algeria,Algeria,12,AFRO,0,0,0
+ECU,53,Ecuador,Ecuador,Ecuador,Ecuador,218,PAHO,0,1,0
+EGY,54,Egypt,Egypt,Egypt,Egypt,818,EMRO,0,0,0
+ERI,57,Eritrea,Eritrea,Eritrea,Eritrea,232,AFRO,1,0,0
+ESP,164,Spain,Spain,Spain,Spain,724,EURO,0,0,0
+EST,58,Estonia,Estonia,Estonia,Estonia,233,EURO,0,0,0
+ETH,60,Ethiopia,Ethiopia,Ethiopia,Ethiopia,231,AFRO,1,1,0
+FIN,62,Finland,Finland,Finland,Finland,246,EURO,0,0,0
+FJI,61,Fiji,Fiji,Fiji,Fiji,242,WPRO,0,0,0
+FRA,63,France,France,France,France,250,EURO,0,0,0
+FSM,112,Micronesia (Federated States of),Federated States of Micronesia,Micronesia,Micronesia (Fed. States of),583,WPRO,0,0,0
+GAB,64,Gabon,Gabon,Gabon,Gabon,266,AFRO,0,1,0
+GBR,184,United Kingdom,UK,UK,United Kingdom,826,EURO,0,0,0
+GEO,66,Georgia,Georgia,Georgia,Georgia,268,EURO,0,0,0
+GHA,68,Ghana,Ghana,Ghana,Ghana,288,AFRO,1,1,0
+GIN,72,Guinea,Guinea,Guinea,Guinea,324,AFRO,1,1,0
+GMB,65,Gambia,The Gambia,Gambia,Gambia,270,AFRO,1,1,0
+GNB,73,Guinea-Bissau,Guinea-Bissau,Guinea-Bissau,Guinea-Bissau,624,AFRO,1,1,0
+GNQ,56,Equatorial Guinea,Equatorial Guinea,Equatorial Guinea,Equatorial Guinea,226,AFRO,0,1,0
+GRC,69,Greece,Greece,Greece,Greece,300,EURO,0,0,0
+GRD,70,Grenada,Grenada,Grenada,Grenada,308,PAHO,0,0,0
+GTM,71,Guatemala,Guatemala,Guatemala,Guatemala,320,PAHO,0,0,0
+GUY,74,Guyana,Guyana,Guyana,Guyana,328,PAHO,0,1,0
+HND,76,Honduras,Honduras,Honduras,Honduras,340,PAHO,0,0,0
+HRV,42,Croatia,Croatia,Croatia,Croatia,191,EURO,0,0,0
+HTI,75,Haiti,Haiti,Haiti,Haiti,332,PAHO,0,0,0
+HUN,77,Hungary,Hungary,Hungary,Hungary,348,EURO,0,0,0
+IDN,80,Indonesia,Indonesia,Indonesia,Indonesia,360,SEARO,0,0,1
+IND,79,India,India,India,India,356,SEARO,0,0,1
+IRL,83,Ireland,Ireland,Ireland,Ireland,372,EURO,0,0,0
+IRN,81,Iran (Islamic Republic of),Iran,Iran,Iran (Islamic Republic of),364,EMRO,0,0,0
+IRQ,82,Iraq,Iraq,Iraq,Iraq,368,EMRO,0,0,0
+ISL,78,Iceland,Iceland,Iceland,Iceland,352,EURO,0,0,0
+ISR,84,Israel,Israel,Israel,Israel,376,EURO,0,0,0
+ITA,85,Italy,Italy,Italy,Italy,380,EURO,0,0,0
+JAM,86,Jamaica,Jamaica,Jamaica,Jamaica,388,PAHO,0,0,0
+JOR,88,Jordan,Jordan,Jordan,Jordan,400,EMRO,0,0,0
+JPN,87,Japan,Japan,Japan,Japan,392,WPRO,0,0,1
+KAZ,89,Kazakhstan,Kazakhstan,Kazakhstan,Kazakhstan,398,EURO,0,0,0
+KEN,90,Kenya,Kenya,Kenya,Kenya,404,AFRO,1,1,0
+KGZ,93,Kyrgyzstan,Kyrgyzstan,Kyrgyzstan,Kyrgyzstan,417,EURO,0,0,0
+KHM,30,Cambodia,Cambodia,Cambodia,Cambodia,116,WPRO,0,0,1
+KIR,91,Kiribati,Kiribati,Kiribati,Kiribati,296,WPRO,0,0,0
+KNA,146,Saint Kitts and Nevis,Saint Kitts and Nevis,Saint Kitts and Nevis,NA,NA,PAHO,0,0,0
+KOR,141,Republic of Korea,South Korea,South Korea,Republic of Korea,410,WPRO,0,0,1
+KWT,92,Kuwait,Kuwait,Kuwait,Kuwait,414,EMRO,0,0,0
+LAO,94,Lao People's Democratic Republic,Laos,Laos,Lao People's Dem. Republic,418,WPRO,0,0,1
+LBN,96,Lebanon,Lebanon,Lebanon,Lebanon,422,EMRO,0,0,0
+LBR,98,Liberia,Liberia,Liberia,Liberia,430,AFRO,0,1,0
+LBY,99,Libya,Libya,Libya,Libya,434,EMRO,0,0,0
+LCA,147,Saint Lucia,Saint Lucia,Saint Lucia,Saint Lucia,662,PAHO,0,0,0
+LKA,165,Sri Lanka,Sri Lanka,Sri Lanka,Sri Lanka,144,SEARO,0,0,1
+LSO,97,Lesotho,Lesotho,Lesotho,Lesotho,426,AFRO,0,0,0
+LTU,100,Lithuania,Lithuania,Lithuania,Lithuania,440,EURO,0,0,0
+LUX,101,Luxembourg,Luxembourg,Luxembourg,Luxembourg,442,EURO,0,0,0
+LVA,95,Latvia,Latvia,Latvia,Latvia,428,EURO,0,0,0
+MAR,116,Morocco,Morocco,Morocco,Morocco,504,EMRO,0,0,0
+MCO,113,Monaco,Monaco,Monaco,NA,NA,EURO,0,0,0
+MDA,142,Republic of Moldova,Moldova,Moldova,Republic of Moldova,498,EURO,0,0,0
+MDG,102,Madagascar,Madagascar,Madagascar,Madagascar,450,AFRO,0,0,0
+MDV,105,Maldives,Maldives,Maldives,Maldives,462,SEARO,0,0,0
+MEX,111,Mexico,Mexico,Mexico,Mexico,484,PAHO,0,0,0
+MHL,108,Marshall Islands,Marshall Islands,Marshall Islands,NA,NA,WPRO,0,0,0
+MKD,128,North Macedonia,North Macedonia,Macedonia,North Macedonia,807,EURO,0,0,0
+MLI,106,Mali,Mali,Mali,Mali,466,AFRO,1,1,0
+MLT,107,Malta,Malta,Malta,Malta,470,EURO,0,0,0
+MMR,118,Myanmar,Myanmar,Myanmar,Myanmar,104,SEARO,0,0,1
+MNE,115,Montenegro,Montenegro,Montenegro,Montenegro,499,EURO,0,0,0
+MNG,114,Mongolia,Mongolia,Mongolia,Mongolia,496,WPRO,0,0,0
+MOZ,117,Mozambique,Mozambique,Mozambique,Mozambique,508,AFRO,0,0,0
+MRT,109,Mauritania,Mauritania,Mauritania,Mauritania,478,AFRO,1,0,0
+MUS,110,Mauritius,Mauritius,Mauritius,Mauritius,480,AFRO,0,0,0
+MWI,103,Malawi,Malawi,Malawi,Malawi,454,AFRO,0,0,0
+MYS,104,Malaysia,Malaysia,Malaysia,Malaysia,458,WPRO,0,0,1
+NAM,119,Namibia,Namibia,Namibia,Namibia,516,AFRO,0,0,0
+NER,125,Niger,Niger,Niger,Niger,562,AFRO,1,1,0
+NGA,126,Nigeria,Nigeria,Nigeria,Nigeria,566,AFRO,1,1,0
+NIC,124,Nicaragua,Nicaragua,Nicaragua,Nicaragua,558,PAHO,0,0,0
+NIU,127,Niue,Niue,Niue,NA,NA,WPRO,0,0,0
+NLD,122,Netherlands,Netherlands,Netherlands,Netherlands,528,EURO,0,0,0
+NOR,129,Norway,Norway,Norway,Norway,578,EURO,0,0,0
+NPL,121,Nepal,Nepal,Nepal,Nepal,524,SEARO,0,0,1
+NRU,120,Nauru,Nauru,Nauru,NA,NA,WPRO,0,0,0
+NZL,123,New Zealand,New Zealand,New Zealand,New Zealand,554,WPRO,0,0,0
+OMN,130,Oman,Oman,Oman,Oman,512,EMRO,0,0,0
+PAK,131,Pakistan,Pakistan,Pakistan,Pakistan,586,EMRO,0,0,1
+PAN,133,Panama,Panama,Panama,Panama,591,PAHO,0,1,0
+PER,136,Peru,Peru,Peru,Peru,604,PAHO,0,1,0
+PHL,137,Philippines,Philippines,Philippines,Philippines,608,WPRO,0,0,1
+PLW,132,Palau,Palau,Palau,NA,NA,WPRO,0,0,0
+PNG,134,Papua New Guinea,Papua New Guinea,Papua New Guinea,Papua New Guinea,598,WPRO,0,0,1
+POL,138,Poland,Poland,Poland,Poland,616,EURO,0,0,0
+PRK,47,Democratic People's Republic of Korea,North Korea,North Korea,Dem. People's Rep. of Korea,408,SEARO,0,0,1
+PRT,139,Portugal,Portugal,Portugal,Portugal,620,EURO,0,0,0
+PRY,135,Paraguay,Paraguay,Paraguay,Paraguay,600,PAHO,0,1,0
+QAT,140,Qatar,Qatar,Qatar,Qatar,634,EMRO,0,0,0
+ROU,143,Romania,Romania,Romania,Romania,642,EURO,0,0,0
+RUS,144,Russian Federation,Russia,Russia,Russian Federation,643,EURO,0,0,1
+RWA,145,Rwanda,Rwanda,Rwanda,Rwanda,646,AFRO,1,0,0
+SAU,152,Saudi Arabia,Saudi Arabia,Saudi Arabia,Saudi Arabia,682,EMRO,0,0,0
+SDN,166,Sudan,Sudan,Sudan,Sudan,729,EMRO,1,1,0
+SEN,153,Senegal,Senegal,Senegal,Senegal,686,AFRO,1,1,0
+SGP,157,Singapore,Singapore,Singapore,Singapore,702,WPRO,0,0,1
+SLB,160,Solomon Islands,Solomon Islands,Solomon Islands,Solomon Islands,90,WPRO,0,0,0
+SLE,156,Sierra Leone,Sierra Leone,Sierra Leone,Sierra Leone,694,AFRO,0,1,0
+SLV,55,El Salvador,El Salvador,El Salvador,El Salvador,222,PAHO,0,0,0
+SMR,150,San Marino,San Marino,San Marino,NA,NA,EURO,0,0,0
+SOM,161,Somalia,Somalia,Somalia,Somalia,706,EMRO,0,0,0
+SRB,154,Serbia,Serbia,Serbia,Serbia,688,EURO,0,0,0
+SSD,163,South Sudan,South Sudan,South Sudan,South Sudan,728,EMRO,1,1,0
+STP,151,Sao Tome and Principe,São Tomé and PrÍncipe,Sao Tome,Sao Tome and Principe,678,AFRO,0,0,0
+SUR,167,Suriname,Suriname,Suriname,Suriname,740,PAHO,0,1,0
+SVK,158,Slovakia,Slovakia,Slovakia,Slovakia,703,EURO,0,0,0
+SVN,159,Slovenia,Slovenia,Slovenia,Slovenia,705,EURO,0,0,0
+SWE,168,Sweden,Sweden,Sweden,Sweden,752,EURO,0,0,0
+SWZ,59,Eswatini,eSwatini,Eswatini,Eswatini,748,AFRO,0,0,0
+SYC,155,Seychelles,Seychelles,Seychelles,Seychelles,690,AFRO,0,0,0
+SYR,170,Syrian Arab Republic,Syria,Syria,Syrian Arab Republic,760,EMRO,0,0,0
+TCD,34,Chad,Chad,Chad,Chad,148,AFRO,1,1,0
+TGO,174,Togo,Togo,Togo,Togo,768,AFRO,1,1,0
+THA,172,Thailand,Thailand,Thailand,Thailand,764,SEARO,0,0,1
+TJK,171,Tajikistan,Tajikistan,Tajikistan,Tajikistan,762,EURO,0,0,0
+TKM,179,Turkmenistan,Turkmenistan,Turkmenistan,Turkmenistan,795,EURO,0,0,0
+TLS,173,Timor-Leste,Timor-Leste,Timor-Leste,Timor-Leste,626,SEARO,0,0,1
+TON,175,Tonga,Tonga,Tonga,Tonga,776,WPRO,0,0,0
+TTO,176,Trinidad and Tobago,Trinidad and Tobago,Trinidad,Trinidad and Tobago,780,PAHO,0,1,0
+TUN,177,Tunisia,Tunisia,Tunisia,Tunisia,788,EMRO,0,0,0
+TUR,178,Turkey,Turkey,Turkey,Turkey,792,EURO,0,0,0
+TUV,180,Tuvalu,Tuvalu,Tuvalu,NA,NA,WPRO,0,0,0
+TZA,185,United Republic of Tanzania,Tanzania,Tanzania,United Republic of Tanzania,834,AFRO,1,0,0
+UGA,181,Uganda,Uganda,Uganda,Uganda,800,AFRO,1,1,0
+UKR,182,Ukraine,Ukraine,Ukraine,Ukraine,804,EURO,0,0,0
+URY,187,Uruguay,Uruguay,Uruguay,Uruguay,858,PAHO,0,0,0
+USA,186,United States of America,USA,USA,United States of America,840,PAHO,0,0,0
+UZB,188,Uzbekistan,Uzbekistan,Uzbekistan,Uzbekistan,860,EURO,0,0,0
+VCT,148,Saint Vincent and the Grenadines,Saint Vincent and the Grenadines,Saint Vincent,St. Vincent and the Grenadines,670,PAHO,0,0,0
+VEN,190,Venezuela (Bolivarian Republic of),Venezuela,Venezuela,Venezuela (Bolivarian Republic of),862,PAHO,0,1,0
+VNM,191,Viet Nam,Vietnam,Viet Nam,Viet Nam,704,WPRO,0,0,1
+VUT,189,Vanuatu,Vanuatu,Vanuatu,Vanuatu,548,WPRO,0,0,0
+WSM,149,Samoa,Samoa,Samoa,Samoa,882,WPRO,0,0,0
+YEM,192,Yemen,Yemen,Yemen,Yemen,887,EMRO,0,0,0
+ZAF,162,South Africa,South Africa,South Africa,South Africa,710,AFRO,0,0,0
+ZMB,193,Zambia,Zambia,Zambia,Zambia,894,AFRO,0,0,0
+ZWE,194,Zimbabwe,Zimbabwe,Zimbabwe,Zimbabwe,716,AFRO,0,0,0
