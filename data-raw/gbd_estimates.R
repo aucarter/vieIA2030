@@ -16,9 +16,12 @@ convert_single_year <- function(gbd_dt) {
 ## Load data
 load(system.file("extdata", "gbd19_estimates.RData", package = "vieIA2030"))
 gbd_estimates <- convert_single_year(gbd_estimates)
+setnames(gbd_estimates, "location_id", "country_code")
+gbd_estimates = merge(gbd_estimates, country_table[, .(country_code, country)], by = "country_code")
+gbd_estimates[, country_code := NULL]
 gbd_estimates <- gbd_estimates[
-  order(location_id, disease, sex_id, age, year),
-  .(location_id, disease, sex_id, age, year, value)
+  order(disease, country, sex_id, age, year),
+  .(disease, country, sex_id, age, year, value)
 ]
 gbd_estimates <- merge(gbd_estimates, d_v_at_table, by = "disease")
 upload_object(gbd_estimates, "gbd_strata_deaths")

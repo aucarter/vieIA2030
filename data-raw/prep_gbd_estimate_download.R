@@ -9,7 +9,7 @@ dt <- rbindlist(
 )
 dt <- dt[age_name != "25 plus"]
 ## Ignore uncertainty (for now)
-dt <- dt[, .(location_name, sex_id, age_name, cause_name, metric_id, year, val)]
+dt <- dt[, .(country, sex_id, age_name, cause_name, metric_id, year, val)]
 dt[metric_id == 1, val := val]
 
 dt[cause_name == "pertussis", cause_name := "Pertussis"]
@@ -34,21 +34,21 @@ gbd_estimates <- gbd_estimates[cause_name %in% cause_subset]
 ## Subset to rate
 gbd_estimates <- gbd_estimates[metric_id == 3]
 gbd_estimates[, metric_id := NULL]
-setnames(gbd_estimates, "cause_name", "disease_long")
+setnames(gbd_estimates, "cause_name", "disease_name")
 ## Merge on associated vaccine info
 gbd_estimates <- merge(
     gbd_estimates,
-    disease_table[, .(disease, disease_long)],
-    by = "disease_long"
+    disease_table[, .(disease, disease_name)],
+    by = "disease_name"
 )
 
-## Merge on location_id
+## Merge on country_id
 gbd_estimates <- merge(
     gbd_estimates,
-    loc_table[, .(location_name, location_id)],
-    by = "location_name"
+    country_table[, .(country_name, country)],
+    by = "country_name"
 )
 
-gbd_estimates[, c("location_name", "disease_long") := NULL]
+gbd_estimates[, c("country_name", "disease_name") := NULL]
 
 save(gbd_estimates, file = "inst/extdata/gbd19_estimates.RData")

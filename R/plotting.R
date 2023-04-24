@@ -5,7 +5,7 @@
 #
 ###########################################################
 
-#' Plot coverage for a specific location
+#' Plot coverage for a specific country
 #' @param dt A data.table with coverage data
 #' @return A plot of the coverage data
 #' @method plot coverage
@@ -45,13 +45,13 @@ launch_shiny <- function() {
 
 #' Make a map showing presence or absence of an indicator
 #' 
-#' @param locations A character vector of iso3 codes for locations
+#' @param countries A character vector of iso3 codes for countries
 #' @param title A string with the title of the plot
 #' @returns A ggplot object with a world map
 #' @examples 
-#' map_locations(loc_table$location_iso3, "All locations")
+#' map_countries(country_table$country, "All countries")
 #' @export
-map_locations <- function(locations, title) {
+map_locations <- function(countries, title) {
   ggplot2::theme_set(ggplot2::theme_bw())
   world <- rnaturalearth::ne_countries(
     scale = "medium",
@@ -62,12 +62,12 @@ map_locations <- function(locations, title) {
     returnclass = "sf"
   )
   
-  world$present <- ifelse(world$iso_a3 %in% locations, 1, NA)
+  world$present <- ifelse(world$iso_a3 %in% countries, 1, NA)
   gg <- ggplot2::ggplot(data = world) +
     ggplot2::geom_sf(ggplot2::aes(fill = as.factor(present))) +
     ggplot2::ggtitle(
       title,
-      subtitle = paste0("(", length(locations), " countries)")
+      subtitle = paste0("(", length(countries), " countries)")
     ) +
     ggplot2::theme(legend.position = "none") +
     ggplot2::scale_fill_discrete(na.value = "gray95")
@@ -205,7 +205,7 @@ plot_annual_total = function(fig_name) {
   # Load uncertainty draws - we want to see the means of these the same as above
   draws_dt = try_load(o$pth$uncertainty, "draws")
   
-  # Uncertainty per year (all diseases and locations) across draws
+  # Uncertainty per year (all diseases and countries) across draws
   annual_dt = draws_dt %>%
     # Melt to long format...
     pivot_longer(cols = starts_with("draw"), 
@@ -254,14 +254,14 @@ plot_gbd_uncertainty_dist = function(fig_name) {
   efficacy_dt = gbd_efficacy %>%
     left_join(y  = disease_table, 
               by = "disease") %>%
-    unite("d_v", disease_long, vaccine) %>%
+    unite("d_v", disease_name, vaccine) %>%
     select(d_v, mean, lower, upper)
   
   # Load fitted parameters and collapse disease-vaccine
   beta_pars = try_load(o$pth$uncertainty, "gbd_beta_pars") %>%
     left_join(y  = disease_table, 
               by = "disease") %>%
-    unite("d_v", disease_long, vaccine) %>%
+    unite("d_v", disease_name, vaccine) %>%
     select(d_v, p1, p2)
   
   # Mean and 90% CI of fitted beta distribution
@@ -381,14 +381,14 @@ plot_gbd_uncertainty_fit = function(fig_name) {
   plot_dt = rbindlist(grid_list) %>%
     left_join(y  = disease_table, 
               by = "disease") %>%
-    unite("d_v", disease_long, vaccine) %>%
+    unite("d_v", disease_name, vaccine) %>%
     select(d_v, p1, p2, obj)
   
   # Also load best fit parameters (see uncertainty.R)
   fitted_pars = try_load(o$pth$uncertainty, "gbd_beta_pars") %>%
     left_join(y  = disease_table, 
               by = "disease") %>%
-    unite("d_v", disease_long, vaccine) %>%
+    unite("d_v", disease_name, vaccine) %>%
     mutate(p1 = log(p1), p2 = log(p2)) %>%
     select(d_v, p1, p2)
   

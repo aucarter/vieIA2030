@@ -35,7 +35,7 @@ dt1 = try_load(o$pth$results, "detailed_results") %>%
 dt2 = try_load(o$pth$results, "detailed_results_income") %>%
   arrange(disease) %>%
   mutate(disease = fct_inorder(disease), 
-         income_group = factor(income_group, levels = c("Low income", 
+         economy = factor(economy, levels = c("Low income", 
                                                         "Lower middle income", 
                                                         "Upper middle income", 
                                                         "High income")))
@@ -48,7 +48,7 @@ dt3 = try_load(o$pth$results, "reference_results") %>%
 # Number of diseases, regions
 n_disease  = length(levels(dt1$disease))
 n_region   = length(unique(dt1$region))
-n_income   = length(levels(dt2$income_group))
+n_income   = length(levels(dt2$economy))
 
 # Generate colour palettes (see auxiliary.R)
 pals = list(
@@ -332,19 +332,19 @@ kable(d)
 
 # NOTE: Figure 3 of paper
 
-income_group_d_dt <- dt2[, .(deaths_averted = sum(total)), by = .(income_group, year, disease)]
+economy_d_dt <- dt2[, .(deaths_averted = sum(total)), by = .(economy, year, disease)]
 full_dt <- data.table(expand.grid(
-  income_group = unique(income_group_d_dt$income_group),
-  year = unique(income_group_d_dt$year),
-  disease = unique(income_group_d_dt$disease)
+  economy = unique(economy_d_dt$economy),
+  year = unique(economy_d_dt$year),
+  disease = unique(economy_d_dt$disease)
 ))
-income_group_d_dt <- merge(income_group_d_dt, full_dt, all.y = T)
-income_group_d_dt[is.na(deaths_averted), deaths_averted := 0]
+economy_d_dt <- merge(economy_d_dt, full_dt, all.y = T)
+economy_d_dt[is.na(deaths_averted), deaths_averted := 0]
 
-g <- ggplot(income_group_d_dt[year %in% o$future_years]) + 
+g <- ggplot(economy_d_dt[year %in% o$future_years]) + 
   aes(x = year, y = deaths_averted / 1e6 , fill = disease) +
   geom_bar(position = "stack", stat = "identity") +
-  facet_wrap(~income_group)
+  facet_wrap(~economy)
 
 # Prettify plot
 g %<>% ggpretty(
@@ -362,12 +362,12 @@ print(g)
 ## Total by year by income
 ```{r, total_by_income}
 
-income_group_y_dt <- dt2[, .(deaths_averted = sum(total)), by = .(income_group, year)]
+economy_y_dt <- dt2[, .(deaths_averted = sum(total)), by = .(economy, year)]
 
-cast_dt <- dcast(income_group_y_dt[year %in% o$future_years], income_group ~ year)
+cast_dt <- dcast(economy_y_dt[year %in% o$future_years], economy ~ year)
 
-g <- ggplot(income_group_y_dt[year %in% o$future_years]) + 
-  aes(x = year, y = deaths_averted / 1e6 , fill = income_group) +
+g <- ggplot(economy_y_dt[year %in% o$future_years]) + 
+  aes(x = year, y = deaths_averted / 1e6 , fill = economy) +
   geom_bar(position = "stack", stat = "identity")
 
 # Prettify plot
@@ -390,16 +390,16 @@ kable(cast_dt)
 ## Incremental by disease for each income group
 ```{r, income_by_disease_increment}
 
-income_group_d_dt <- dt2[, .(deaths_averted = sum(incremental)), by = .(income_group, year, disease)]
+economy_d_dt <- dt2[, .(deaths_averted = sum(incremental)), by = .(economy, year, disease)]
 full_dt <- data.table(expand.grid(
-  income_group = unique(income_group_d_dt$income_group),
-  year = unique(income_group_d_dt$year),
-  disease = unique(income_group_d_dt$disease)
+  economy = unique(economy_d_dt$economy),
+  year = unique(economy_d_dt$year),
+  disease = unique(economy_d_dt$disease)
 ))
-income_group_d_dt <- merge(income_group_d_dt, full_dt, all.y = T)
-income_group_d_dt[is.na(deaths_averted), deaths_averted := 0]
+economy_d_dt <- merge(economy_d_dt, full_dt, all.y = T)
+economy_d_dt[is.na(deaths_averted), deaths_averted := 0]
 
-g <- ggplot(income_group_d_dt[year %in% o$future_years]) + 
+g <- ggplot(economy_d_dt[year %in% o$future_years]) + 
   aes(x = year, y = deaths_averted / 1e6 , fill = disease) +
   geom_bar(position = "stack", stat = "identity")
 
@@ -419,10 +419,10 @@ print(g)
 ## Incremental by year by income
 ```{r, increment_by_income}
 
-income_group_y_dt <- dt2[, .(deaths_averted = sum(incremental)), by = .(income_group, year)]
+economy_y_dt <- dt2[, .(deaths_averted = sum(incremental)), by = .(economy, year)]
 
-g <- ggplot(income_group_y_dt[year %in% o$future_years]) + 
-  aes(x = year, y = deaths_averted / 1e6 , fill = income_group) +
+g <- ggplot(economy_y_dt[year %in% o$future_years]) + 
+  aes(x = year, y = deaths_averted / 1e6 , fill = economy) +
   geom_area(color = "white", alpha = 0.8)
 
 # Prettify plot

@@ -15,12 +15,12 @@ get_x <- function(fl, rn, sx, my) {
     ) %>%
     rename(
       year_id = `Reference date (as of 1 July)`,
-      location_code = `Country code`
+      country_code = `Country code`
     ) %>%
-    gather(age, val, -location_code, -sex_name, -year_id) %>%
+    gather(age, val, -country_code, -sex_name, -year_id) %>%
     filter(year_id > 1979 & year_id < my) %>%
     mutate(age = as.numeric(age), val = val * 1000) %>%
-    group_by(location_code, year_id, sex_name, age) %>%
+    group_by(country, year_id, sex_name, age) %>%
     summarise(nx = sum(val)) %>%
     ungroup()
 
@@ -33,7 +33,7 @@ get_pop <- function(f1, f2) {
   pf1 <- get_x(f2, 1, "Female", 2020)
   pf2 <- get_x(f2, 2, "Female", 2097)
   wpppop <- rbind(pm1, pm2, pf1, pf2) %>%
-    rename(wpp_location_code = location_code)
+    rename(wpp_country_code = country)
 
   return(wpppop)
 }

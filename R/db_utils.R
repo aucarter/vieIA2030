@@ -33,19 +33,12 @@ load_tables <- function(...) {
 }
 
 # ---------------------------------------------------------
-# Pull data from database for all or specific locations
+# Pull data from database for all or specific countries
 # Called by: load_tables(), numerous other funcions
 # ---------------------------------------------------------
 db_pull <- function(table, iso3_list = NULL, append_names = F) {
   
   message("  > Loading table from database: ", table)
-  
-  # Location IDs - either or all a specified subset
-  # if (!is.null(iso3_list)) {
-  #   loc_ids <- loc_table[location_iso3 %in% iso3_list]$location_id
-  # } else {
-  #   loc_ids <- loc_table$location_id
-  # }
   
   # Open database connection
   db_con <- open_connection()
@@ -54,7 +47,6 @@ db_pull <- function(table, iso3_list = NULL, append_names = F) {
   db_dt = tbl(db_con, table) %>%
     collect() %>%
     quiet() %>%
-    # filter(location_id %in% loc_ids) %>%
     as.data.table()
   
   # Close database connection
@@ -63,16 +55,18 @@ db_pull <- function(table, iso3_list = NULL, append_names = F) {
   # Save the datatable in cache
   cache_save(o, table, db_dt)
   
-  # Check if we want to append location and/or vaccine details
+  # Check if we want to append country and/or vaccine details
   if (append_names) {
     
-    # Details we may wish to append
-    location_dt = loc_table[, .(location_id, location_iso3, location_name)]
-    vaccine_dt  = vaccine_table[, .(vaccine_id, vaccine, vaccine_long)]  # NOTE: can't see where vaccine_short is defined
+    browser()
     
-    # Append location details
-    if ("location_id" %in% names(db_dt))
-      db_dt %<>% left_join(location_dt, by = "location_id")
+    # Details we may wish to append
+    country_dt = country_table[, .(country, country_name)]
+    vaccine_dt = vaccine_table[, .(vaccine_id, vaccine, vaccine_name)]
+    
+    # Append country details
+    if ("country" %in% names(db_dt))
+      db_dt %<>% left_join(country_dt, by = "country")
     
     # Append vaccine details
     if ("vaccine_id" %in% names(db_dt))
@@ -89,7 +83,7 @@ db_pull <- function(table, iso3_list = NULL, append_names = F) {
 open_connection <- function() {
   
   # Fetch token defined in gcs_creds.json file to authorise database query
-  bigrquery::bq_auth(path = "gcs_creds.json")
+  bigrquery::bq_auth(path = o$pth$credentials)
   
   # Create a database connecion
   db_con = DBI::dbConnect(bigrquery::bigquery(),
@@ -126,28 +120,43 @@ gen_db <- function() {
 }
 
 # ---------------------------------------------------------
-# xxx
-# Called by: various functions in data-raw directory - via gen_db()
+# Upload table to datbase
+# Called by: various functions in data-raw directory - often via gen_db()
 # ---------------------------------------------------------
-upload_object <- function(object, name) {
-  file <- paste0(name, ".csv")
-  func_path <- system.file("upload_file.py", package = "vieIA2030")
-  write.csv(object, file, row.names = F)
-  system(paste("python3", func_path, file, name))
-  file.remove(file)
+upload_object = function(object, name) {
+  
+  message("  > Uploading ", name, "' to database")
+  
+  # Shorthand for file name to save
+  upload_file = paste0(name, ".csv")
+  
+  # Temporarily save object as a csv file
+  write.csv(object, upload_file, row.names = FALSE)
+  
+  # The uploading is done with Python
+  #
+  # NOTE: I'm having package issues so going via bash as a workaround
+  py_file = system.file("upload_file.py", package = "vieIA2030")
+  sh_file = system.file("upload_file.sh", package = "vieIA2030")
+  
+  # Call the bash file, which itself calles the upload_file.py file
+  system(paste("bash", sh_file, py_file, upload_file, name, o$pth$credentials))
+
+  # We're down with the temporary file - delete it
+  file.remove(upload_file)
 }
 
 # ---------------------------------------------------------
 # Helper function to list available database tables
 # Called by: none
 # ---------------------------------------------------------
-list_db_tables <- function() {
+list_db_tables = function() {
   
   # Open database connection
-  db_con <- open_connection()
+  db_con = open_connection()
   
   # Return tables accessible through this connection
-  tables <- DBI::dbListTables(db_con)
+  tables = DBI::dbListTables(db_con)
   
   # Close the connection
   DBI::dbDisconnect(db_con)

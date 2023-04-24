@@ -32,28 +32,46 @@ run_results = function() {
   
   browser() # Tidy up...
   
+  country_dt = country_table %>%
+    mutate(gavi = gavi73 == 1) %>%
+    select(country, country_name, region, economy, gavi)
+  
+  # Number of births per year
+  cohort_dt = wpp_input %>%
+    filter(age == 0) %>% # Why??
+    group_by(country, year) %>%
+    summarise(cohort_size = sum(nx)) %>%
+    ungroup() %>%
+    as.data.table()
+  
+  g = ggplot(cohort_dt, aes(x = year, y = cohort_size, group = country, colour = country)) + 
+    geom_line()
+  
+  results_dt = draws_dt %>%
+    left_join(y  = country_table, 
+              by = "country") %>%
+    select()
+
   ## Save for sharing
   out_dt <- merge(
     draws_dt,
-    loc_table[, .(location_id, location_name, location_iso3, region, income_group, gavi73)],
-    by = "location_id"
+    country_table[, .(country, country_name, region, economy, gavi73)],
+    by = "country"
   )
-  out_dt <- out_dt[order(location_name, disease, vaccine, activity_type)]
+  out_dt <- out_dt[order(country_name, disease, vaccine, activity_type)]
   out_dt[is.na(deaths_averted), deaths_averted := 0]
   
-  cohort_dt <- wpp_input[age == 0, .(nx = sum(nx)), by = .(location_id, year)]
-  setnames(cohort_dt, "nx", "cohort_size")
-  out_dt <- merge(out_dt, cohort_dt, by = c("location_id", "year"))
+  out_dt <- merge(out_dt, cohort_dt, by = c("country", "year"))
   
-  total_dt <- wpp_input[, .(nx = sum(nx)), by = .(location_id, year)]
+  total_dt <- wpp_input[, .(nx = sum(nx)), by = .(country, year)]
   setnames(total_dt, "nx", "total_pop")
-  out_dt <- merge(out_dt, total_dt, by = c("location_id", "year"))
+  out_dt <- merge(out_dt, total_dt, by = c("country", "year"))
   setcolorder(
     out_dt, 
     c(
-      "location_name", "location_iso3", "location_id", "year", "disease", 
+      "country_name", "country", "year", "disease", 
       "vaccine", "activity_type", "age", "impact_factor", "fvps", "deaths_averted",
-      "region", "income_group", "gavi73", "cohort_size", "total_pop", paste0("draw_", 1:200)
+      "region", "economy", "gavi73", "cohort_size", "total_pop", paste0("draw_", 1:200)
     )
   )
   
@@ -70,20 +88,20 @@ run_results = function() {
                                        intro_year = 2025, intro_range = T)
   scen_dt <- merge(
     no_lin_range_cov,
-    loc_table[, .(location_id, location_name, location_iso3)],
-    by = "location_id"
+    country_table[, .(country, country_name)],
+    by = "country"
   )
   scen_dt <- merge(scen_dt, v_at_table, by = "v_at_id")
   write.csv(scen_dt, "outputs/ia2030_cov_trajectories.csv", row.names = F)
   
   
   dt <- scenario_impact
-  dt <- merge(dt, loc_table[, .(location_id, region)], by = "location_id")
+  dt <- merge(dt, country_table[, .(country, region)], by = "country")
   baseline_dt <- dt[year == 2019]
   setnames(baseline_dt, "deaths_averted", "baseline_deaths_averted")
   baseline_dt[, year := NULL]
   table_dt <- merge(dt[year %in% 2021:2030], baseline_dt,
-                    by = c("location_id", "region", "disease", "vaccine", "activity_type"),
+                    by = c("country", "region", "disease", "vaccine", "activity_type"),
                     all.x = T)
   table_dt[is.na(baseline_deaths_averted), baseline_deaths_averted := 0]
   table_dt[is.na(deaths_averted), deaths_averted := 0]
@@ -101,39 +119,39 @@ run_results = function() {
   # ---- xxxxxx ----
   
   dt <- scenario_impact
-  dt <- merge(dt, loc_table[, .(location_id, income_group)], by = "location_id")
+  dt <- merge(dt, country_table[, .(country, economy)], by = "country")
   global_dt <- dt[, .(deaths_averted = sum(deaths_averted, na.rm = T)), by = .(year, disease, vaccine, activity_type)]
-  global_dt[, income_group := "Global"]
-  income_group_dt <- dt[, .(deaths_averted = sum(deaths_averted, na.rm = T)), by = .(income_group, year, disease, vaccine, activity_type)]
-  all_dt <- rbind(global_dt, income_group_dt)
+  global_dt[, economy := "Global"]
+  economy_dt <- dt[, .(deaths_averted = sum(deaths_averted, na.rm = T)), by = .(economy, year, disease, vaccine, activity_type)]
+  all_dt <- rbind(global_dt, economy_dt)
   baseline_dt <- all_dt[year == 2019]
   setnames(baseline_dt, "deaths_averted", "baseline_deaths_averted")
   baseline_dt[, year := NULL]
   table_dt <- merge(all_dt[year %in% 2021:2030], baseline_dt,
-                    by = c("income_group", "disease", "vaccine", "activity_type"), all.x = T)
+                    by = c("economy", "disease", "vaccine", "activity_type"), all.x = T)
   table_dt[, incremental := deaths_averted - baseline_deaths_averted]
   table_totals <- table_dt[, .(total = sum(deaths_averted, na.rm = T) / 1e5,
-                               incremental = sum(incremental, na.rm = T) / 1e5), by = income_group]
+                               incremental = sum(incremental, na.rm = T) / 1e5), by = economy]
   
   # write.csv(table_totals, "outputs/results_table_income.csv", row.names = F)
   
   # ---- Impact by income ----
   
   dt <- scenario_impact
-  dt <- merge(dt, loc_table[, .(location_id, income_group)], by = "location_id")
+  dt <- merge(dt, country_table[, .(country, economy)], by = "country")
   baseline_dt <- dt[year == 2019]
   setnames(baseline_dt, "deaths_averted", "baseline_deaths_averted")
   baseline_dt[, year := NULL]
   table_dt <- merge(dt[year %in% 2021:2030], baseline_dt,
-                    by = c("location_id", "income_group", "disease", "vaccine", "activity_type"),
+                    by = c("country", "economy", "disease", "vaccine", "activity_type"),
                     all.x = T)
   table_dt[is.na(baseline_deaths_averted), baseline_deaths_averted := 0]
   table_dt[is.na(deaths_averted), deaths_averted := 0]
   table_dt[activity_type %in% c("routine", "combined"), 
            incremental := deaths_averted - baseline_deaths_averted]
   table_totals <- table_dt[, .(total = sum(deaths_averted, na.rm = T),
-                               incremental = sum(incremental, na.rm = T)), by = .(income_group, disease, year)][
-                                 order(income_group, disease, year)]
+                               incremental = sum(incremental, na.rm = T)), by = .(economy, disease, year)][
+                                 order(economy, disease, year)]
   
   # NOTE: Used to produce markdown document
   # write.csv(table_totals, "outputs/detailed_results_income.csv", row.names = F)

@@ -2,7 +2,7 @@
 # RELATIVE RISK
 #
 # Calculate relative risk given coverage details and deaths 
-# averted. Then impute relative risk for missing locations
+# averted. Then impute relative risk for missing countries
 # using GBD covariates.
 #
 ###########################################################
@@ -36,7 +36,7 @@ run_relative_risk <- function(source = c("vimc", "gbd"), activity = "routine") {
               by = "disease") %>%
     filter(source %in% !!source, 
            activity_type %in% activity) %>%
-    select(-disease_id, -disease_long)
+    select(-disease_id, -disease_name)
   
   # Shorthand for all strata IDs to work with
   strata_ids = all_strata$d_v_at_id
@@ -92,10 +92,12 @@ impute_strata_rr <- function(all_strata, all_params, strata_id) {
           "  > Activity: ", strata$activity_type)
   
   # Prepare for relative risk calculation
-  dt <- prep_rr(strata, params)
+  dt = prep_rr(strata, params)
   
-  # Append location-specific covariates (eg social-economic index) from GBD
-  dt <- merge_rr_covariates(dt)
+  browser()
+  
+  # Append country-specific covariates (eg social-economic index) from GBD
+  dt = merge_rr_covariates(dt)
   
   # Return trivial datatable if no valid relative risk results
   if (nrow(dt[rr > 0 & rr < 1]) == 0)
@@ -106,7 +108,7 @@ impute_strata_rr <- function(all_strata, all_params, strata_id) {
   # @Austin: Why binomial when predictor is continuous?
   
   # Fit a binomial GLM for relative risk using GBD covariates
-  fit <- glm(formula = rr ~ haqi + sdi + year + mx + 
+  fit = glm(formula = rr ~ haqi + sdi + year + mx + 
                splines::bs(age, knots = params$age_knots),
              data    = dt[rr > 0 & rr < 1],
              family  = "binomial")
@@ -149,9 +151,11 @@ prep_rr <- function(strata, params) {
            activity_type == strata$activity_type) %>%
     pull(v_at_id)
   
+  browser()
+  
   # ---- Load data ----
   
-  # TODO: Consistent order of columns and sorting (location_id, year, age, sex_id, ...)?
+  # TODO: Consistent order of columns and sorting (country, year, age, sex_id, ...)?
   
   message("  > Impact source: ", toupper(strata$source))
   
@@ -163,12 +167,12 @@ prep_rr <- function(strata, params) {
       filter(d_v_at_id == strata$d_v_at_id) %>%  # Only this strata
       mutate(strata_deaths = NA, 
              sex_id        = 3) %>%  # ID of both genders combined
-      select(location_id, year, age, sex_id, strata_deaths, 
+      select(country, year, age, sex_id, strata_deaths, 
              strata_deaths_averted = deaths_averted)
     
     # Sum deaths across each gender (datatable summarising much quicker)
     deaths = copy(all_deaths)[, .(deaths_obs = sum(deaths)), 
-                              by = .(location_id, year, age)] %>%
+                              by = .(country, year, age)] %>%
       mutate(sex_id = 3, .before = deaths_obs)  # ID of both genders combined
   }
   
@@ -187,9 +191,9 @@ prep_rr <- function(strata, params) {
   
   # Merge vaccine impact deaths with all cause observed deaths
   dt %<>% 
-    right_join(deaths, by = c("location_id", "year", "age", "sex_id")) %>%
-    mutate(d_v_at_id = strata$d_v_at_id, .after = location_id) %>%
-    arrange(location_id, year, age)
+    right_join(deaths, by = c("country", "year", "age", "sex_id")) %>%
+    mutate(d_v_at_id = strata$d_v_at_id, .after = country) %>%
+    arrange(country, year, age)
   
   # ---- Total vaccine coverage by cohort ----
   
@@ -219,7 +223,7 @@ prep_rr <- function(strata, params) {
   #   mutate(activity_type = strata$activity_type) %>%
   #   rename(value2 = value) %>%
   #   left_join(y  = tot_cov, 
-  #             by = c("year", "age", "location_id", "sex_id", "vaccine", "activity_type")) %>%
+  #             by = c("year", "age", "country", "sex_id", "vaccine", "activity_type")) %>%
   #   mutate(diff_value = abs(value - value2)) %>%
   #   filter(diff_value > 1e-8)
   # 
@@ -237,7 +241,7 @@ prep_rr <- function(strata, params) {
   # Mean coverage across both age groups
   #
   # TODO: This collapsing of sex should go away (AC)
-  cov_dt <- tot_cov[, .(coverage = mean(value)), by = .(location_id, year, age)]
+  cov_dt <- tot_cov[, .(coverage = mean(value)), by = .(country, year, age)]
   cov_dt[, sex_id := 3]
   
   # cov_dt2 = copy(cov_dt)
@@ -247,15 +251,15 @@ prep_rr <- function(strata, params) {
     cov_dt <- rbindlist(lapply(1:2, function(s) copy(cov_dt)[, sex_id := s]))
   
   # Join coverage details to effect datatable
-  dt <- merge(dt, cov_dt, by = c("location_id", "year", "age", "sex_id"), all = T)
+  dt <- merge(dt, cov_dt, by = c("country", "year", "age", "sex_id"), all = T)
   
   # browser()
   
   # plot_fn = function(dt) {
-  #   g = ggplot(dt %>% filter(coverage > 0, location_id <= 8)) + 
+  #   g = ggplot(dt %>% filter(coverage > 0, country <= 8)) + 
   #     aes(x = year, y = coverage, colour = age, shape = as.factor(sex_id)) + 
   #     geom_point() + 
-  #     facet_grid(sex_id~location_id) + 
+  #     facet_grid(sex_id~country) + 
   #     ylim(c(0, 1))
   # }
   # 
@@ -280,7 +284,7 @@ prep_rr <- function(strata, params) {
   # Reorder columns of output
   #
   # TODO: This shouldn't be necessary
-  out_dt <- dt[, .(location_id, age, year, d_v_at_id, deaths_obs,
+  out_dt <- dt[, .(country, age, year, d_v_at_id, deaths_obs,
                    strata_deaths_averted, strata_deaths, coverage, rr)]
   
   # Perform sanity checks on relative risk calculations
@@ -365,7 +369,7 @@ check_rr <- function(dt) {
     
     # Throw warning
     warning("Missing coverage in ", prop,
-            "% of location-age-years with deaths averted")
+            "% of country-age-years with deaths averted")
   }
   
   # Check for non-sensical numbers
@@ -377,7 +381,7 @@ check_rr <- function(dt) {
     
     # Throw warning
     warning("Over 1 or less than 0 mortality reduction in ", prop,
-            "% of location-age-years")
+            "% of country-age-years")
   }
 }
 
@@ -396,38 +400,38 @@ load_rr = function(id) {
 }
 
 # ---------------------------------------------------------
-# Append location-specific covariates (eg social-economic index) from GBD
+# Append country-specific covariates (eg social-economic index) from GBD
 # Called by: impute_strata_rr()
 # ---------------------------------------------------------
 merge_rr_covariates <- function(dt) {
   
-  # @ Austin: several questions here (otherwise will read up)...
-  #  1) What is 'mx' (and also 'nx', 'fx', and 'mig') in the world pop prospects data?
-  #  2) How are SDI and HAQi metrics calculated?
-  
   # NOTES:
   #  1) WWP stands for 'World Population Prospects'
-  #  2) The MX in the WPP stands for ???
-  #  3) Within the GBD (Global Burden of Disease) data
+  #     - nx := Number of people
+  #     - mx := ??
+  #     - fx := fertility rate
+  #     - mig := migration rate
+  #  a) The mx in the WPP stands for ???
+  #  2) Within the GBD (Global Burden of Disease) data
   #  a) HAQi stands for 'Healthcare Access and Quality index'
   #     See: https://www.healthdata.org/research-article/healthcare-access-and-quality-index-based-mortality-causes-amenable-personal-health
   #  b) SDI stands for 'Socio-demographic Index'
   #     See: https://www.healthdata.org/taxonomy/glossary/socio-demographic-index-sdi
   
-  # All locations, years, and ages
-  dt <- expand_grid(
-    location_id = unique(loc_table$location_id),
-    age         = o$data_ages,
-    year        = 2000 : 2095) %>% # ?? Why 2095?
+  # All countries, years, and ages
+  dt = expand_grid(
+    country = unique(country_table$country),
+    age     = o$data_ages,
+    year    = 2000 : 2095) %>% # ?? Why 2095?
     as.data.table() %>%
-    merge(dt, by = c("location_id", "age", "year"), all.x = T)
+    merge(dt, by = c("country", "age", "year"), all.x = T)
   
   # Add mortality
-  mx_dt <- wpp_input[, .(mx = mean(mx)), by = .(location_id, year, age)]
-  dt <- merge(dt, mx_dt, by = c("location_id", "age", "year"), all.x = T)
+  mx_dt <- wpp_input[, .(mx = mean(mx)), by = .(country, year, age)]
+  dt <- merge(dt, mx_dt, by = c("country", "age", "year"), all.x = T)
   
   # Add GBD covariates (SDI and HAQi)
-  dt <- merge(dt, gbd_cov, by = c("location_id",  "year"), all.x = T)
+  dt <- merge(dt, gbd_cov, by = c("country", "year"), all.x = T)
   
   return(dt)
 }

@@ -21,7 +21,7 @@ melt_dt <- unique(melt_dt)
 
 ## Location mapping
 setnames(melt_dt, "Location", "gbd_alt_name")
-gbd_sdi <- merge(loc_table, melt_dt, all.x = T, by = "gbd_alt_name")
+gbd_sdi <- merge(country_table, melt_dt, all.x = T, by = "gbd_alt_name")
 
 # GBD 2019 HAQI for use as a covariate
 
@@ -35,10 +35,11 @@ dt <- fread(
 g_idx <- which(dt$location_name == "Georgia")
 state_idx <- g_idx[(length(g_idx) / 2 + 1):length(g_idx)]
 dt <- dt[-state_idx]
+setnames(dt, "location_name", "country_name")
 
 
 ## Location mapping
-gbd_haqi <- merge(loc_table, dt, all.x = T, by = "location_name")
+gbd_haqi <- merge(country_table, dt, all.x = T, by = "country_name")
 setnames(gbd_haqi, c("year_id", "val"), c("year", "haqi"))
 
 ## Ignore uncertainty (for now)
@@ -46,9 +47,9 @@ gbd_haqi[, c("upper", "lower") := NULL]
 gbd_haqi[, haqi := haqi / 100]
 
 gbd_cov <- merge(
-    gbd_haqi[, .(location_id, year, haqi)],
-    gbd_sdi[, .(location_id, year, sdi)],
-    by = c("location_id", "year")
+    gbd_haqi[, .(country, year, haqi)],
+    gbd_sdi[, .(country, year, sdi)],
+    by = c("country", "year")
 )
 
 forecast_gbd_cov <- function(gbd_cov, years_back = 5, plot = F) {
@@ -58,8 +59,8 @@ forecast_gbd_cov <- function(gbd_cov, years_back = 5, plot = F) {
         par(mfrow = c(2, 1))
     }
     for (cov in c("haqi", "sdi")) {
-        dt <- gbd_cov[, c("location_id", "year", cov), with = F]
-        cast_dt <- dcast(dt, location_id ~ year, value.var = cov)
+        dt <- gbd_cov[, c("country", "year", cov), with = F]
+        cast_dt <- dcast(dt, country ~ year, value.var = cov)
         mat <- as.matrix(cast_dt[, -1])
         start_vec <-  1 - mat[, dim(mat)[2] - years_back]
         end_vec <-  1 - mat[, dim(mat)[2]]
@@ -82,8 +83,8 @@ forecast_gbd_cov <- function(gbd_cov, years_back = 5, plot = F) {
             abline(v = (max_year + 0.5), col = "black")
         }
         melt_dt <- melt(
-            data.table(location_id = cast_dt$location_id, out_mat),
-            id.var = "location_id",
+            data.table(country = cast_dt$country, out_mat),
+            id.var = "country",
             variable.name = "year",
             value.name = cov
         )
@@ -98,3 +99,4 @@ forecast_gbd_cov <- function(gbd_cov, years_back = 5, plot = F) {
 gbd_cov <- forecast_gbd_cov(gbd_cov, years_back = 5, plot = T)
 
 usethis::use_data(gbd_cov, overwrite = TRUE)
+

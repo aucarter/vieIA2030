@@ -108,7 +108,7 @@ get_mx <- function() {
       rename(year_id = year)
     wppmx <- rbind(wppmx, dpred_matb)
   }
-  wppmx <- wppmx %>% rename(wpp_location_code = country_code)
+  wppmx <- wppmx %>% rename(wpp_country_code = country_code)
 
   return(wppmx)
 }
@@ -224,7 +224,7 @@ get_fx <- function() {
     tidyr::gather(year_id, fx, -age, -country_code) %>%
     mutate(sex_name = "Female", year_id = as.numeric(year_id))
 
-  wppfx <- wppfx %>% rename(wpp_location_code = country_code)
+  wppfx <- wppfx %>% rename(wpp_country_code = country_code)
 
   return(wppfx)
 }
@@ -296,13 +296,13 @@ wpp_input_pop <- wpp_input_pop %>%
     ) %>%
     select(-c("sex_id"))
 wppmx <- get_mx()
-wpp_in <- left_join(wpp_input_pop, loc_table, by = "wpp_location_code") %>%
+wpp_in <- left_join(wpp_input_pop, country_table, by = "wpp_country_code") %>%
   left_join(
     wppmx,
-    by = c("wpp_location_code", "sex_name", "year_id", "age")
+    by = c("wpp_country_code", "sex_name", "year_id", "age")
   ) %>%
   mutate(dx = mx * nx, age = ifelse(age > 95, 95, age)) %>%
-  group_by(sex_name, year_id, age, wpp_location_code, location_name) %>%
+  group_by(sex_name, year_id, age, wpp_country_code, country_name) %>%
   summarise(nx = sum(nx, na.rm = T), dx = sum(dx, na.rm = T)) %>%
   ungroup() %>%
   mutate(mx = ifelse(nx == 0, 0, dx / nx))
@@ -311,26 +311,26 @@ wppfx <- get_fx()
 wpp_in   <- wpp_in %>%
   left_join(
     wppfx,
-    by = c("wpp_location_code", "sex_name", "year_id", "age")
+    by = c("wpp_country_code", "sex_name", "year_id", "age")
   ) %>%
   mutate(fx = ifelse(is.na(fx), 0, fx)) %>%
-  select(location_name, sex_name, age, year_id, nx, mx, fx) %>%
-  filter(!is.na(sex_name) & !is.na(location_name)) %>%
-  arrange(location_name, sex_name, age) %>%
+  select(country_name, sex_name, age, year_id, nx, mx, fx) %>%
+  filter(!is.na(sex_name) & !is.na(country_name)) %>%
+  arrange(country_name, sex_name, age) %>%
   left_join(
-    loc_table %>% select(location_name, location_iso3),
-    by = "location_name"
+    country_table %>% select(country_name, country),
+    by = "country_name"
   )
 
 # loop through pulling migration
-isc <- sort(unique(wpp_in$location_name))
+isc <- sort(unique(wpp_in$country_name))
 isn <- length(isc)
 wpp_in_list <- list(isn)
 
 for (c in 1:isn) {
   is <- isc[c]
   wpp_ina <- wpp_in  %>%
-    filter(location_name == is) %>%
+    filter(country_name == is) %>%
     arrange(sex_name, age, year_id)
   fx <- wpp_ina %>%
     select(sex_name, age, year_id, fx) %>%
@@ -372,16 +372,16 @@ for (c in 1:isn) {
       migs,
       by = c("year_id", "sex_name", "age")
     ) %>%
-    select(location_name, location_iso3, sex_name, age, year_id, nx, mx, fx, mig)
+    select(country_name, country, sex_name, age, year_id, nx, mx, fx, mig)
 }
 
 wpp_input <- rbindlist(wpp_in_list)
 wpp_input <- wpp_input %>%
   right_join(
-    loc_table[, .(location_id, location_iso3)],
-    by = "location_iso3"
+    country_table[, .(country)],
+    by = "country"
   ) %>%
-  select(-c("location_name", "location_iso3")) %>%
+  select(-c("country_name", "country")) %>%
   filter(!is.na(nx))
 wpp_input <- merge(
   wpp_input,
@@ -393,17 +393,17 @@ setnames(wpp_input, "year_id", "year")
 wpp_input[, age := as.integer(age)]
 wpp_input[, year := as.integer(year)]
 wpp_input[, nx := as.integer(nx)]
-wpp_input <- wpp_input[order(location_id, year, age, sex_id),
-                 .(location_id, year, age, sex_id, nx, mx, fx, mig)]
+wpp_input <- wpp_input[order(country, year, age, sex_id),
+                 .(country, year, age, sex_id, nx, mx, fx, mig)]
 
 # Calculate both-sexes deaths
-temp_wpp_input <- merge(wpp_input, loc_table)
+temp_wpp_input <- merge(wpp_input, country_table)
 deaths <- get_all_deaths(2000, 2095, temp_wpp_input)
-deaths <- merge(deaths, loc_table[, .(location_iso3, location_id)])
-deaths[, c("location_name", "location_iso3") := NULL]
+deaths <- merge(deaths, country_table[, .(country)])
+deaths[, c("country_name", "country") := NULL]
 deaths[, year := as.integer(year)]
-deaths <- deaths[order(location_id, year, age, sex_id),
-                 .(location_id, year, age, sex_id, deaths)]
+deaths <- deaths[order(country, year, age, sex_id),
+                 .(country, year, age, sex_id, deaths)]
 
 upload_object(wpp_input, "wpp_input")
 upload_object(deaths, "all_deaths")

@@ -25,16 +25,17 @@ set_dirs = function(o) {
   out$code  = file.path(pth$main, "R")
   out$cache = file.path(pth$main, "cache")
   
+  # Path for temporary files (needed for uploading to database)
+  out$temp = getwd() # file.path(pth$main, "temp")
+  
   # ---- Input and configuration files ----
   
   # Parent path of all input files
-  pth$input  = file.path(pth$main, "input")
-  # pth$config = file.path(pth$main, "config")
+  pth$config = file.path(pth$main, "config")
   
-  # Paths to model configuration files
-  # pth$states    = file.path(pth$config, "model_states.yaml")
-  # pth$metrics   = file.path(pth$config, "model_metrics.yaml")
-  # pth$variables = file.path(pth$config, "model_variables.yaml")
+  # Paths to specific configuration files
+  pth$credentials = file.path(pth$config, "gcs_credentials.json")
+  pth$parameters  = file.path(pth$config, "parameters.json")
   
   # ---- Output directories ----
   

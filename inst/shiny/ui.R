@@ -1,11 +1,11 @@
 ##########################################################
 ## user interface
 ##########################################################
-locsall <- loc_table %>%
-  filter(location_iso3 %in% unique(wpp_input$location_iso3)) %>%
-  select(location_iso3, location_name) %>%
-  arrange(location_iso3)
-countries <- locsall$location_name
+locsall <- country_table %>%
+  filter(country %in% unique(wpp_input$country)) %>%
+  select(country, country_name) %>%
+  arrange(country)
+countries <- locsall$country_name
 
 ui <- fluidPage(
   theme = shinythemes::shinytheme("sandstone"),

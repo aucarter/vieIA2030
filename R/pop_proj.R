@@ -104,8 +104,9 @@ lt_est <- function(y) {
 }
 
 #' Run the population projection for a particular country and year range
-#' @param is Location name
+#' @param is Country name
 #' @param y0 Start year of projection
+
 #' @param y1 End year of projection
 #' @param wpp_input Input WPP data
 #' @param scen Name of the scenario being run
@@ -113,8 +114,8 @@ lt_est <- function(y) {
 project_pop <- function(is, y0, y1, wpp_input, scen = "Default") {
   n <- y1 - y0 + 1
   wpp_ina <- wpp_input  %>%
-    filter(location_name == is & year %in% (y0 - 1):y1) %>%
-    select(-c(location_name)) %>%
+    filter(country_name == is & year %in% (y0 - 1):y1) %>%
+    select(-c(country_name)) %>%
     arrange(sex_id, age, year)
   nx <- wpp_ina %>%
     select(sex_id, age, year, nx) %>%
@@ -180,9 +181,9 @@ add_lt <- function(projected_pop, is, y0, y1) {
   imr <- lt_out_both[2, ]
   u5mr <- lt_out_both[3, ]
   
-  locs <- loc_table %>%
-    filter(location_name == is) %>%
-    select(location_iso3, location_name)
+  locs <- country_table %>%
+    filter(country_name == is) %>%
+    select(country, country_name)
   out_df <- data.table(
     year = y0:y1,
     deaths_both = deaths_both,
@@ -204,9 +205,9 @@ add_obs <- function(df, obs_wpp, is, y0, y1) {
     mutate(group = "CCPM") %>%
     rbind(
       obs_wpp %>%
-        filter(location_name == is & year %in% y0:y1) %>%
+        filter(country_name == is & year %in% y0:y1) %>%
         mutate(group = "WPP2019") %>%
-        select(-c("location_id")),
+        select(-country),
       fill = T
     )
   
@@ -219,13 +220,13 @@ add_obs <- function(df, obs_wpp, is, y0, y1) {
 #' @param wpp_input Input WPP data
 #' @return A data.table with single-year deaths
 get_all_deaths <- function(y0, y1, wpp_input) {
-  locsall <- loc_table %>%
-    filter(location_name %in% unique(wpp_input$location_name)) %>%
-    select(location_iso3, location_name) %>%
-    arrange(location_iso3)
+  locsall <- country_table %>%
+    filter(country_name %in% unique(wpp_input$country_name)) %>%
+    select(country, country_name) %>%
+    arrange(country)
   
-  isc  <- locsall$location_name
-  isco <- locsall$location_iso3
+  isc  <- locsall$country_name
+  isco <- locsall$country
   isn  <- length(isc)
   all_deaths <- list(isn)
   
@@ -248,8 +249,8 @@ get_all_deaths <- function(y0, y1, wpp_input) {
       gather(year, deaths, -age, -sex_id) %>%
       mutate(
         year = as.numeric(year),
-        location_name = is,
-        location_iso3 = iso
+        country_name = is,
+        country = iso
       ) %>%
       arrange(sex_id, age, year) %>% 
       data.table()

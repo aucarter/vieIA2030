@@ -2,9 +2,8 @@ prep_vimc_coverage_data <- function() {
     dt <- fread(
         system.file("extdata", "vimc_coverage.csv", package = "vieIA2030")
     )
-    setnames(dt,"country", "location_iso3")
     vimc_dt <- dt[, lapply(.SD, sum),
-             by = .(location_iso3, disease, vaccine, activity_type, year, age, gender),
+             by = .(country, disease, vaccine, activity_type, year, age, gender),
              .SDcols = c("fvps_adjusted", "cohort_size")]
     vimc_dt[, coverage := fvps_adjusted / cohort_size]
     vimc_dt[, c("disease") := NULL]
@@ -36,7 +35,7 @@ prep_wuenic_data <- function() {
 
     dt <- rbindlist(data_list, fill = T)
     dt[, Cname := NULL]
-    setnames(dt, "ISO_code", "location_iso3")
+    setnames(dt, "ISO_code", "country")
     setnames(dt, "Vaccine", "wuenic_name")
     wuenic_dt <- merge(dt, wuenic_vaccine_table, by = "wuenic_name")
     wuenic_dt[, wuenic_name := NULL]
@@ -62,13 +61,13 @@ prep_reported_data <- function() {
     setnames(
         dt,
         c("ISO_code", "Vaccine", "Year", "Percent_covrage"),
-        c("location_iso3", "vaccine", "year", "value")
+        c("country", "vaccine", "year", "value")
     )
     dt <- dt[vaccine %in% c("JapEnc", "MenA")]
     dt[vaccine == "JapEnc", vaccine := "JE"]
     dt[, sex_id := 3]
     dt[, coverage := value / 100]
-    dt <- dt[, .(location_iso3, sex_id, year, vaccine, coverage)]
+    dt <- dt[, .(country, sex_id, year, vaccine, coverage)]
     je_dt <- rbindlist(lapply(0:14, function(a) {
         copy_dt <- copy(dt[vaccine == "JE"])
         copy_dt[, age := a]
@@ -94,12 +93,12 @@ prep_hpv_data <- function() {
     # NOTE: We are subsetting to only those received a complete dosage!!
     dt <- dt[grepl("prHPVc", indicator)]
     dt[, vaccine := "HPV"]
-    setnames(dt, "iso3code", "location_iso3")
+    setnames(dt, "iso3code", "country")
     dt[, sex_id := ifelse(sex == "Male", 1, 2)]
     dt[, value_no_pct := tstrsplit(value_str, "%")[[1]]]
     dt[value_no_pct == "-", value_no_pct := "0"]
     dt[, coverage := as.numeric(value_no_pct) / 100]
-    dt <- dt[, .(location_iso3, sex_id, year, vaccine, coverage)]
+    dt <- dt[, .(country, sex_id, year, vaccine, coverage)]
     # Give the same coverage level to age 8 through 13
     dt <- rbindlist(lapply(8:13, function(a) {
         copy_dt <- copy(dt)
@@ -118,25 +117,25 @@ hpv_dt <- prep_hpv_data()
 non_vimc_dt <- rbindlist(
     list(wuenic_dt, reported_dt, hpv_dt), use.names = T
 )
-# Sub in WUENIC data for locations not in VIMC
+# Sub in WUENIC data for countries not in VIMC
 for (v in unique(non_vimc_dt$vaccine)) {
     non_vimc_dt <- non_vimc_dt[
         !(vaccine == v &
-        location_iso3 %in% unique(vimc_dt[vaccine == v]$location_iso3)
+            country %in% unique(vimc_dt[vaccine == v]$country)
         )
     ]
 }
 
 # Merge on cohort size and calculate fvps
 load_tables("wpp_input")
-both_dt <- wpp_input[, .(cohort_size = sum(nx)), by = .(location_id, year, age)]
-non_vimc_dt <- merge(non_vimc_dt, loc_table[, .(location_id, location_iso3)])
-non_vimc_dt <- merge(non_vimc_dt, both_dt, by = c("location_id", "year", "age"))
+both_dt <- wpp_input[, .(cohort_size = sum(nx)), by = .(country, year, age)]
+non_vimc_dt <- merge(non_vimc_dt, country_table[, .(country)])
+non_vimc_dt <- merge(non_vimc_dt, both_dt, by = c("country", "year", "age"))
 non_vimc_dt[, fvps := coverage * cohort_size]
 
-vimc_dt <- merge(vimc_dt, loc_table[, .(location_id, location_iso3)])
+vimc_dt <- merge(vimc_dt, country_table[, .(country, country)])
 coverage <- rbind(vimc_dt, non_vimc_dt)
-coverage[, location_iso3 := NULL]
+coverage[, country := NULL]
 
 ## Merge on vaccine_id
 coverage <- merge(
@@ -146,8 +145,8 @@ coverage <- merge(
 coverage[, c("vaccine", "activity_type") := NULL]
 coverage[, age := as.integer(age)]
 coverage[, sex_id := as.integer(sex_id)]
-coverage <- coverage[order(location_id, v_at_id, year, age, sex_id),
-                 .(location_id, v_at_id, year, age, sex_id, fvps, coverage)]
+coverage <- coverage[order(country, v_at_id, year, age, sex_id),
+                 .(country, v_at_id, year, age, sex_id, fvps, coverage)]
 
 coverage <- coverage[fvps != 0]
 

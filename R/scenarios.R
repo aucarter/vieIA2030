@@ -1,7 +1,12 @@
-
+###########################################################
+# SCENARIOS
+#
+# xxxxxxx
+#
+###########################################################
 
 # ---------------------------------------------------------
-# Use 2030 coverage targets for DTP vaccine to project future coverage by location
+# Use 2030 coverage targets for DTP vaccine to project future coverage by country
 # ---------------------------------------------------------
 gen_ia2030_goals <- function(linear = T, no_covid_effect = 2022, intro_year = 2025, intro_range = T) {
   
@@ -12,16 +17,16 @@ gen_ia2030_goals <- function(linear = T, no_covid_effect = 2022, intro_year = 20
   # Iterate through each vaccine (except HPV which is special)
   vaccs <- setdiff(unique(v_at_table[activity_type == "routine"]$v_at_id), 2)
   dt <- rbindlist(lapply(vaccs, function(v) {
-    v_dt <- cov_dt[v_at_id == v][order(location_id)]
+    v_dt <- cov_dt[v_at_id == v][order(country)]
     if (length(unique(v_dt$sex_id)) > 1) {
       v_dt <- v_dt[sex_id == 2]
     }
-    missing_locs <- setdiff(loc_table$location_id, v_dt$location_id)
-    missing_dt <- data.table(location_id = missing_locs, coverage = 0,
+    missing_locs <- setdiff(country_table$country, v_dt$country)
+    missing_dt <- data.table(country = missing_locs, coverage = 0,
                              v_at_id = v, year = 2019, age = 0, sex_id = unique(v_dt$sex_id),
                              fvps = 0)
     v_dt <- rbind(v_dt, missing_dt, use.names = T)
-    v_dt <- v_dt[order(location_id)]
+    v_dt <- v_dt[order(country)]
     # Repeat out to 'no covid effect' year
     n_covid <- no_covid_effect - 2019
     covid_mat <- matrix(rep(v_dt$coverage, n_covid), ncol = n_covid)
@@ -37,9 +42,9 @@ gen_ia2030_goals <- function(linear = T, no_covid_effect = 2022, intro_year = 20
     }
     if (intro_range) {
       # Range of intro years split up by quintile of coverage goal
-      zero_locs <- v_dt[zero_idx]$location_id
+      zero_locs <- v_dt[zero_idx]$country
       # 2030 coverage targets for DTP vaccine...
-      ordered_locs <- ia2030_dtp_goal[location_id %in% zero_locs][rev(order(value))]$location_id
+      ordered_locs <- ia2030_dtp_goal[country %in% zero_locs][rev(order(value))]$country
       split_locs <- split(ordered_locs, floor(5 * seq.int(0, length(ordered_locs) - 1) / length(ordered_locs)))
       names(split_locs) <- (-2:2 + temp_intro_year)[1:length(split_locs)]
     } else {
@@ -48,9 +53,9 @@ gen_ia2030_goals <- function(linear = T, no_covid_effect = 2022, intro_year = 20
     
     setnames(v_dt, "coverage", "current")
     roc_dt <- merge(
-      v_dt[, .(location_id, current)],
-      ia2030_dtp_goal[, .(location_id, value)],
-      by = "location_id"
+      v_dt[, .(country, current)],
+      ia2030_dtp_goal[, .(country, value)],
+      by = "country"
     )
     roc_dt[, n := n_increase]
     t_mat <- matrix(
@@ -62,7 +67,7 @@ gen_ia2030_goals <- function(linear = T, no_covid_effect = 2022, intro_year = 20
         for (i in zero_idx) {
           i_year <- as.integer(names(split_locs)[unlist(
             lapply(split_locs, function(s) {
-              v_dt[i,]$location_id %in% s
+              v_dt[i,]$country %in% s
             })
           )])
           zero_n <- 2030 - i_year + 1
@@ -79,17 +84,17 @@ gen_ia2030_goals <- function(linear = T, no_covid_effect = 2022, intro_year = 20
     # Handle regionally-specific vaccines
     if (v %in% c(19, 12, 7)) {
       if (v == 19) {
-        reg_locs <- loc_table[yf == 1]$location_id
+        reg_locs <- country_table[yf == 1]$country
         # Remove Argentina and Kenya
         reg_locs <- setdiff(reg_locs, c(7, 90))
       } else if (v == 12){
-        reg_locs <- loc_table[mena == 1]$location_id
+        reg_locs <- country_table[mena == 1]$country
       } else if (v == 7) {
-        reg_locs <- loc_table[je == 1]$location_id
+        reg_locs <- country_table[je == 1]$country
         # Remove Russia and Pakistan
         reg_locs <- setdiff(reg_locs, c(131, 144))
       }
-      reg_idx <- which(v_dt$location_id %in% reg_locs)
+      reg_idx <- which(v_dt$country %in% reg_locs)
       roc_dt[!reg_idx, value := current]
     }
     # Do no introduce HepB or BCG in any countries
@@ -99,14 +104,14 @@ gen_ia2030_goals <- function(linear = T, no_covid_effect = 2022, intro_year = 20
     # Hold medium/low BCG coverage constant in France, Ireland, Sweden
     if (v == 21) {
       hold_locs <- c(63, 83, 168)
-      hold_idx <- which(v_dt$location_id %in% hold_locs)
+      hold_idx <- which(v_dt$country %in% hold_locs)
       roc_dt[hold_idx, value := current]
     }
     # Keep current JE levels in countries with only subnational endemicity
     # Indonesia, India, and Malaysia
     if (v == 7) {
       hold_locs <- c(79, 80, 104)
-      hold_idx <- which(v_dt$location_id %in% hold_locs)
+      hold_idx <- which(v_dt$country %in% hold_locs)
       roc_dt[hold_idx, value := current]
     }
     # Linear vs. non-linear
@@ -125,7 +130,7 @@ gen_ia2030_goals <- function(linear = T, no_covid_effect = 2022, intro_year = 20
     # matplot(t(c_mat), type = "l")
     dt <- cbind(v_dt[, -c("year", "current", "fvps"), with = F], c_mat)
     melt_dt <- melt(dt,
-                    id.vars = c("location_id", "v_at_id", "age", "sex_id"),
+                    id.vars = c("country", "v_at_id", "age", "sex_id"),
                     variable.name = "year"
     )
     return(melt_dt)
@@ -142,7 +147,7 @@ gen_ia2030_goals <- function(linear = T, no_covid_effect = 2022, intro_year = 20
 # ---------------------------------------------------------
 # Get vaccine coverage and FVPs for all years up to 2030
 # ---------------------------------------------------------
-get_scenario_fvps <- function() {
+get_scenario_fvps = function() {
   
   # Past coverage and FVPs comes directly from the data
   past_fvps = coverage %>%
@@ -199,7 +204,7 @@ get_mx_scen <- function(is, y0, y1, scen, mx, nx) {
 # ---------------------------------------------------------
 get_vimc_deaths_change <- function(is, y0, y1, default_coverage, scen_coverage, mx) {
   vimc_deaths_change <- vimc_impact %>%
-    filter(location_name == is & year %in% y0:y1) %>%
+    filter(country_name == is & year %in% y0:y1) %>%
     left_join(default_coverage, by = c("year", "vaccine_id")) %>%
     left_join(scen_coverage, by = c("year", "vaccine_id")) %>%
     mutate(scalar = (default_cov - scen_cov) / default_cov) %>%

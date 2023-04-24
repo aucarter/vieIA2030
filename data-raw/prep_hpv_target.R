@@ -14,10 +14,10 @@ melt_dt[is.na(value), value := 0]
 ## Keep the max of the one and two does coverage levels
 max_dt <- melt_dt[, .(value = max(value)), by = .(Country, Age, Gender, year)]
 
-## Merge on location
+## Merge on country
 setnames(max_dt, c("Country", "Age"), c("hpv_name", "age"))
 merge_dt <- merge(max_dt, 
-    loc_table[, .(hpv_name, location_id)],
+    country_table[, .(hpv_name, country)],
     by = "hpv_name",
     all.x = T)
 
@@ -35,7 +35,7 @@ add_dt <- rbindlist(lapply(1:2, function(i) {
 split_dt <- rbind(merge_dt[sex_id != 3], add_dt)
 
 ## Subset to before 2027
-hpv_target <- split_dt[year <= 2026, .(location_id, year, sex_id, age, value)]
+hpv_target <- split_dt[year <= 2026, .(country, year, sex_id, age, value)]
 
 ## Linearly interpolate to 90% in 2030
 interp_dt <- rbindlist(lapply(1:4, function(i) {

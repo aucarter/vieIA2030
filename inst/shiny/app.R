@@ -3,7 +3,7 @@ library(viridis)
 
 vimc_dt <- readRDS("vimc.rds")
 vimc_dt <- vimc_dt[activity_type == "routine"]
-locs <- sort(unique(vimc_dt$location_iso3))
+locs <- sort(unique(vimc_dt$country))
 vaccines <- sort(unique(vimc_dt$vaccine))
 # Define UI for application
 ui <- fluidPage(
@@ -31,7 +31,7 @@ ui <- fluidPage(
 server <- function(input, output) {
 
     output$plot <- renderPlot({
-        dt <- vimc_dt[location_iso3 == input$l & vaccine == input$v & deaths_averted > 0]
+        dt <- vimc_dt[country == input$l & vaccine == input$v & deaths_averted > 0]
         gg <- ggplot(dt, aes(x = year, y = age, fill = deaths_averted)) + 
             geom_tile() +
             xlab("Year") + ylab("Age") + labs(fill = "Deaths averted") +

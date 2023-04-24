@@ -15,7 +15,7 @@ source("dependencies.R")
 message("Running VIE IA2030 pipeline")
 
 # Set options (see options.R)
-o = set_options(do_step = 2)
+o = set_options(do_step = 1 : 4)
 
 # Other possible pre-steps: Generate database
 
