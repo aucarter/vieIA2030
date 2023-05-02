@@ -1,52 +1,75 @@
-get_x <- function(fl, rn, sx, my) {
-  if (rn == 1) {
-    sh <- "ESTIMATES"
-    rh <- "A17:DE18122"
-  } else {
-    sh <- "MEDIUM VARIANT"
-    rh <- "A17:DE20672"
+###########################################################
+# PREPARE WPP INPUT POPULATION
+#
+# Load historical and projected future population values.
+#
+###########################################################
+
+# ---------------------------------------------------------
+# Load population data from large WPP data files
+# ---------------------------------------------------------
+get_pop = function(data, sex, time_frame) {
+
+  # Details for selecting historical data
+  if (time_frame == "past") {
+    sheet_name = "ESTIMATES"
+    cell_range = "A17:DE18122"
+    
+    # Years to select from
+    year_from  = 1980
+    year_until = 2020  # This is the latest year in the ESTIMATES sheet
   }
-
-  x <- readxl::read_excel(fl, sheet = sh, range = rh) %>%
-    mutate(sex_name = sx) %>%
-    select(
-      -c("Index", "Variant", "Region, subregion, country or area *", "Notes",
-          "Type", "Parent code")
-    ) %>%
-    rename(
-      year_id = `Reference date (as of 1 July)`,
-      country_code = `Country code`
-    ) %>%
-    gather(age, val, -country_code, -sex_name, -year_id) %>%
-    filter(year_id > 1979 & year_id < my) %>%
-    mutate(age = as.numeric(age), val = val * 1000) %>%
-    group_by(country, year_id, sex_name, age) %>%
-    summarise(nx = sum(val)) %>%
-    ungroup()
-
-  return(x)
+  
+  # Details for selecting future data
+  if (time_frame == "future") {
+    sheet_name = "MEDIUM VARIANT"
+    cell_range = "A17:DE20672"
+    
+    # Years to select from
+    year_from  = 2020  # This is the earliest year in the MEDIUM VARIANT sheet
+    year_until = 2097
+  }
+  
+  # Load data and melt to tidy format
+  pop_dt = readxl::read_excel(path  = data[[sex]], 
+                              sheet = sheet_name, 
+                              range = cell_range) %>%
+    select(wpp_country_code = "Country code", 
+           year_id = "Reference date (as of 1 July)",
+           all_of(as.character(0 : 100))) %>%
+    pivot_longer(cols     = -c(wpp_country_code, year_id), 
+                 names_to = "age") %>%
+    filter(year_id >= year_from, 
+           year_id <  year_until) %>%
+    mutate(age = as.numeric(age), 
+           sex_id = which(c("male", "female") == sex)) %>%
+    group_by(wpp_country_code, year_id, sex_id, age) %>%
+    summarise(nx = sum(value * 1000)) %>%
+    ungroup() %>%
+    setDT()
+  
+  return(pop_dt)
 }
 
-get_pop <- function(f1, f2) {
-  pm1 <- get_x(f1, 1, "Male", 2020)
-  pm2 <- get_x(f1, 2, "Male", 2097)
-  pf1 <- get_x(f2, 1, "Female", 2020)
-  pf2 <- get_x(f2, 2, "Female", 2097)
-  wpppop <- rbind(pm1, pm2, pf1, pf2) %>%
-    rename(wpp_country_code = country)
+# ---- Load and format population data
 
-  return(wpppop)
-}
+# Path to large WPP poulation data files
+data_pth = "supp_data/wpp_input_pop/WPP2019_INT_"
 
-f1 <- "supp_data/WPP_input_pop/WPP2019_INT_F03_2_POPULATION_BY_AGE_ANNUAL_MALE.xlsx"
-f2 <- "supp_data/WPP_input_pop/WPP2019_INT_F03_3_POPULATION_BY_AGE_ANNUAL_FEMALE.xlsx"
+# Specify path for large WPP population data files
+data = list(
+  male   = paste0(data_pth, "F03_2_POPULATION_BY_AGE_ANNUAL_MALE.xlsx"), 
+  female = paste0(data_pth, "F03_3_POPULATION_BY_AGE_ANNUAL_FEMALE.xlsx"))
 
-wpp_input_pop <- get_pop(f1, f2) %>%
-    left_join(
-        data.table(sex_id = 1:2, sex_name = c("Male", "Female")),
-        by = "sex_name"
-    ) %>%
-    select(-c("sex_name"))
+# Load historical and projected pop sizes for both genders
+pm1 = get_pop(data, "male",   "past")
+pm2 = get_pop(data, "male",   "future")
+pf1 = get_pop(data, "female", "past")
+pf2 = get_pop(data, "female", "future")
 
+# Concatenate into single datatable
+wpp_input_pop = rbind(pm1, pm2, pf1, pf2)
 
+# Save this datatable so it can be used directly within the package
 save(wpp_input_pop, file = "inst/extdata/wpp_input_pop.RData")
+
