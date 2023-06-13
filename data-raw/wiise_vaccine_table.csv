@@ -1,0 +1,16 @@
+vaccine,wiise_id,coverage_category,activity,sex,age
+HepB,HEPB3,WUENIC,routine,3,0
+HepB_BD,HEPB_BD,WUENIC,routine,3,0
+Rubella,RCV1,WUENIC,routine,3,0
+Rota,ROTAC,WUENIC,routine,3,0
+MCV1,MCV1,WUENIC,routine,3,0
+MCV2,MCV2,WUENIC,routine,3,0
+PCV3,PCV3,WUENIC,routine,3,0
+Hib3,HIB3,WUENIC,routine,3,0
+YF,YFV,WUENIC,routine,3,0
+DTP3,DTPCV3,WUENIC,routine,3,0
+BCG,BCG,WUENIC,routine,3,0
+JE,JAPENC,OFFICIAL,campaign,3,0:14
+MenA,MEN_A_CONJ,OFFICIAL,campaign,3,0:29
+HPV,PRHPVC_F,HPV,campaign,1,8:13
+HPV,PRHPVC_M,HPV,campaign,2,8:13
