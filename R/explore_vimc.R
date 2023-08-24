@@ -1,14 +1,14 @@
 
 
 library(tidyverse)
-library(stats4)
-library(AICcmodavg)
-# library(gsubfn)
+library(stats4)    # MLE algorithm
 
 # ---------------------------------------------------------
 # xxx
 # ---------------------------------------------------------
 explore_vimc = function() {
+  
+  r2_threshold = 0.9
   
   # ---- Population size ----
   
@@ -101,63 +101,108 @@ explore_vimc = function() {
   
   # ---- Best stats model ----
   
-  # Set of statistical models / functions we want to test
-  fns = list(
-    # exp  = function(x, a)       y = exp(a*x),
-    lin  = function(x, a, b)    y = a*x + b,
-    quad = function(x, a, b, c) y = a*x^2 + b*x + c)
-  
-  # Good examples: NGA, GIN, ETH
+  fns      = fn_set()
+  fns_dict = fn_set(dict = TRUE)
   
   cases = vimc_dt %>%
+    filter(!is.na(fvps_rel)) %>%
     select(country, d_v) %>%
     unique() %>%
     mutate(id = 1 : n())
   
-  aic = coef = list()
+  coef = aic = r2 = list()
   
-  pb = start_progress_bar(nrow(cases))
+  pb = start_progress_bar(max(cases$id))
   
   for (id in cases$id) {
-    case = cases[id, ]
+    case = filter(cases, id == !!id)
     
-    result = best_model(fns, vimc_dt, case$country, case$d_v)
+    result = get_best_model(fns, vimc_dt, case$country, case$d_v)
     
-    aic[[id]]  = result$aic
     coef[[id]] = result$coef
+    aic[[id]]  = result$aic
+    r2[[id]]   = result$r2
     
     setTxtProgressBar(pb, id)
   }
   
   close(pb)
   
-  browser()
-    
-  # Ultimately we want to use AIC, for which we need maximum likelihood, 
-  # but MLE is sensitive to starting point. Here we'll use ASD to get us to 
-  # a decent point in parameter space.
+  coef_dt = rbindlist(coef) # %>%
+    # mutate(fn = recode(fn, !!!fns_dict))
   
+  saveRDS(coef_dt, paste0(o$pth$testing, "coef.rds")) 
+  
+  aic_dt = rbindlist(aic, fill = TRUE)
+  r2_dt  = rbindlist(r2)
+  
+  saveRDS(aic_dt, paste0(o$pth$testing, "aic.rds"))
+  saveRDS(r2_dt,  paste0(o$pth$testing, "r2.rds"))
+  
+  r2_threshold = 0.9
+  
+  best_dt = aic_dt %>%
+    left_join(y  = r2_dt, 
+              by = c("country", "d_v")) %>%
+    mutate(lin_r2_pass = lin_r2 > r2_threshold, 
+           lin = ifelse(lin_r2_pass, -Inf, lin)) %>%
+    pivot_longer(cols = names(fns),
+                 names_to = "fn") %>%
+    filter(!is.na(value)) %>%
+    mutate(# fn = recode(fn, !!!fns_dict), 
+           value = round(value)) %>%
+    group_by(country, d_v) %>%
+    slice_min(value, n = 1, with_ties = FALSE) %>%
+    ungroup() %>%
+    select(country, d_v, fn) %>%
+    as.data.table()
+  
+  saveRDS(best_dt, paste0(o$pth$testing, "best_model.rds"))
 }
 
 # ---------------------------------------------------------
 # xxx
 # ---------------------------------------------------------
-best_model = function(fns, vimc_dt, country, d_v) {
+fn_set = function(dict = FALSE) {
   
+  # Set of statistical models / functions we want to test
+  out = list(
+    lin  = function(x, a, b)    y = a*x + b,
+    quad = function(x, a, b, c) y = a*x^2 + b*x + c)
+  
+  # Alternative functionality - return dictionary
+  if (dict == TRUE)
+    out = c(
+      lin  = "Linear", 
+      quad = "Quadratic")
+  
+  return(out)
+}
+
+# ---------------------------------------------------------
+# xxx
+# ---------------------------------------------------------
+get_best_model = function(fns, vimc_dt, country, d_v) {
+  
+  # Reduce data down to what we're interested in
   data_dt = prep_data(vimc_dt, country, d_v)
   
-  if (nrow(data_dt) == 0)
-    stop("No data to fit to")
+  # Do not fit if insufficient data
+  if (nrow(data_dt) <= 3)
+    return()
   
   # Declare x and y values for which we want to determine a relationship
   x = data_dt$x
   y = data_dt$y
   
+  # Use optim algorithm to get good starting point for MLE
   start = prep_start(fns, x, y)
   
+  # Run MLE from this starting point
   fit = run_mle(fns, start, x, y)
   
-  result = calc_aic(fit, country, d_v)
+  # Determine AICc value for model suitability
+  result = model_quality(fit, country, d_v, x, y)
   
   return(result)
 }
@@ -169,8 +214,7 @@ prep_data = function(vimc_dt, country, d_v) {
   
   data_dt = vimc_dt %>%
     filter(country == !!country, 
-           d_v     == !!d_v,
-           !is.na(fvps_rel)) %>%
+           d_v     == !!d_v) %>%
     select(x_real = impact_rel, 
            y_real = fvps_rel) %>%
     mutate(x_max = max(x_real), 
@@ -277,16 +321,30 @@ run_mle = function(fns, start, x, y) {
   # Iterate through stats models
   for (fn in names(fns)) {
     
-    fit[[fn]] = mle(model[[fn]], start = start[[fn]], lower = list(s = 1e-6))
+    # Attempt to fit MLE model using prevriously determined start point
+    fit_result = tryCatch(
+      expr  = mle(minuslogl = model[[fn]], 
+                  start = start[[fn]], 
+                  lower = list(s = 1e-6), 
+                  nobs  = length(y)), 
+      
+      # Return trivial if MLE failed
+      error   = function(e) NULL,
+      warning = function(w) NULL)
     
-    coef = fit[[fn]]@coef[-1]
-    
-    # Construct plotting datatable for this model
-    plot_args = c(list(x_eval), as.list(coef))
-    plot_list[[fn]] = data.table(
-      x = x_eval,
-      y = do.call(fns[[fn]], as.list(plot_args)), 
-      fn = fn)
+    if (!is.null(fit_result)) {
+      
+      # Store fit and extract coefficients for plotting
+      fit[[fn]] = fit_result
+      coef      = fit_result@coef[-1]
+      
+      # Construct plotting datatable for this model
+      plot_args = c(list(x_eval), as.list(coef))
+      plot_list[[fn]] = data.table(
+        x = x_eval,
+        y = do.call(fns[[fn]], as.list(plot_args)), 
+        fn = fn)
+    }
   }
   
   # Squash all models into one datatable
@@ -304,16 +362,14 @@ run_mle = function(fns, start, x, y) {
 # ---------------------------------------------------------
 # xxx
 # ---------------------------------------------------------
-calc_aic = function(fit, country, d_v) {
+model_quality = function(fit, country, d_v, x, y) {
   
-  aic = sapply(fit, function(x) AIC(x)) %>%
-    as.list() %>%
-    as.data.table() %>%
-    mutate(country = country, 
-           d_v     = d_v, 
-           .before = 1)
+  if (length(fit) == 0)
+    return()
   
-  coef = unlist(sapply(fit, function(x) x@coef[-1]))
+  # ---- Extract coefficients ----
+  
+  coef = unlist(lapply(fit, function(x) x@coef[-1]))
   coef = data.table(var   = names(coef), 
                     value = coef) %>%
     separate(var, c("fn", "coef")) %>%
@@ -321,11 +377,154 @@ calc_aic = function(fit, country, d_v) {
            d_v     = d_v, 
            .before = 1)
   
-  # aic_best = names(fns)[which.min(aic)]
-  # aic_vals = paste(sort(round(aic)), collapse = " vs ")
-  # 
-  # aic_msg = paste0(aic_best, " (AIC: ", aic_vals, ")")
+  # ---- AICc ----
   
-  return(list(aic = aic, coef = coef))
+  aic = sapply(fit, function(x) AICc(x)) %>%
+    as.list() %>%
+    as.data.table() %>%
+    mutate(country = country, 
+           d_v     = d_v, 
+           .before = 1)
+  
+  # ---- R squared ----
+  
+  if ("lin" %in% names(fit)) {
+    
+    lin_coef = as.list(fit$lin@coef[-1])
+    lin_y    = lin_coef$a * x + lin_coef$b
+    
+    r2 = data.table(lin_r2 = cor(y, lin_y) ^ 2) %>%
+      mutate(country = country, 
+             d_v     = d_v, 
+             .before = 1)
+    
+  } else {
+    
+    r2 = NULL
+  }
+  
+  return(list(coef = coef, aic = aic, r2 = r2))
+}
+
+# ---------------------------------------------------------
+# Use AICc rather than AIC to reduce overfitting
+# ---------------------------------------------------------
+AICc = function(x) {
+  
+  # See en.wikipedia.org/wiki/Akaike_information_criterion
+  
+  # Sample size
+  n = x@nobs
+  
+  # Number of parameters
+  k = length(x@details$par)
+  
+  # The usual AIC term
+  aic_term = stats::AIC(x)
+  
+  # An additional penalty term for small sample size
+  pen_term = (2*k^2 + 2*k) / (n - k - 1)
+  
+  # Sum these terms
+  aicc = aic_term + pen_term
+  
+  return(aicc)
+}
+
+# ---------------------------------------------------------
+# xxx
+# ---------------------------------------------------------
+plot_best_model = function() {
+  
+  fns      = fn_set()
+  fns_dict = fn_set(dict = TRUE)
+  
+  best_dt = readRDS(paste0(o$pth$testing, "best_model.rds"))
+  coef_dt = readRDS(paste0(o$pth$testing, "coef.rds"))
+  
+  # ---- Plot function count ----
+  
+  plot_count = function(var, fig = "count", focus = "quad", ord = "n") {
+    
+    fn_ord = c(focus, setdiff(unique(best_dt$fn), focus))
+    
+    count_dt = best_dt %>% 
+      rename(var = !!var) %>% 
+      # Number and proportion of each fn...
+      count(var, fn) %>%
+      group_by(var) %>%
+      mutate(total = sum(n)) %>%
+      ungroup() %>%
+      mutate(p = n / total) %>%
+      # Set appropriate plotting order...
+      rename(val = !!ord) %>%
+      select(var, fn, val) %>%
+      pivot_wider(names_from  = fn, 
+                  values_from = val, 
+                  values_fill = 0) %>%
+      arrange_at(fn_ord) %>%
+      pivot_longer(cols = -var, 
+                   names_to  = "fn", 
+                   values_to = "val") %>%
+      mutate(var = fct_inorder(var)) %>%
+      as.data.table()
+    
+    if (fig == "count") {
+      
+      g = ggplot(count_dt[val > 0]) + 
+        aes(x = var, y = val, fill = fn) + 
+        geom_col() + 
+        coord_flip()
+    }
+    
+    if (fig == "density") {
+      
+      g = ggplot(count_dt[fn == focus]) + 
+        aes(x = val) +
+        geom_bar()
+    }
+    
+    return(g)
+  }
+  
+  g1a = plot_count("d_v", ord = "n")
+  g1b = plot_count("d_v", ord = "p")
+  g2a = plot_count("country", fig = "count")
+  g2b = plot_count("country", fig = "density")
+  
+  # ---- xxxxxxxx ----
+  
+  best_coef = coef_dt %>%
+    inner_join(y  = best_dt, 
+               by = c("country", "d_v", "fn")) %>%
+    mutate(par = as.list(setNames(value, coef))) %>% 
+    group_by(country, d_v, fn) %>% 
+    summarise(par = list(par)) %>% 
+    ungroup() %>% 
+    as.data.table()
+  
+  eval_fn = function(a) {
+    y = do.call(what = fn_set()[[a$fn]], 
+                args = c(list(x = x), a$par))
+  }
+  
+  x = seq(0, 1, length.out = 100)
+  y = t(apply(best_coef, 1, eval_fn))
+  
+  best_fit = best_coef %>%
+    cbind(y) %>%
+    select(-fn, -par) %>%
+    pivot_longer(cols = -c(country, d_v), 
+                 names_to  = "v", 
+                 values_to = "y") %>%
+    mutate(v = str_remove(v, "^V"), 
+           x = x[as.numeric(v)]) %>%
+    select(country, d_v, x, y) %>%
+    as.data.table()
+  
+  g = ggplot(best_fit) + 
+    aes(x = x, y = y, colour = country) + 
+    geom_line() + 
+    facet_wrap(~d_v)
 }
 
