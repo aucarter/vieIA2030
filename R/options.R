@@ -29,6 +29,11 @@ set_options = function(do_step = NA, quiet = FALSE) {
   # Create output directory system
   o = set_dirs(o)  # See directories.R
   
+  # ---- Non-linear impact assumptions ----
+  
+  o$per_person   = 1e5
+  o$r2_threshold = 0.9
+  
   # ---- Time settings ----
   
   # Years to analyse
@@ -39,7 +44,16 @@ set_options = function(do_step = NA, quiet = FALSE) {
   o$data_years = 2000 : 2039  # Vaccine effect calculated across these dates
   o$data_ages  = 0 : 95
   
-  # ---- Data references ----
+  # ---- Database settings ----
+  
+  # Version number of google database
+  o$db_version = "v2"
+  
+  # Force a fresh database pull even if cache loading available
+  o$force_db_pull = FALSE
+  
+  # Only load from cache if pulled within the last n hours
+  o$cache_hour_limit = 168 * 52  # 168 hours = 1 week
   
   # # ECDC data links
   # o$ecdc_api = 
@@ -57,14 +71,6 @@ set_options = function(do_step = NA, quiet = FALSE) {
   #                      icu_beds      = "Daily ICU occupancy",
   #                      hospital_admissions = "Weekly new hospital admissions per 100k", 
   #                      icu_admissions      = "Weekly new ICU admissions per 100k")
-  
-  # ---- Data cache ----
-  
-  # Force a fresh database pull even if cache loading available
-  o$force_db_pull = FALSE
-  
-  # Only load from cache if pulled within the last n hours
-  o$cache_hour_limit = 168 * 52  # 168 hours = 1 week
   
   # ---- Uncertainty settings ----
   
@@ -104,10 +110,14 @@ set_options = function(do_step = NA, quiet = FALSE) {
   # # Lower bound of age groups for plotting - bounded above by maximum age
   # o$plot_ages = c(0, 18, 60)  # Captures 3 age groups as per ECDC request
   
+  # Colour palette for SIA data exploration plots
+  o$palette_sia = "pals::kovesi.rainbow"
+  
   # Colour packages and palettes (see colour_scheme in auxiliary.R)
-  o$palette_disease = "pals::kovesi.rainbow"  # ~15 values
+  o$palette_disease = "pals::kovesi.rainbow"  # ~15 values needed
+  o$palette_country = "pals::kovesi.rainbow"  # ~190 values needed
   o$palette_region  = "brewer::paired"  # 6 values
-  o$palette_income  = "brewer::dark2"  # 4 values
+  o$palette_economy = "brewer::dark2"  # 4 values
   o$palette_gavi    = "brewer::greys"  # 2 values (yes or no)
   
   # # Define some nice properties for baseline metric plots

@@ -1,5 +1,4 @@
 
-
 library(tidyverse)
 library(stats4)    # MLE algorithm
 
@@ -7,8 +6,6 @@ library(stats4)    # MLE algorithm
 # xxx
 # ---------------------------------------------------------
 explore_vimc = function() {
-  
-  r2_threshold = 0.9
   
   # ---- Population size ----
   
@@ -41,7 +38,7 @@ explore_vimc = function() {
     # ... relative to 100k people...
     left_join(y  = pop_dt, 
               by = c("country", "year")) %>%
-    mutate(impact_rel = 1e5 * impact_cum / pop) %>%
+    mutate(impact_rel = o$per_person * impact_cum / pop) %>%
     select(-pop) %>%
     as.data.table()
   
@@ -68,7 +65,7 @@ explore_vimc = function() {
     # ... relative to 100k people...
     left_join(y  = pop_dt, 
               by = c("country", "year")) %>%
-    mutate(fvps_rel = 1e5 * fvps_cum / pop) %>%
+    mutate(fvps_rel = o$per_person * fvps_cum / pop) %>%
     select(-pop) %>%
     as.data.table()
   
@@ -78,6 +75,8 @@ explore_vimc = function() {
     inner_join(y  = coverage_dt, 
                by = c("country", "d_v", "year")) %>%
     filter(fvps > 0, impact > 0)
+  
+  saveRDS(vimc_dt, paste0(o$pth$testing, "vimc_dt.rds"))
   
   g1 = ggplot(vimc_dt) + 
     aes(x = fvps, y = impact, colour = country) +
@@ -108,7 +107,8 @@ explore_vimc = function() {
     filter(!is.na(fvps_rel)) %>%
     select(country, d_v) %>%
     unique() %>%
-    mutate(id = 1 : n())
+    mutate(id = 1 : n()) %>%
+    slice_head(p = 0.2)
   
   coef = aic = r2 = list()
   
@@ -116,6 +116,8 @@ explore_vimc = function() {
   
   for (id in cases$id) {
     case = filter(cases, id == !!id)
+    
+    # message(case$country, ": ", case$d_v)
     
     result = get_best_model(fns, vimc_dt, case$country, case$d_v)
     
@@ -128,8 +130,7 @@ explore_vimc = function() {
   
   close(pb)
   
-  coef_dt = rbindlist(coef) # %>%
-    # mutate(fn = recode(fn, !!!fns_dict))
+  coef_dt = rbindlist(coef)
   
   saveRDS(coef_dt, paste0(o$pth$testing, "coef.rds")) 
   
@@ -139,18 +140,15 @@ explore_vimc = function() {
   saveRDS(aic_dt, paste0(o$pth$testing, "aic.rds"))
   saveRDS(r2_dt,  paste0(o$pth$testing, "r2.rds"))
   
-  r2_threshold = 0.9
-  
   best_dt = aic_dt %>%
     left_join(y  = r2_dt, 
               by = c("country", "d_v")) %>%
-    mutate(lin_r2_pass = lin_r2 > r2_threshold, 
+    mutate(lin_r2_pass = lin_r2 > o$r2_threshold, 
            lin = ifelse(lin_r2_pass, -Inf, lin)) %>%
     pivot_longer(cols = names(fns),
                  names_to = "fn") %>%
     filter(!is.na(value)) %>%
-    mutate(# fn = recode(fn, !!!fns_dict), 
-           value = round(value)) %>%
+    mutate(value = round(value)) %>%
     group_by(country, d_v) %>%
     slice_min(value, n = 1, with_ties = FALSE) %>%
     ungroup() %>%
@@ -165,16 +163,40 @@ explore_vimc = function() {
 # ---------------------------------------------------------
 fn_set = function(dict = FALSE) {
   
+  # x = seq(0, 200, length.out = 200)
+  
+  # beta_cdf = function(x, a, b, c) {
+  #   
+  #   y = dbeta(x / c, a, b)
+  #   
+  #   y[is.infinite(y)] = 1e-8
+  #   
+  #   y = cumsum(y) / sum(y)
+  # }
+  
+  # gamma_cdf = function(x, a, b, c) {
+  #   
+  #   y = dgamma(x, a, rate = b)
+  #   
+  #   y = cumsum(y) / sum(y)
+  # }
+  
   # Set of statistical models / functions we want to test
   out = list(
     lin  = function(x, a, b)    y = a*x + b,
-    quad = function(x, a, b, c) y = a*x^2 + b*x + c)
+    # quad = function(x, a, b, c) y = a*x^2 + b*x + c,
+    # beta = function(x, a, b, c) y = beta_cdf(x, a, b, c), 
+    logc = function(x, a, b, c) y = logistic(x, a, b, upper = c))
+  # gam  = function(x, a, b, c) y = gamma_cdf(x, a, b, c))
+  
   
   # Alternative functionality - return dictionary
   if (dict == TRUE)
     out = c(
       lin  = "Linear", 
-      quad = "Quadratic")
+      # quad = "Quadratic", 
+      # beta = "Beta", 
+      logc = "Logistic")
   
   return(out)
 }
@@ -215,12 +237,9 @@ prep_data = function(vimc_dt, country, d_v) {
   data_dt = vimc_dt %>%
     filter(country == !!country, 
            d_v     == !!d_v) %>%
-    select(x_real = impact_rel, 
-           y_real = fvps_rel) %>%
-    mutate(x_max = max(x_real), 
-           y_max = max(y_real), 
-           x = x_real / x_max, 
-           y = y_real / y_max)
+    select(x = fvps_rel,
+           y = impact_rel) %>%
+    mutate(y = y * 1000)
   
   return(data_dt)
 }
@@ -230,13 +249,16 @@ prep_data = function(vimc_dt, country, d_v) {
 # ---------------------------------------------------------
 prep_start = function(fns, x, y) {
   
+  s_start = 1
+  
   # Points to evaluate when plotting
-  x_eval = seq(0, max(x), length.out = 100)
+  # x_eval = seq(0, max(x), length.out = 100)
+  x_eval = seq(0, 1, by = 0.01)
   
   # Let's start with any old points
   start = list(
-    lin  = list(s = 1, a = 1, b = 1),
-    quad = list(s = 1, a = 1, b = 1, c = 1))
+    lin  = list(s = s_start, a = 1, b = 1),
+    logc = list(s = s_start, a = 1, b = 1, c = 1))
   
   # Define an objective function to minimise - sum of squares
   obj_fn = function(fn, ...) {
@@ -253,7 +275,7 @@ prep_start = function(fns, x, y) {
   # Define model-specific calls to objective function
   asd_fn = list(
     lin  = function(p, args) obj_fn("lin",  a = p[1], b = p[2]),
-    quad = function(p, args) obj_fn("quad", a = p[1], b = p[2], c = p[3]))
+    logc = function(p, args) obj_fn("logc", a = p[1], b = p[2], c = p[3]))
   
   # Initiate list for storing plotting datatables
   plot_list = list()
@@ -283,7 +305,7 @@ prep_start = function(fns, x, y) {
       fn = fn)
     
     # Overwrite starting point with optimal parameters
-    start[[fn]] = c(1, optim$x) %>%
+    start[[fn]] = c(s_start, optim$x) %>%
       setNames(names(start[[fn]])) %>%
       as.list()
   }
@@ -306,11 +328,12 @@ prep_start = function(fns, x, y) {
 run_mle = function(fns, start, x, y) {
   
   # Points to evaluate when plotting
-  x_eval = seq(0, max(x), length.out = 100)
+  # x_eval = seq(0, max(x), length.out = 100)
+  x_eval = seq(0, 1, by = 0.01)
   
   model = list(
-    lin  = function(s, a, b)    likelihood(s, a*x + b),
-    quad = function(s, a, b, c) likelihood(s, a*x^2 + b*x + c))
+    lin  = function(s, a, b)    likelihood(s, fns$lin(x, a, b)),
+    logc = function(s, a, b, c) likelihood(s, fns$logc(x, a, b, c)))
   
   likelihood = function(s, y_pred)
     ll = -sum(dnorm(x = y, mean = y_pred, sd = s, log = TRUE))
@@ -325,8 +348,8 @@ run_mle = function(fns, start, x, y) {
     fit_result = tryCatch(
       expr  = mle(minuslogl = model[[fn]], 
                   start = start[[fn]], 
-                  lower = list(s = 1e-6), 
-                  nobs  = length(y)), 
+                  lower = list(s = 1e-8), 
+                  nobs  = length(y)),
       
       # Return trivial if MLE failed
       error   = function(e) NULL,
@@ -436,15 +459,19 @@ AICc = function(x) {
 # ---------------------------------------------------------
 plot_best_model = function() {
   
+  focus = "logc"
+  
   fns      = fn_set()
   fns_dict = fn_set(dict = TRUE)
   
   best_dt = readRDS(paste0(o$pth$testing, "best_model.rds"))
   coef_dt = readRDS(paste0(o$pth$testing, "coef.rds"))
   
+  vimc_dt = readRDS(paste0(o$pth$testing, "vimc_dt.rds"))
+  
   # ---- Plot function count ----
   
-  plot_count = function(var, fig = "count", focus = "quad", ord = "n") {
+  plot_count = function(var, fig = "count", ord = "n") {
     
     fn_ord = c(focus, setdiff(unique(best_dt$fn), focus))
     
@@ -522,9 +549,38 @@ plot_best_model = function() {
     select(country, d_v, x, y) %>%
     as.data.table()
   
-  g = ggplot(best_fit) + 
+  gA = ggplot(best_fit) + 
     aes(x = x, y = y, colour = country) + 
     geom_line() + 
     facet_wrap(~d_v)
+  
+  focus_fit = best_fit %>%
+    left_join(y  = best_dt, 
+              by = c("country", "d_v")) %>%
+    filter(fn == focus) %>%
+    mutate(c_d_v = paste0(country, "_", d_v)) %>%
+    select(c_d_v, x, y) %>%
+    mutate(y = y / 1000)
+  
+  focus_data = vimc_dt %>%
+    mutate(c_d_v = paste0(country, "_", d_v)) %>%
+    filter(c_d_v %in% unique(focus_fit$c_d_v)) %>%
+    group_by(c_d_v) %>%
+    rename(x = fvps_rel, 
+           y = impact_rel) %>%
+    ungroup() %>%
+    select(c_d_v, x, y) %>%
+    as.data.table()
+  
+  gB = ggplot(focus_fit) + 
+    aes(x = x, y = y) + 
+    geom_line() + 
+    facet_wrap(~c_d_v, scales = "free_y")
+  
+  gB = gB + 
+    geom_point(data = focus_data, 
+               colour = "black")
+  
+  browser()
 }
 
