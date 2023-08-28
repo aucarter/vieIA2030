@@ -276,6 +276,19 @@ n_slurm_jobs = function(user) {
 }
 
 # ---------------------------------------------------------
+# Simple wrapper for number of unique observations
+# ---------------------------------------------------------
+n_unique = function(x) length(unique(x))
+
+# ---------------------------------------------------------
+# Wrapper for lapply that also extracts element name
+# ---------------------------------------------------------
+napply = function(x, fn, ...) {
+  y = lapply(seq_along(x), function(i) fn(x[[i]], name = names(x)[i]))
+  return(y)
+}
+
+# ---------------------------------------------------------
 # Normalise a vector of values to between 0 and 1
 # ---------------------------------------------------------
 normalise_0to1 = function(x, x_min = NULL, x_max = NULL, direction = "forward") {
@@ -315,6 +328,11 @@ normalise_0to1 = function(x, x_min = NULL, x_max = NULL, direction = "forward") 
 }
 
 # ---------------------------------------------------------
+# Equivalent of paste, but with an underscore instead of space
+# ---------------------------------------------------------
+paste1 = function(...) paste(..., sep = "_")
+
+# ---------------------------------------------------------
 # Sub a directory name within a file path string
 # ---------------------------------------------------------
 pth_replace = function(pth, dir, dir_replace, sep = file_sep()) {
@@ -335,6 +353,34 @@ quiet = function(x) {
   on.exit(file.remove("sink.txt"),  add = TRUE)
   invisible(force(x)) 
 }
+
+# ---------------------------------------------------------
+# Load Excel files from URL
+# ---------------------------------------------------------
+read_url_xls = function(url, sheet = 1) {
+  
+  # Create temporary file
+  xls = tempfile()
+  
+  # Download from URL to temporary file
+  download.file(url, xls, quiet = T, mode = 'wb')
+  
+  # Read the xls file (xlsx also handled)
+  url_dt = readxl::read_excel(path  = xls, 
+                              sheet = sheet) %>%
+    as.data.table()
+  
+  # Delete temporary file
+  file.remove(xls)
+  
+  return(url_dt)
+}
+
+# ---------------------------------------------------------
+# Inverse of cumsum - use to extract the vector which created a cumsum
+# ---------------------------------------------------------
+rev_cumsum = function(x)
+  y = x - c(0, x[1 : (length(x) - 1)])
 
 # ---------------------------------------------------------
 # Wrapper for consistent behaviour of base::sample when length(x) is one

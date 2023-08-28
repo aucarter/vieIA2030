@@ -10,14 +10,14 @@ rm(list = ls())
 
 # ---- Install and/or load R packages with devtools ----
 
-message("* Installing required R packages")
+message("* Installing required packages")
 
 # Install devtools if it isn't already
 if (!("devtools" %in% installed.packages()[, 1]))
   install.packages("devtools")
 
 # Install packages as defined in DESCRIPTION DCF file
-devtools::install_deps()
+# devtools::install_deps()
 
 # Load all functions defined within ./R/ directory
 devtools::load_all()
