@@ -35,7 +35,7 @@ run_impact_factors = function() {
   
   # ---- Use impact factors to determine deaths averted ----
   
-  # ?? What is the different between impact_dt and scenario_impact? YoV?
+  # ?? What is the different between impact_dt and scenario_impact? - Age! I think
   
   # Get vaccine coverage and FVPs for all years up to 2030
   scenario_dt = get_scenario_fvps()  # See sceanrios.R
