@@ -1,4 +1,4 @@
-# Note: This is using a version of coverage21 before all merges of id tables  ... need to resolve
+# Note: This is using a version of coverage22 before all merges of id tables  ... need to resolve
 dtp1_target <- function(dtp1_19, dtp3_19, surv_19, surv_30) {
     if (dtp1_19 >= 0.99) {
         dtp1_target <- dtp1_19
@@ -16,10 +16,10 @@ dtp1_target <- function(dtp1_19, dtp3_19, surv_19, surv_30) {
 
 vdtp1_target <- Vectorize(dtp1_target)
 
-dtp1 <- coverage_21[v_at_id == 23 & year == 2019]
+dtp1 <- coverage_22[v_at_id == 23 & year == 2019]
 setnames(dtp1, "observed_coverage", "dtp1_19")
 
-dtp3 <- coverage_21[v_at_id == 20 & year == 2019]
+dtp3 <- coverage_22[v_at_id == 20 & year == 2019]
 setnames(dtp3, "observed_coverage", "dtp3_19")
 
 surv_19 <- pop_21[age == 0 & year == 2019 & sex_id == 3]
@@ -55,7 +55,7 @@ abline(a = 0, b = 1)
 dev.off()
 
 
-ia2030_dtp_goal_21 <- dt[, .(location_id, target)]
-ia2030_dtp_goal_21[, year := 2030]
-setnames(ia2030_dtp_goal_21, "target", "value")
-usethis::use_data(ia2030_dtp_goal_21, overwrite = T)
+ia2030_dtp_goal_22 <- dt[, .(location_id, target)]
+ia2030_dtp_goal_22[, year := 2030]
+setnames(ia2030_dtp_goal_22, "target", "value")
+usethis::use_data(ia2030_dtp_goal_22, overwrite = T)

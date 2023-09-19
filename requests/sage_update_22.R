@@ -13,7 +13,7 @@ results_dt <- rbind(
 
 # Grab old pop
 load_tables("wpp_input")
-both_dt <- wpp_input[year %in% 2019:2021, .(nx = sum(nx)), .(location_id, age, year)]
+both_dt <- wpp_input[year %in% 2019:2022, .(nx = sum(nx)), .(location_id, age, year)]
 both_dt[, sex_id := 3]
 old_pop_dt <- rbind(wpp_input, both_dt, fill = T)
 setnames(old_pop_dt, "nx", "old_pop")
@@ -26,12 +26,19 @@ setnames(new_pop_dt, "pop", "new_pop")
 pop_dt <- merge(old_pop_dt, new_pop_dt, by = c("location_iso3", "year", "age", "sex_id"))
 
 # Merge on observed coverage
+results_dt2 <- merge(results_dt, v_at_table, by = c("vaccine", "activity_type"))
+
+coverage <- copy(coverage_22)
+coverage[, fvps := NULL]
+coverage[, sex_id := NULL]
+coverage[v_at_id == 17, v_at_id := 22]
 dt <- merge(
-    coverage_21[!is.na(observed_coverage)], 
-    results_dt[year %in% 2019:2021, .(location_iso3, year, disease, vaccine, age, impact_factor, fvps, deaths_averted, cohort_size)], 
-    by = c("location_iso3", "year", "vaccine"),
+    coverage[!is.na(observed_coverage)], 
+    results_dt2[year %in% 2019:2022, .(location_id, year, disease, v_at_id, age, impact_factor, fvps, deaths_averted, cohort_size)], 
+    by = c("location_id", "year", "v_at_id", "age"),
     all.y = T)
 dt[, sex_id := 3]
+dt <- merge(dt, loc_table[, .(location_id, location_iso3)], by = "location_id")
 
 # Use both sexes pop for old and only girls for new with HPV
 girls_pop_dt <- pop_dt[sex_id == 2]
@@ -67,11 +74,11 @@ dt[, observed_deaths_averted := observed_fvps * impact_factor]
 
 out_dt <- merge(dt, loc_table[, .(location_iso3, location_name, region, income_group)])
 
-write.csv(out_dt, "results/updated_reference_results_21.csv", row.names = F)
+write.csv(out_dt, "results_22/updated_reference_results_22.csv", row.names = F)
 
 
 
-dt <- fread("results/updated_reference_results_21.csv")
+dt <- fread("results_22/updated_reference_results_22.csv")
 dt <- dt[order(disease)]
 dt[, disease := as.factor(disease)]
 
@@ -92,13 +99,13 @@ region_target <- region_dt[, .(target = sum(target_deaths_averted)), by = .(year
 
 # Save regional and global
 combined_dt <- rbind(global_dt, region_dt)
-write.csv(combined_dt, "results/aggregate_updated_reference_results_21.csv")
+write.csv(combined_dt, "results_22/aggregate_updated_reference_results_22.csv")
 
 ## Plots
 my_colors1 <- c(RColorBrewer::brewer.pal(name = "Paired", n = 12), c("darkblue", "darkgreen"))
 my_colors1[1] <- "hotpink"
 
-pdf("results/updated_reference_results_21.pdf")
+pdf("results_22/updated_reference_results_22.pdf")
 
 # Global averted
 gg <- ggplot() + 
@@ -109,7 +116,7 @@ gg <- ggplot() +
     scale_fill_manual(values = my_colors1, name = "Disease") +
     theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
     ggtitle("Observed global deaths averted by disease compared to the IA2030 targets") +
-    scale_x_continuous(breaks = 2019:2021) +
+    scale_x_continuous(breaks = 2019:2022) +
     scale_color_manual(name = "", values = c("IA2030\ntarget" = "black"))
 print(gg)
 
@@ -122,7 +129,7 @@ gg <- ggplot() +
     scale_fill_manual(values = my_colors1, name = "Disease") +
     theme_bw() + xlab("Year") + ylab("Deaths averted (in millions)") +
     ggtitle("Observed regional deaths averted by disease compared to the IA2030 targets") +
-    scale_x_continuous(breaks = 2019:2021) +
+    scale_x_continuous(breaks = 2019:2022) +
     scale_color_manual(name = "", values = c("IA2030\ntarget" = "black")) +
     facet_wrap(.~region, scales = "free_y")
 print(gg)
@@ -134,7 +141,7 @@ gg <- ggplot() +
     scale_fill_manual(values = my_colors1, name = "Disease") +
     theme_bw() + ylab("Difference between observed and target deaths averted (in thousands)") + xlab("Year") +
     ggtitle("Global gaps in deaths averted by disease compared to the IA2030 targets") +
-    scale_x_continuous(breaks = 2019:2021) +
+    scale_x_continuous(breaks = 2019:2022) +
     geom_hline(yintercept = 0)
 print(gg)
 
@@ -145,7 +152,7 @@ gg <- ggplot() +
     scale_fill_manual(values = my_colors1, name = "Disease") +
     theme_bw() + ylab("Difference between observed and target deaths averted (in thousands)") + xlab("Year") +
     ggtitle("Regional gaps in deaths averted by disease compared to the IA2030 targets") +
-    scale_x_continuous(breaks = 2019:2021) +
+    scale_x_continuous(breaks = 2019:2022) +
     geom_hline(yintercept = 0) +
     facet_wrap(.~region, scales = "free_y")
 print(gg)
@@ -158,7 +165,7 @@ temp <- global_dt[, .(total_observed = sum(observed_deaths_averted),
     gap = sum(gap)), by = (year)]
 temp[, change := (total_target - total_observed) / total_target * 100]
 
-prop.table(global_dt[year == 2021, .(observed_deaths_averted)])
+prop.table(global_dt[year == 2022, .(observed_deaths_averted)])
 
 temp <- region_dt[, .(total_observed = sum(observed_deaths_averted), 
     total_target = sum(target_deaths_averted), 
@@ -169,10 +176,12 @@ temp[, change := (total_target - total_observed) / total_target * 100]
 annual_dt <- combined_dt[, .(target_deaths_averted = sum(target_deaths_averted),
     observed_deaths_averted = sum(observed_deaths_averted)), by = .(region, year)]
 
-write.csv(annual_dt, "results/region_annual_updated_reference_results_21.csv", row.names = F)
+write.csv(annual_dt, "results_22/region_annual_updated_reference_results_22.csv", row.names = F)
 
 ## Country-specific outputs
-l_d_t_dt <- combined_dt[, .(target_deaths_averted = sum(target_deaths_averted),
-    observed_deaths_averted = sum(observed_deaths_averted)), by = .(location_iso3, year, disease)]
+dt <- merge(dt, v_at_table)
+l_d_t_dt <- dt[, .(target_deaths_averted = sum(target_deaths_averted),
+    observed_deaths_averted = sum(observed_deaths_averted)), by = .(location_iso3, year, disease, vaccine)]
 
-write.csv(l_d_t_dt, "results/observed_target_21_location_disease.csv", row.names = F)
+write.csv(l_d_t_dt, "results_22/observed_target_22_location_disease.csv", row.names = F)
+

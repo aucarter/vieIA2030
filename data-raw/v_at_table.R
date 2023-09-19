@@ -12,5 +12,6 @@ rub <- data.table(
     activity_type = "combined"
 )
 v_at_table <- rbindlist(list(vimc, non_vimc, rub))
+v_at_table <- rbind(v_at_table, data.table(vaccine = "DTP1", activity_type = "routine"))
 v_at_table[, v_at_id := .I]
 usethis::use_data(v_at_table, overwrite = TRUE)

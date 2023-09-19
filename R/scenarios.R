@@ -1,30 +1,45 @@
 gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
                              no_covid_effect = 2022, intro_year = 2025,
-                             intro_range = T, new_data = F) {
+                             intro_range = T, data_year = 2020) {
     # Load 2019 coverage
-    if (new_data) {
+    if (data_year == 2022) {
+        # Put in the new coverage estimates here
+        cov_dt <- coverage_22[year == 2019]
+        setnames(cov_dt, "observed_coverage", "coverage")
+        cov_dt[, fvps := NA]
+        
+        # Swap in a new ia2030 dtp goal
+        dtp_goal <- ia2030_dtp_goal_22
+    } else if (data_year == 2021) {
         # Put in the new coverage estimates here
         cov_dt <- coverage_21[year == 2019]
         setnames(cov_dt, "observed_coverage", "coverage")
         cov_dt[, fvps := NA]
-    } else {
+        
+        # Swap in a new ia2030 dtp goal
+        dtp_goal <- ia2030_dtp_goal_21
+    } else if (data_year == 2020) {
         load_tables("coverage")
         cov_dt <- coverage[year == 2019]
+        dtp_goal <- ia2030_dtp_goal
     }
 
 
     # Iterate through each vaccine (except HPV which is special)
     vaccs <- setdiff(unique(v_at_table[activity_type == "routine"]$v_at_id), 2)
     dt <- rbindlist(lapply(vaccs, function(v) {
+        print(v)
         v_dt <- cov_dt[v_at_id == v][order(location_id)]
         if (length(unique(v_dt$sex_id)) > 1) {
             v_dt <- v_dt[sex_id == 2]
         }
         missing_locs <- setdiff(loc_table$location_id, v_dt$location_id)
-        missing_dt <- data.table(location_id = missing_locs, coverage = 0,
+        if(length(missing_locs > 0)) {
+                    missing_dt <- data.table(location_id = missing_locs, coverage = 0,
             v_at_id = v, year = 2019, age = 0, sex_id = unique(v_dt$sex_id),
             fvps = 0)
-        v_dt <- rbind(v_dt, missing_dt, use.names = T)
+            v_dt <- rbind(v_dt, missing_dt, use.names = T)
+        }
         v_dt <- v_dt[order(location_id)]
         # Repeat out to 'no covid effect' year
         n_covid <- no_covid_effect - 2019
@@ -42,7 +57,7 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
         if (intro_range) {
             # Range of intro years split up by quintile of coverage goal
             zero_locs <- v_dt[zero_idx]$location_id
-            ordered_locs <- ia2030_dtp_goal[location_id %in% zero_locs][rev(order(value))]$location_id
+            ordered_locs <- dtp_goal[location_id %in% zero_locs][rev(order(value))]$location_id
             split_locs <- split(ordered_locs, floor(5 * seq.int(0, length(ordered_locs) - 1) / length(ordered_locs)))
             names(split_locs) <- (-2:2 + temp_intro_year)[1:length(split_locs)]
         } else {
@@ -52,7 +67,7 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
         setnames(v_dt, "coverage", "current")
         roc_dt <- merge(
             v_dt[, .(location_id, current)],
-            ia2030_dtp_goal[, .(location_id, value)],
+            dtp_goal[, .(location_id, value)],
             by = "location_id"
         )
         roc_dt[, n := n_increase]
@@ -80,7 +95,7 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
             }
         }
         # Handle regionally-specific vaccines
-        if (v %in% c(19, 12, 7)) {
+        if (v %in% c(19, 12, 7)) { # YF, , JE
             if (v == 19) {
                 reg_locs <- loc_table[yf == 1]$location_id
                 # Remove Argentina and Kenya
@@ -138,7 +153,7 @@ gen_ia2030_goals <- function(ia2030_dtp_goal, linear = T,
     dt <- rbind(dt, hpv_target, use.names = T)
     
     dt[, year := as.integer(as.character(year))]
-    dt <- dt[year > 2019]
+    dt <- dt[year >= 2019]
     return(dt)
 }
 

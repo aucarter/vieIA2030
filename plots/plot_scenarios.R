@@ -37,6 +37,18 @@ for (v in unique(plot_dt$v_at_id)) {
 }
 dev.off()
 
+## Plot example location
+ex_dt <- plot_dt[location_id == 5 & label == "Non-linear; Intro range"]
+ex_dt <- merge(ex_dt, v_at_table[, .(v_at_id, vaccine)], by = "v_at_id")
+pdf("plots/coverage_example.pdf", width = 13, height = 9)
+gg <- ggplot(ex_dt, aes(x = year, y = value, color = vaccine)) +
+    geom_line() + theme_classic() + ylim(c(0,1)) +
+    ggtitle("Angola IA2030 target coverage") + ylab("Coverage") +
+    scale_x_continuous("Year", breaks = seq(2020, 2030, 1), labels = seq(2020, 2030, 1)) +
+    theme(text = element_text(size=20), legend.title = element_blank())
+print(gg)
+dev.off()
+
 add_dt <- rbindlist(lapply(unique(plot_dt$label), function(l) {
     coverage[year < 2019 & v_at_id %in% unique(plot_dt$v_at_id)][, label := l]
 }))
@@ -130,3 +142,5 @@ dev.off()
 plot_dt[, total := round(total  / 1e3)]
 cast_plot_dt <- dcast(plot_dt[year > 2020], year ~ label, value.var = "total")
 write.csv(cast_plot_dt, "outputs/paper/scenario_table.csv", row.names = F)
+
+
