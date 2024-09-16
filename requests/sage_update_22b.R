@@ -187,7 +187,32 @@ write.csv(annual_dt, "results_22b/region_annual_updated_reference_results_22b.cs
 ## Country-specific outputs
 dt <- merge(dt, v_at_table, by = "v_at_id")
 l_d_t_dt <- dt[, .(target_deaths_averted = sum(target_deaths_averted),
-    observed_deaths_averted = sum(observed_deaths_averted)), by = .(location_iso3, year, disease, vaccine)]
+    observed_deaths_averted = sum(observed_deaths_averted)), by = .(location_iso3, year, disease, vaccine, v_at_id)]
+
+l_d_t_dt <- merge(l_d_t_dt, loc_table[, .(location_iso3, region, income_group)], all.x = T)
+# Merge on coverage and pop
+l_d_t_dt <- merge(l_d_t_dt, 
+    unique(out_dt[, .(location_iso3, year, v_at_id, observed_coverage, new_pop)]), 
+    by = c("location_iso3", "year", "v_at_id"), all.x = T)
+
+setnames(l_d_t_dt, c("observed_coverage", "new_pop"), c("coverage", "pop"))
+l_d_t_dt[, v_at_id := NULL]
 
 write.csv(l_d_t_dt, "results_22b/observed_target_22b_location_disease.csv", row.names = F)
 
+
+add_targets <- new_targets[year > 2022, .(target_deaths_averted = sum(target_deaths_averted)), by = year]
+annual_dt <- global_dt[, .(target_deaths_averted = sum(target_deaths_averted),
+    observed_deaths_averted = sum(observed_deaths_averted)), by = .(year)]
+
+annual_dt <- rbind(annual_dt, add_targets, fill = T)
+
+write.csv(annual_dt, "results_22b/observed_target_global_annual.csv", row.names = F)
+
+
+
+temp <- annual_dt[year %in% 2021:2022, .(target_deaths_averted = sum(target_deaths_averted),
+    observed_deaths_averted = sum(observed_deaths_averted))]
+
+temp[, gap := target_deaths_averted - observed_deaths_averted]
+temp[, gap_pct := (target_deaths_averted - observed_deaths_averted) / target_deaths_averted * 100]

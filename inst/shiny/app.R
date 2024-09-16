@@ -1,5 +1,6 @@
 library(shiny)
 library(viridis)
+library(dplyr)
 
 vimc_dt <- readRDS("vimc.rds")
 vimc_dt <- vimc_dt[activity_type == "routine"]

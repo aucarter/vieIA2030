@@ -9,3 +9,4 @@ gcs_creds.json
 reference_results.csv
 averted_pred
 temp
+.Rproj.user
